@@ -33,6 +33,8 @@ export const PAGE_TITLES: Record<string, string> = {
   'detail/review/index': '评价活动',
   'detail/family/index': '我的家庭',
   'detail/messages/index': '消息中心',
+  'detail/coupons/index': '优惠券',
+  'detail/package-detail/index': '体验包详情',
 };
 
 /** zh-CN labels for shared domain vocabularies (order status per PRD §29). */

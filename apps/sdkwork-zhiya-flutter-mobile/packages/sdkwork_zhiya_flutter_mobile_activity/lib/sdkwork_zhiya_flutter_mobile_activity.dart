@@ -4,4 +4,5 @@ library;
 
 export 'src/activity_list_screen.dart';
 export 'src/activity_detail_screen.dart';
+export 'src/package_detail_screen.dart';
 export 'src/register_screen.dart';

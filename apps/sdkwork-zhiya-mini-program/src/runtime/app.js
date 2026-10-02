@@ -2238,7 +2238,9 @@ var PAGE_TITLES = {
   "detail/orders/index": "\u6211\u7684\u8BA2\u5355",
   "detail/review/index": "\u8BC4\u4EF7\u6D3B\u52A8",
   "detail/family/index": "\u6211\u7684\u5BB6\u5EAD",
-  "detail/messages/index": "\u6D88\u606F\u4E2D\u5FC3"
+  "detail/messages/index": "\u6D88\u606F\u4E2D\u5FC3",
+  "detail/coupons/index": "\u4F18\u60E0\u5238",
+  "detail/package-detail/index": "\u4F53\u9A8C\u5305\u8BE6\u60C5"
 };
 var ORDER_STATUS_LABELS = {
   "pending-payment": "\u5F85\u652F\u4ED8",
@@ -2466,6 +2468,44 @@ async function payOrder(orderId, method) {
     return true;
   } catch {
     return false;
+  }
+}
+async function loadPackageDetail(packageId, categoryLabels) {
+  const pkgClient = getZhiyaClient("package");
+  const activityClient = getZhiyaClient("activity");
+  const pkg = await pkgClient.getPackage(packageId);
+  if (pkg === null) {
+    return null;
+  }
+  const activities = (await Promise.all(pkg.activityIds.map((id) => activityClient.getActivity(id)))).filter((activity) => activity !== null);
+  return {
+    id: pkg.id,
+    emoji: pkg.emoji,
+    title: pkg.title,
+    summary: pkg.summary,
+    priceLabel: formatPrice(pkg.price),
+    originalLabel: pkg.originalPrice > pkg.price ? `\xA5${pkg.originalPrice}` : null,
+    validDaysLabel: `\u6709\u6548\u671F ${pkg.validDays} \u5929`,
+    purchasedLabel: `${pkg.purchasedCount}\u4EBA\u5DF2\u8D2D\u4E70`,
+    includedActivities: activities.map((activity) => toActivityCardView(activity, categoryLabels[activity.category] ?? activity.category))
+  };
+}
+async function createPackageOrder(packageId) {
+  const pkgClient = getZhiyaClient("package");
+  const orderClient = getZhiyaClient("order");
+  const pkg = await pkgClient.getPackage(packageId);
+  if (pkg === null) {
+    return { ok: false, error: "\u4F53\u9A8C\u5305\u4E0D\u5B58\u5728" };
+  }
+  try {
+    const applicable = await orderClient.listApplicableCoupons({ kind: "package", id: packageId }, pkg.price);
+    const order = await orderClient.createPackageOrder(packageId, applicable[0]?.id);
+    return { ok: true, orderId: order.id };
+  } catch (caught) {
+    if (caught instanceof RegistrationError && caught.code === "coupon-invalid") {
+      return { ok: false, error: "\u4F18\u60E0\u5238\u4E0D\u53EF\u7528" };
+    }
+    return { ok: false, error: "\u4E0B\u5355\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5" };
   }
 }
 var ACTIVITY_CATEGORY_TABS = [
@@ -2779,6 +2819,8 @@ function bootstrapRuntime() {
       list: (category) => listActivities(CATEGORY_LABELS, category),
       detail: (id) => loadActivityDetail(id, ""),
       registerPickers: (id) => loadRegisterPickers(id),
+      packageDetail: (id) => loadPackageDetail(id, CATEGORY_LABELS),
+      buyPackage: (packageId) => createPackageOrder(packageId),
       createOrder: (input) => createRegistrationOrder(input),
       pay: (orderId, method) => payOrder(orderId, method)
     },

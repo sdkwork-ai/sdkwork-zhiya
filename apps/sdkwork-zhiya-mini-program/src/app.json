@@ -16,7 +16,9 @@
         "orders/index",
         "review/index",
         "family/index",
-        "messages/index"
+        "messages/index",
+        "coupons/index",
+        "package-detail/index"
       ]
     }
   ],

@@ -27,6 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final client = ZhiyaRuntime.instance.client;
     final children = client.listChildren();
     final unread = client.listMessages().where((message) => !message.read).length;
+    final unusedCoupons =
+        client.listMyCoupons().where((coupon) => coupon.state == 'unused').toList();
+    final claimable = client.listClaimableCoupons();
     return Scaffold(
       appBar: AppBar(title: const Text('我的')),
       body: ListView(
@@ -100,6 +103,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: const Text('保存'),
                 ),
+              ],
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Text('🎟️'),
+            title: const Text('优惠券'),
+            subtitle: Text(unusedCoupons.isEmpty ? '去领券中心领取平台券/商家券' : '${unusedCoupons.length} 张可用'),
+          ),
+          for (final coupon in unusedCoupons.take(3))
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 56, right: 16),
+              title: Text(coupon.title),
+              subtitle: Text('-¥${coupon.amountOff.toStringAsFixed(coupon.amountOff % 1 == 0 ? 0 : 2)}'
+                  '${coupon.minSpend > 0 ? ' 满${coupon.minSpend.toStringAsFixed(0)}' : ''}'),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Wrap(
+              spacing: 8,
+              children: [
+                for (final template in claimable)
+                  ActionChip(
+                    label: Text('领 ${template['title']}', style: const TextStyle(fontSize: 12)),
+                    onPressed: () {
+                      client.claimCoupon(template['id'] as String);
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('「${template['title']}」已到账')),
+                      );
+                    },
+                  ),
               ],
             ),
           ),

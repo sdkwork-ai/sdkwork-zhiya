@@ -21,11 +21,14 @@ import {
 
 import {
   ACTIVITY_CATEGORY_TABS,
+  createPackageOrder,
   createRegistrationOrder,
   listActivities,
   loadActivityDetail,
+  loadPackageDetail,
   loadRegisterPickers,
   payOrder,
+  type PackageDetailView,
   type RegisterPickers,
 } from '@sdkwork/zhiya-mp-activity';
 
@@ -77,6 +80,8 @@ export interface PageApi {
     list(category?: string): ReturnType<typeof listActivities>;
     detail(id: string): ReturnType<typeof loadActivityDetail>;
     registerPickers(id: string): Promise<RegisterPickers | null>;
+    packageDetail(id: string): Promise<PackageDetailView | null>;
+    buyPackage(packageId: string): ReturnType<typeof createPackageOrder>;
     createOrder(input: { activityId: string; sessionId: string; childId: string; couponId?: string }): ReturnType<
       typeof createRegistrationOrder
     >;
@@ -139,6 +144,8 @@ export function bootstrapRuntime(): PageApi {
       list: (category) => listActivities(CATEGORY_LABELS, category),
       detail: (id) => loadActivityDetail(id, ''),
       registerPickers: (id) => loadRegisterPickers(id),
+      packageDetail: (id) => loadPackageDetail(id, CATEGORY_LABELS),
+      buyPackage: (packageId) => createPackageOrder(packageId),
       createOrder: (input) => createRegistrationOrder(input),
       pay: (orderId, method) => payOrder(orderId, method),
     },

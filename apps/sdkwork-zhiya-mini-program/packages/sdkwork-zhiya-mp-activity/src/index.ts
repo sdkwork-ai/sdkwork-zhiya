@@ -185,6 +185,70 @@ export async function payOrder(orderId: string, method: 'wechat' | 'alipay'): Pr
   }
 }
 
+export interface PackageDetailView {
+  id: string;
+  emoji: string;
+  title: string;
+  summary: string;
+  priceLabel: string;
+  originalLabel: string | null;
+  validDaysLabel: string;
+  purchasedLabel: string;
+  includedActivities: ReturnType<typeof toActivityCardView>[];
+}
+
+/** 体验包详情 (PRD §12.2/§12.3). */
+export async function loadPackageDetail(
+  packageId: string,
+  categoryLabels: Record<string, string>,
+): Promise<PackageDetailView | null> {
+  const pkgClient = getZhiyaClient('package');
+  const activityClient = getZhiyaClient('activity');
+  const pkg = await pkgClient.getPackage(packageId);
+  if (pkg === null) {
+    return null;
+  }
+  const activities = (await Promise.all(pkg.activityIds.map((id) => activityClient.getActivity(id))))
+    .filter((activity): activity is NonNullable<typeof activity> => activity !== null);
+  return {
+    id: pkg.id,
+    emoji: pkg.emoji,
+    title: pkg.title,
+    summary: pkg.summary,
+    priceLabel: formatPrice(pkg.price),
+    originalLabel: pkg.originalPrice > pkg.price ? `¥${pkg.originalPrice}` : null,
+    validDaysLabel: `有效期 ${pkg.validDays} 天`,
+    purchasedLabel: `${pkg.purchasedCount}人已购买`,
+    includedActivities: activities.map((activity) => toActivityCardView(activity, categoryLabels[activity.category] ?? activity.category)),
+  };
+}
+
+export interface PackageBuyResult {
+  ok: boolean;
+  orderId?: string;
+  error?: string;
+}
+
+/** 购买体验包：自动套用最优体验包券后下单 (PRD §12/§29). */
+export async function createPackageOrder(packageId: string): Promise<PackageBuyResult> {
+  const pkgClient = getZhiyaClient('package');
+  const orderClient = getZhiyaClient('order');
+  const pkg = await pkgClient.getPackage(packageId);
+  if (pkg === null) {
+    return { ok: false, error: '体验包不存在' };
+  }
+  try {
+    const applicable = await orderClient.listApplicableCoupons({ kind: 'package', id: packageId }, pkg.price);
+    const order = await orderClient.createPackageOrder(packageId, applicable[0]?.id);
+    return { ok: true, orderId: order.id };
+  } catch (caught) {
+    if (caught instanceof RegistrationError && caught.code === 'coupon-invalid') {
+      return { ok: false, error: '优惠券不可用' };
+    }
+    return { ok: false, error: '下单失败，请稍后重试' };
+  }
+}
+
 /** Activity-level seed used by pages/activity (category chips + list). */
 export const ACTIVITY_CATEGORY_TABS: readonly { id: string; label: string }[] = [
   { id: 'all', label: '全部' },

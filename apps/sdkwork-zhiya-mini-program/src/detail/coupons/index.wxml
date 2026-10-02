@@ -1,0 +1,19 @@
+<view>
+  <view class="chips">
+    <view wx:for="{{tabs}}" wx:key="id" class="chip {{tab === item.id ? 'chip-active' : ''}}" data-id="{{item.id}}" bindtap="onTab">{{item.label}}</view>
+  </view>
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{coupons.length === 0}}" class="empty">这里还空空如也</view>
+  <block wx:else>
+    <view wx:for="{{coupons}}" wx:key="id" class="panel">
+      <view class="row">
+        <view class="coupon-face">{{item.faceLabel}}</view>
+        <view style="flex: 1; min-width: 0;">
+          <view class="row-title">{{item.title}}</view>
+          <view class="row-desc">{{item.scopeLabel}}{{item.stateLabel ? ' · ' + item.stateLabel : ''}}</view>
+        </view>
+        <button wx:if="{{tab === 'claimable'}}" class="btn-brand claim-btn" size="mini" data-id="{{item.id}}" bindtap="onClaim">领取</button>
+      </view>
+    </view>
+  </block>
+</view>

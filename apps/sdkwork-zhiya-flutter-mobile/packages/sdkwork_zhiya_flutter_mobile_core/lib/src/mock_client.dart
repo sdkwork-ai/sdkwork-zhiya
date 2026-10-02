@@ -208,6 +208,56 @@ class MockZhiyaClient {
 
   List<ZhiyaPackage> listHotPackages() => List.unmodifiable(_packages);
 
+  ZhiyaPackage? getPackage(String packageId) =>
+      _packages.where((entry) => entry.id == packageId).firstOrNull;
+
+  /// Create a package order (PRD §12/§29); auto-applies the best
+  /// package-scoped coupon, mock-pays immediately, and marks the coupon used.
+  ZhiyaOrder createPackageOrder(String packageId) {
+    final pkg = _packages.where((entry) => entry.id == packageId).firstOrNull;
+    if (pkg == null) {
+      throw RegistrationException('not-found', 'package not found: $packageId');
+    }
+    ZhiyaCoupon? best;
+    for (final coupon in _coupons) {
+      if (coupon.state != 'unused' ||
+          coupon.scope != 'package' ||
+          coupon.minSpend > pkg.price) {
+        continue;
+      }
+      if (best == null || coupon.amountOff > best.amountOff) {
+        best = coupon;
+      }
+    }
+    final discount =
+        best == null ? 0.0 : (best.amountOff > pkg.price ? pkg.price : best.amountOff);
+    _orderSeq += 1;
+    final order = ZhiyaOrder(
+      id: 'ord-pkg-$_orderSeq',
+      type: 'package',
+      rawStatus: 'pending-payment',
+      items: [
+        ZhiyaOrderItem(
+          title: pkg.title,
+          emoji: pkg.emoji,
+          activityId: null,
+          sessionId: null,
+          childName: null,
+          price: pkg.price,
+        ),
+      ],
+      amount: pkg.price,
+      discount: discount,
+      payable: pkg.price - discount,
+      createdAt: _now(),
+      checkInState: 'none',
+      couponId: best?.id,
+    );
+    _orders.insert(0, order);
+    _notify('registration', '体验包订单已创建', '「${pkg.title}」订单已创建，请尽快完成支付。');
+    return payOrder(order.id, method: 'wechat');
+  }
+
   List<ZhiyaGoods> listGoods({String? category}) =>
       _goods.where((goods) => category == null || goods.category == category).toList();
 
@@ -449,6 +499,15 @@ class MockZhiyaClient {
       .where((template) => !_coupons.any(
           (coupon) => coupon.templateId == template['id'] && coupon.state == 'unused'))
       .toList();
+
+  /// My coupons, optionally filtered by state (`unused|used|expired`).
+  List<ZhiyaCoupon> listMyCoupons({String? state}) {
+    final coupons = List<ZhiyaCoupon>.unmodifiable(_coupons.reversed);
+    if (state == null) {
+      return coupons;
+    }
+    return coupons.where((coupon) => coupon.state == state).toList();
+  }
 
   ZhiyaCoupon claimCoupon(String templateId) {
     final template = _couponTemplates.where((entry) => entry['id'] == templateId).firstOrNull;

@@ -1,0 +1,38 @@
+<view wx:if="{{detail}}">
+  <view class="hero">{{detail.emoji}}</view>
+  <view class="panel">
+    <view class="row">
+      <view style="flex: 1;">
+        <view class="row-title">{{detail.title}}</view>
+        <view class="row-desc">{{detail.summary}}</view>
+        <view class="row-desc">{{detail.validDaysLabel}} · {{detail.purchasedLabel}}</view>
+      </view>
+      <view style="text-align: right;">
+        <view class="price" style="font-size: 36rpx;">{{detail.priceLabel}}</view>
+        <text class="price-original" wx:if="{{detail.originalLabel}}">{{detail.originalLabel}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="page-title">包含的活动</view>
+  <view wx:for="{{detail.includedActivities}}" wx:key="id" class="panel" data-id="{{item.id}}" bindtap="goActivity">
+    <view class="row">
+      <text class="row-glyph">{{item.emoji}}</text>
+      <view style="flex: 1; min-width: 0;">
+        <view class="row-title">{{item.title}}</view>
+        <view class="row-desc">{{item.orgName}} · {{item.quotaLabel}}</view>
+      </view>
+      <view class="price">{{item.priceLabel}}</view>
+    </view>
+  </view>
+  <view class="panel">
+    <view class="row-title" style="padding: 24rpx;">购买须知</view>
+    <view class="row-desc" style="padding: 0 24rpx 24rpx; line-height: 1.7;">
+      · 体验包购买后在有效期内可用，过期未使用的权益自动失效\n· 每个活动需单独预约场次，到场出示凭证核销\n· 未核销的权益支持按规则退款
+    </view>
+  </view>
+  <view class="footer">
+    <button class="btn-brand" style="flex: 1;" bindtap="onBuy" disabled="{{buying}}">
+      {{buying ? '下单中…' : detail.priceLabel + ' 立即购买'}}
+    </button>
+  </view>
+</view>

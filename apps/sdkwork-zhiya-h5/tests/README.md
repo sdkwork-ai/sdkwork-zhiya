@@ -8,6 +8,7 @@ Per-package unit tests live in each package's own `tests/`.
 | `h5-architecture.test.ts` | Executable APP_H5_ARCHITECTURE_SPEC §2: required dirs, thin root `src/`, package naming, strict tsconfig, profile build contract, theme contract, secret-free runtime env. |
 | `route-alignment.test.ts` | Route table ↔ lazy element map sync, five-tab contract, id/capability format. |
 | `ui-states.test.tsx` | Mandatory five UI states, activity card content contract (PRD §7.3), HomeScreen smoke render. |
+| `cross-surface-alignment.test.ts` | Workspace-level APP_CLIENT_ARCHITECTURE_ALIGNMENT gate: H5 ≡ PC ≡ Flutter route id sets, mini-program tab projection, shared zhiya.* shell keys. |
 | `setup/test-runtime.ts` | Shared boot: merged i18n + fresh mock hub clients with in-memory storage. |
 
 Run: `pnpm --filter sdkwork-zhiya-h5 test`

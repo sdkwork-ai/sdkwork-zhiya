@@ -26,4 +26,8 @@ Page({
   goDetail(event) {
     wx.navigateTo({ url: `/detail/activity-detail/index?id=${event.currentTarget.dataset.id}` });
   },
+
+  goPackage(event) {
+    wx.navigateTo({ url: `/detail/package-detail/index?id=${event.currentTarget.dataset.id}` });
+  },
 });

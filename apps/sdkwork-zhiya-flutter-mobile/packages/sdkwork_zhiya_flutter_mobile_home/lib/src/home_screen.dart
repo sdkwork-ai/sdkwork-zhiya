@@ -58,6 +58,8 @@ class HomeScreen extends StatelessWidget {
                     title: pkg.title,
                     subtitle: '含${pkg.activityIds.length}个活动 · ${pkg.purchasedCount}人已购买',
                     trailing: formatPrice(pkg.price),
+                    onTap: () => Navigator.of(context)
+                        .pushNamed('app.zhiya.activity.package', arguments: {'packageId': pkg.id}),
                   ),
               ],
             ),

@@ -36,7 +36,7 @@
     </view>
 
     <view class="page-title">热门体验包</view>
-    <view wx:for="{{overview.hotPackages}}" wx:key="id" class="panel">
+    <view wx:for="{{overview.hotPackages}}" wx:key="id" class="panel" data-id="{{item.id}}" bindtap="goPackage">
       <view class="row">
         <text class="row-glyph">{{item.emoji}}</text>
         <view style="flex: 1; min-width: 0;">
