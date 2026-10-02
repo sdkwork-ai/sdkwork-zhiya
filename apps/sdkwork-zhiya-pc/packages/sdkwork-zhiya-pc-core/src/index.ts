@@ -33,8 +33,11 @@ export type {
   OrderType,
   Org,
   OrgActivityInput,
+  OrgAdminView,
+  OrgStatus,
   OrgRegistrationView,
   OrgWorkspaceStats,
+  PlatformStats,
   RegistrationDraft,
   RegistrationErrorCode,
   Review,
@@ -54,6 +57,7 @@ export { VerifyVoucherError, createZhiyaServiceHub } from '@sdkwork/zhiya-servic
 export type { ZhiyaServiceHub } from '@sdkwork/zhiya-service-core';
 
 export type {
+  AdminPort,
   ActivityPort,
   ActivityQuery,
   AiPort,

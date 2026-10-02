@@ -24,10 +24,6 @@ export function createMockOrgClient(state: ZhiyaMockState): OrgPort {
     return org;
   }
 
-  function orgActivities(): Activity[] {
-    return state.orgActivities.filter((activity) => activity.orgId === MY_ORG_ID);
-  }
-
   function buildSession(input: OrgActivityInput, activityId: string): Activity['sessions'] {
     const start = new Date(input.startTime);
     const end = new Date(input.endTime);
@@ -110,7 +106,11 @@ export function createMockOrgClient(state: ZhiyaMockState): OrgPort {
       };
     },
     async listOrgActivities(status) {
-      const mine = orgActivities().sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+      // 机构管理的活动 = 种子目录中归属本机构的活动 + 机构自建活动 (PRD §22.2)。
+      const mine = state
+        .allActivities()
+        .filter((activity) => activity.orgId === MY_ORG_ID)
+        .sort((left, right) => right.createdAt.localeCompare(left.createdAt));
       return status === undefined ? mine : mine.filter((activity) => activity.status === status);
     },
     async createActivity(input, publish) {
@@ -120,8 +120,8 @@ export function createMockOrgClient(state: ZhiyaMockState): OrgPort {
       return activity;
     },
     async updateActivity(activityId, input) {
-      const activity = state.orgActivities.find((entry) => entry.id === activityId);
-      if (activity === undefined) {
+      const activity = state.findActivity(activityId);
+      if (activity === null || activity.orgId !== MY_ORG_ID) {
         throw new Error(`org activity not found: ${activityId}`);
       }
       activity.title = input.title;
@@ -151,8 +151,8 @@ export function createMockOrgClient(state: ZhiyaMockState): OrgPort {
       return activity;
     },
     async publishActivity(activityId) {
-      const activity = state.orgActivities.find((entry) => entry.id === activityId);
-      if (activity === undefined) {
+      const activity = state.findActivity(activityId);
+      if (activity === null || activity.orgId !== MY_ORG_ID) {
         throw new Error(`org activity not found: ${activityId}`);
       }
       activity.status = 'published';
@@ -160,8 +160,8 @@ export function createMockOrgClient(state: ZhiyaMockState): OrgPort {
       return activity;
     },
     async offlineActivity(activityId) {
-      const activity = state.orgActivities.find((entry) => entry.id === activityId);
-      if (activity === undefined) {
+      const activity = state.findActivity(activityId);
+      if (activity === null || activity.orgId !== MY_ORG_ID) {
         throw new Error(`org activity not found: ${activityId}`);
       }
       activity.status = 'offline';

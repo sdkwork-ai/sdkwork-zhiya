@@ -72,4 +72,5 @@ export function bootstrapZhiyaClients(): void {
   registerZhiyaClient('message', hub.message);
   registerZhiyaClient('ai', hub.ai);
   registerZhiyaClient('org', hub.org);
+  registerZhiyaClient('admin', hub.admin);
 }

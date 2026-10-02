@@ -15,6 +15,7 @@ import { aiRouteContributions } from '@sdkwork/zhiya-pc-ai';
 import { mallRouteContributions } from '@sdkwork/zhiya-pc-mall';
 import { tradeRouteContributions } from '@sdkwork/zhiya-pc-trade';
 import { profileRouteContributions } from '@sdkwork/zhiya-pc-profile';
+import { adminRouteContributions } from '@sdkwork/zhiya-pc-admin-platform';
 import { orgRouteContributions } from '@sdkwork/zhiya-pc-org';
 
 export const zhiyaRouteTable: readonly ZhiyaRouteIdentity[] = composeZhiyaRouteTable([
@@ -25,6 +26,7 @@ export const zhiyaRouteTable: readonly ZhiyaRouteIdentity[] = composeZhiyaRouteT
   tradeRouteContributions,
   profileRouteContributions,
   orgRouteContributions,
+  adminRouteContributions,
 ]);
 
 export function listZhiyaRouteIdentities(): string[] {
@@ -119,5 +121,8 @@ export const zhiyaRouteElements: Record<string, React.LazyExoticComponent<React.
   ),
   'app.zhiya.org.registrations': lazy(() =>
     import('@sdkwork/zhiya-pc-org').then((module) => ({ default: module.OrgRegistrationsScreen })),
+  ),
+  'app.zhiya.admin.dashboard': lazy(() =>
+    import('@sdkwork/zhiya-pc-admin-platform').then((module) => ({ default: module.AdminDashboardScreen })),
   ),
 };

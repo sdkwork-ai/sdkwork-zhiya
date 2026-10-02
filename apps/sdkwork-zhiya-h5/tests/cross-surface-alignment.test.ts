@@ -8,7 +8,7 @@
  * check that per-surface tests cannot express.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { describe, expect, it } from 'vitest';
@@ -33,8 +33,14 @@ function scanRouteIds(surfaceRoot: string): string[] {
 function scanPcRouteIds(surfaceRoot: string): string[] {
   const ids = new Set<string>();
   const packagesDir = path.join(surfaceRoot, 'packages');
-  for (const pkg of ['home', 'activity', 'ai', 'mall', 'trade', 'profile', 'org']) {
-    const file = path.join(packagesDir, `sdkwork-zhiya-pc-${pkg}`, 'src', 'routes', 'routeContributions.ts');
+  for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+    const file = path.join(packagesDir, entry.name, 'src', 'routes', 'routeContributions.ts');
+    if (!existsSync(file)) {
+      continue;
+    }
     const source = readFileSync(file, 'utf8');
     for (const match of source.matchAll(/id: '(app\.zhiya\.[a-z0-9-]+\.[a-z0-9-]+)'/gu)) {
       ids.add(match[1]!);
@@ -67,8 +73,12 @@ describe('cross-surface route alignment (APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC)
   const pc = scanPcRouteIds(path.join(appsRoot, 'sdkwork-zhiya-pc'));
   const flutter = flutterRouteIds();
 
-  it('declares_the_identical_route_id_set_on_h5_and_pc', () => {
-    expect(pc).toEqual(h5);
+  it('declares_the_identical_common_route_id_set_on_h5_and_pc', () => {
+    // PC may carry surface-specific admin routes (PRD §25 平台后台); the
+    // common C-end set must stay identical to H5.
+    const pcCommon = pc.filter((id) => !id.startsWith('app.zhiya.admin.'));
+    expect(pcCommon).toEqual(h5);
+    expect(pc.filter((id) => id.startsWith('app.zhiya.admin.')).length).toBeGreaterThanOrEqual(1);
   });
 
   it('declares_the_identical_route_id_set_on_h5_and_flutter', () => {

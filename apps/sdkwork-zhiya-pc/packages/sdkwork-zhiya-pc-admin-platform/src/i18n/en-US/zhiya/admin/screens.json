@@ -1,0 +1,43 @@
+{
+  "dashboard": {
+    "title": "Platform Admin",
+    "subtitle": "Governance: suspend/restore orgs, take down or republish activities — effective on C-end immediately"
+  },
+  "kpi": {
+    "title": "Platform overview",
+    "families": "Families",
+    "children": "Children",
+    "orgs": "Orgs",
+    "suspendedOrgs": "Suspended orgs",
+    "activities": "Activities",
+    "offlineActivities": "Offline",
+    "orders": "Orders",
+    "paidOrders": "Paid orders",
+    "gmv": "GMV",
+    "refunds": "Refunds",
+    "checkIns": "Check-ins",
+    "reviews": "Reviews"
+  },
+  "orgs": {
+    "title": "Org governance",
+    "name": "Org",
+    "activities": "Activities",
+    "status": "Status",
+    "actions": "Actions",
+    "normal": "Normal",
+    "suspended": "Suspended",
+    "suspend": "Suspend",
+    "restore": "Restore"
+  },
+  "activities": {
+    "title": "Activity governance",
+    "name": "Activity",
+    "org": "Org",
+    "status": "Status",
+    "actions": "Actions",
+    "published": "Published",
+    "offline": "Offline",
+    "takeOffline": "Take offline",
+    "republish": "Republish"
+  }
+}

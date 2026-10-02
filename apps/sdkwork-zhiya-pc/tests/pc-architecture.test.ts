@@ -85,6 +85,7 @@ describe('pc package naming (NAMING_SPEC §4.2)', () => {
       'sdkwork-zhiya-pc-trade',
       'sdkwork-zhiya-pc-profile',
       'sdkwork-zhiya-pc-org',
+      'sdkwork-zhiya-pc-admin-platform',
     ]);
     for (const name of names) {
       expect(allowed.has(name), `unexpected package ${name}`).toBe(true);

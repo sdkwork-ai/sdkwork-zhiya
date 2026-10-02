@@ -34,8 +34,11 @@ export type {
   OrderView,
   Org,
   OrgActivityInput,
+  OrgAdminView,
   OrgRegistrationView,
+  OrgStatus,
   OrgWorkspaceStats,
+  PlatformStats,
   Review,
   UserCoupon,
 } from './types.js';
@@ -45,6 +48,7 @@ export type { ActivityCategory, ActivityMode, EducationTag } from '@sdkwork/zhiy
 export { ACTIVITY_CATEGORIES } from '@sdkwork/zhiya-intent-core';
 
 export type {
+  AdminPort,
   ActivityPort,
   ActivityQuery,
   AiPort,
@@ -76,11 +80,12 @@ export {
 } from './inventory.js';
 
 export type { MockStateOptions, ZhiyaMockState } from './state.js';
-export { clearZhiyaMockState, createZhiyaMockState } from './state.js';
+export { clearZhiyaMockState, createZhiyaMockState, hydrateEnrollmentOverrides } from './state.js';
 
 export type { ZhiyaServiceHub } from './hub.js';
 export { createZhiyaServiceHub } from './hub.js';
 
+export { createMockAdminClient } from './adminClient.js';
 export { ageOf } from './familyClient.js';
 export { deriveOrderStatus, withDerivedStatus } from './orderStatus.js';
 export { VerifyVoucherError, type VerifyVoucherErrorCode } from './checkinClient.js';

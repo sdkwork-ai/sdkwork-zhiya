@@ -836,7 +836,9 @@ var KEYS = {
   goodsFavorites: "zhiya.goods-favorites",
   messages: "zhiya.messages",
   enrolled: "zhiya.enrolled-overrides",
-  orgActivities: "zhiya.org-activities"
+  orgActivities: "zhiya.org-activities",
+  orgStatuses: "zhiya.org-statuses",
+  activityStatuses: "zhiya.activity-status-overrides"
 };
 function readJson(storage, key) {
   if (storage === null) {
@@ -875,6 +877,8 @@ function createZhiyaMockState(options = {}) {
   const messages = readJson(storage, KEYS.messages) ?? [buildWelcomeMessage(now())];
   const enrolled = readJson(storage, KEYS.enrolled) ?? { activity: {}, session: {} };
   const orgActivities = readJson(storage, KEYS.orgActivities) ?? [];
+  const orgStatuses = readJson(storage, KEYS.orgStatuses) ?? {};
+  const activityStatuses = readJson(storage, KEYS.activityStatuses) ?? {};
   const state = {
     now,
     storage,
@@ -892,6 +896,8 @@ function createZhiyaMockState(options = {}) {
     messages,
     enrolled,
     orgActivities,
+    orgStatuses,
+    activityStatuses,
     persist() {
       writeJson(storage, KEYS.family, state.family);
       writeJson(storage, KEYS.orders, state.orders);
@@ -902,6 +908,8 @@ function createZhiyaMockState(options = {}) {
       writeJson(storage, KEYS.messages, state.messages);
       writeJson(storage, KEYS.enrolled, state.enrolled);
       writeJson(storage, KEYS.orgActivities, state.orgActivities);
+      writeJson(storage, KEYS.orgStatuses, state.orgStatuses);
+      writeJson(storage, KEYS.activityStatuses, state.activityStatuses);
     },
     notify(partial) {
       const message = {
@@ -939,6 +947,10 @@ function hydrateEnrollmentOverrides(state) {
     const delta = state.enrolled.activity[activity.id];
     if (delta !== void 0 && delta !== 0) {
       activity.enrolled = Math.max(0, activity.enrolled + delta);
+    }
+    const statusOverride = state.activityStatuses[activity.id];
+    if (statusOverride !== void 0) {
+      activity.status = statusOverride;
     }
     for (const session of activity.sessions) {
       const sessionDelta = state.enrolled.session[session.id];
@@ -1036,8 +1048,11 @@ function ageOf(child, at) {
 
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/activityClient.ts
 var FAVORITES_KEY_LIMIT = 200;
-function matchesQuery(activity, query, now) {
+function matchesQuery(state, activity, query, now) {
   if (activity.status !== "published") {
+    return false;
+  }
+  if (state.orgStatuses[activity.orgId] === "suspended") {
     return false;
   }
   if (new Date(activity.endTime).getTime() <= now.getTime()) {
@@ -1093,7 +1108,7 @@ function createMockActivityClient(state) {
     async listActivities(query) {
       hydrate();
       const now = state.now();
-      const matched = state.allActivities().filter((activity) => matchesQuery(activity, query, now));
+      const matched = state.allActivities().filter((activity) => matchesQuery(state, activity, query, now));
       return matched.sort(
         (left, right) => new Date(left.startTime).getTime() - new Date(right.startTime).getTime()
       );
@@ -1105,7 +1120,7 @@ function createMockActivityClient(state) {
     async listHomeRecommendations() {
       hydrate();
       const now = state.now();
-      return state.allActivities().filter((activity) => matchesQuery(activity, void 0, now)).sort((left, right) => {
+      return state.allActivities().filter((activity) => matchesQuery(state, activity, void 0, now)).sort((left, right) => {
         const heat = right.enrolled / Math.max(right.quota, 1) - left.enrolled / Math.max(left.quota, 1);
         if (heat !== 0) {
           return heat;
@@ -2018,9 +2033,6 @@ function createMockOrgClient(state) {
     }
     return org;
   }
-  function orgActivities() {
-    return state.orgActivities.filter((activity) => activity.orgId === MY_ORG_ID);
-  }
   function buildSession(input, activityId) {
     const start = new Date(input.startTime);
     const end = new Date(input.endTime);
@@ -2096,7 +2108,7 @@ function createMockOrgClient(state) {
       };
     },
     async listOrgActivities(status) {
-      const mine = orgActivities().sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+      const mine = state.allActivities().filter((activity) => activity.orgId === MY_ORG_ID).sort((left, right) => right.createdAt.localeCompare(left.createdAt));
       return status === void 0 ? mine : mine.filter((activity) => activity.status === status);
     },
     async createActivity(input, publish) {
@@ -2106,8 +2118,8 @@ function createMockOrgClient(state) {
       return activity;
     },
     async updateActivity(activityId, input) {
-      const activity = state.orgActivities.find((entry) => entry.id === activityId);
-      if (activity === void 0) {
+      const activity = state.findActivity(activityId);
+      if (activity === null || activity.orgId !== MY_ORG_ID) {
         throw new Error(`org activity not found: ${activityId}`);
       }
       activity.title = input.title;
@@ -2137,8 +2149,8 @@ function createMockOrgClient(state) {
       return activity;
     },
     async publishActivity(activityId) {
-      const activity = state.orgActivities.find((entry) => entry.id === activityId);
-      if (activity === void 0) {
+      const activity = state.findActivity(activityId);
+      if (activity === null || activity.orgId !== MY_ORG_ID) {
         throw new Error(`org activity not found: ${activityId}`);
       }
       activity.status = "published";
@@ -2146,8 +2158,8 @@ function createMockOrgClient(state) {
       return activity;
     },
     async offlineActivity(activityId) {
-      const activity = state.orgActivities.find((entry) => entry.id === activityId);
-      if (activity === void 0) {
+      const activity = state.findActivity(activityId);
+      if (activity === null || activity.orgId !== MY_ORG_ID) {
         throw new Error(`org activity not found: ${activityId}`);
       }
       activity.status = "offline";
@@ -2157,6 +2169,74 @@ function createMockOrgClient(state) {
     async deleteActivity(activityId) {
       state.orgActivities = state.orgActivities.filter((entry) => entry.id !== activityId);
       state.persist();
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/adminClient.ts
+function createMockAdminClient(state) {
+  function orgViews() {
+    return state.orgs.map((org) => ({
+      ...org,
+      status: state.orgStatuses[org.id] ?? "normal",
+      activityCount: state.allActivities().filter((activity) => activity.orgId === org.id).length
+    }));
+  }
+  function setOrgStatus(orgId, status) {
+    const org = state.orgs.find((entry) => entry.id === orgId);
+    if (org === void 0) {
+      throw new Error(`org not found: ${orgId}`);
+    }
+    state.orgStatuses[orgId] = status;
+    state.persist();
+    const view = orgViews().find((entry) => entry.id === orgId);
+    if (view === void 0) {
+      throw new Error(`org view missing: ${orgId}`);
+    }
+    return view;
+  }
+  function setActivityStatus(activityId, status) {
+    const activity = state.findActivity(activityId);
+    if (activity === null) {
+      throw new Error(`activity not found: ${activityId}`);
+    }
+    activity.status = status;
+    state.activityStatuses[activityId] = status;
+    state.persist();
+    return activity;
+  }
+  return {
+    async platformStats() {
+      const now = state.now();
+      const paidOrders = state.orders.filter((order) => order.status === "paid");
+      const refunded = state.orders.filter((order) => order.status === "refunded");
+      return {
+        totalFamilies: state.family === null ? 0 : 1,
+        totalChildren: state.family?.children.length ?? 0,
+        totalOrgs: state.orgs.length,
+        suspendedOrgs: Object.values(state.orgStatuses).filter((status) => status === "suspended").length,
+        totalActivities: state.allActivities().length,
+        offlineActivities: state.allActivities().filter((activity) => activity.status === "offline").length,
+        totalOrders: state.orders.length,
+        paidOrders: paidOrders.length,
+        gmv: paidOrders.reduce((sum, order) => sum + order.payable, 0),
+        refundAmount: refunded.reduce((sum, order) => sum + order.payable, 0),
+        checkInCount: state.orders.filter((order) => order.checkInState === "checked-in").length,
+        reviewCount: state.reviews.length,
+        computedAt: now.toISOString()
+      };
+    },
+    async listOrgs() {
+      return orgViews();
+    },
+    async setOrgStatus(orgId, status) {
+      return setOrgStatus(orgId, status);
+    },
+    async listAllActivities() {
+      return state.allActivities().filter((activity) => !activity.orgCreated || activity.status !== "draft");
+    },
+    async setActivityStatus(activityId, status) {
+      return setActivityStatus(activityId, status);
     }
   };
 }
@@ -2180,7 +2260,8 @@ function createZhiyaServiceHub(options = {}) {
   const message = createMockMessageClient(state);
   const ai = createMockAiClient(state);
   const org = createMockOrgClient(state);
-  return { state, family, activity, package: pkg, mall, order, coupon, review, checkin, message, ai, org };
+  const admin = createMockAdminClient(state);
+  return { state, family, activity, package: pkg, mall, order, coupon, review, checkin, message, ai, org, admin };
 }
 
 // packages/sdkwork-zhiya-mp-core/src/index.ts
@@ -2206,6 +2287,7 @@ function bootstrapZhiyaClients() {
   registerZhiyaClient("message", hub.message);
   registerZhiyaClient("ai", hub.ai);
   registerZhiyaClient("org", hub.org);
+  registerZhiyaClient("admin", hub.admin);
 }
 
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-route-core/src/tabs.ts

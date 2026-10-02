@@ -28,8 +28,11 @@ import type {
   OrderView,
   Org,
   OrgActivityInput,
+  OrgAdminView,
   OrgRegistrationView,
+  OrgStatus,
   OrgWorkspaceStats,
+  PlatformStats,
   Review,
   UserCoupon,
 } from './types.js';
@@ -210,8 +213,19 @@ export interface OrgPort {
   deleteActivity(activityId: string): Promise<void>;
 }
 
+/** Platform admin governance port (PRD §25; PC-only UI in this milestone). */
+export interface AdminPort {
+  platformStats(): Promise<PlatformStats>;
+  listOrgs(): Promise<OrgAdminView[]>;
+  /** 暂停/恢复一家机构；暂停后其活动不再进入 C 端列表。 */
+  setOrgStatus(orgId: string, status: OrgStatus): Promise<OrgAdminView>;
+  listAllActivities(): Promise<Activity[]>;
+  setActivityStatus(activityId: string, status: 'published' | 'offline'): Promise<Activity>;
+}
+
 /** Port registry keys. */
 export type ZhiyaPortMap = {
+  admin: AdminPort;
   family: FamilyPort;
   activity: ActivityPort;
   package: PackagePort;

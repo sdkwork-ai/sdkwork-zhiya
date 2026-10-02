@@ -736,6 +736,9 @@ importers:
       '@sdkwork/zhiya-pc-activity':
         specifier: workspace:*
         version: link:packages/sdkwork-zhiya-pc-activity
+      '@sdkwork/zhiya-pc-admin-platform':
+        specifier: workspace:*
+        version: link:packages/sdkwork-zhiya-pc-admin-platform
       '@sdkwork/zhiya-pc-ai':
         specifier: workspace:*
         version: link:packages/sdkwork-zhiya-pc-ai
@@ -823,6 +826,37 @@ importers:
         version: 4.1.11(@types/node@24.19.0)(jsdom@29.1.1)(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0))
 
   apps/sdkwork-zhiya-pc/packages/sdkwork-zhiya-pc-activity:
+    dependencies:
+      '@sdkwork/zhiya-pc-commons':
+        specifier: workspace:*
+        version: link:../sdkwork-zhiya-pc-commons
+      '@sdkwork/zhiya-pc-core':
+        specifier: workspace:*
+        version: link:../sdkwork-zhiya-pc-core
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.49.0(@types/react@19.3.0)(react@19.3.0)
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.3.0(react@19.3.0)
+      react-i18next:
+        specifier: 'catalog:'
+        version: 17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
+      react-router-dom:
+        specifier: 'catalog:'
+        version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@24.19.0)(jsdom@29.1.1)(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0))
+
+  apps/sdkwork-zhiya-pc/packages/sdkwork-zhiya-pc-admin-platform:
     dependencies:
       '@sdkwork/zhiya-pc-commons':
         specifier: workspace:*

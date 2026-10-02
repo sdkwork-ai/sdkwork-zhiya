@@ -1,4 +1,5 @@
 export type {
+  AdminPort,
   ActivityPort,
   ActivityQuery,
   AiPort,

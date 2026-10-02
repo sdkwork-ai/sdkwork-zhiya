@@ -1,0 +1,43 @@
+{
+  "dashboard": {
+    "title": "平台后台",
+    "subtitle": "平台治理：机构与活动的暂停 / 下架操作即时生效于 C 端"
+  },
+  "kpi": {
+    "title": "平台概览",
+    "families": "注册家庭",
+    "children": "新增儿童",
+    "orgs": "入驻机构",
+    "suspendedOrgs": "暂停机构",
+    "activities": "活动总数",
+    "offlineActivities": "下架活动",
+    "orders": "订单总数",
+    "paidOrders": "支付订单",
+    "gmv": "GMV",
+    "refunds": "退款金额",
+    "checkIns": "核销次数",
+    "reviews": "评价数"
+  },
+  "orgs": {
+    "title": "机构治理",
+    "name": "机构",
+    "activities": "活动数",
+    "status": "状态",
+    "actions": "操作",
+    "normal": "正常",
+    "suspended": "已暂停",
+    "suspend": "暂停",
+    "restore": "恢复"
+  },
+  "activities": {
+    "title": "活动治理",
+    "name": "活动",
+    "org": "机构",
+    "status": "状态",
+    "actions": "操作",
+    "published": "已上架",
+    "offline": "已下架",
+    "takeOffline": "下架",
+    "republish": "恢复上架"
+  }
+}

@@ -7,6 +7,7 @@
  */
 
 import type {
+  AdminPort,
   AiPort,
   ActivityPort,
   CheckInPort,
@@ -33,6 +34,7 @@ import { createMockCheckInClient } from './checkinClient.js';
 import { createMockMessageClient } from './messageClient.js';
 import { createMockAiClient } from './aiClient.js';
 import { createMockOrgClient } from './orgClient.js';
+import { createMockAdminClient } from './adminClient.js';
 
 export interface ZhiyaServiceHub extends ZhiyaPortMap {
   /** Shared mock state (tests use it to arrange/act/assert). */
@@ -58,6 +60,7 @@ export function createZhiyaServiceHub(options: MockStateOptions = {}): ZhiyaServ
   const message: MessagePort = createMockMessageClient(state);
   const ai: AiPort = createMockAiClient(state);
   const org: OrgPort = createMockOrgClient(state);
+  const admin: AdminPort = createMockAdminClient(state);
 
-  return { state, family, activity, package: pkg, mall, order, coupon, review, checkin, message, ai, org };
+  return { state, family, activity, package: pkg, mall, order, coupon, review, checkin, message, ai, org, admin };
 }

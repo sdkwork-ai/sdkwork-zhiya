@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@sdkwork/zhiya-pc-activity": "workspace:*",
+    "@sdkwork/zhiya-pc-admin-platform": "workspace:*",
     "@sdkwork/zhiya-pc-ai": "workspace:*",
     "@sdkwork/zhiya-pc-commons": "workspace:*",
     "@sdkwork/zhiya-pc-core": "workspace:*",

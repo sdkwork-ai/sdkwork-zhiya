@@ -35,8 +35,11 @@ export type {
   OrderView,
   Org,
   OrgActivityInput,
+  OrgAdminView,
+  OrgStatus,
   OrgRegistrationView,
   OrgWorkspaceStats,
+  PlatformStats,
   Review,
   UserCoupon,
 } from '@sdkwork/zhiya-service-core';

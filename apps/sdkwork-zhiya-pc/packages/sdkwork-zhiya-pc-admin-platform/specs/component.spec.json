@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/zhiya-pc-admin-platform",
+    "displayName": "Zhiya PC Admin Platform",
+    "version": "0.1.0",
+    "type": "react-package",
+    "root": "apps/sdkwork-zhiya-pc/packages/sdkwork-zhiya-pc-admin-platform",
+    "domain": "zhiya",
+    "capability": "platform-admin",
+    "surface": "admin",
+    "languages": [
+      "typescript"
+    ],
+    "generated": false,
+    "manifests": [
+      "package.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/CODE_STYLE_SPEC.md",
+      "purpose": "Cross-language code style authority."
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../../../../sdkwork-specs/NAMING_SPEC.md",
+      "purpose": "PC admin package naming lattice."
+    },
+    {
+      "file": "TYPESCRIPT_CODE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md",
+      "purpose": "TypeScript strictness baseline."
+    },
+    {
+      "file": "APP_PC_ARCHITECTURE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md",
+      "purpose": "PC application architecture authority."
+    },
+    {
+      "file": "PERMISSION_STANDARD_SPEC.md",
+      "path": "../../../../../sdkwork-specs/PERMISSION_STANDARD_SPEC.md",
+      "purpose": "Admin permission composition authority."
+    }
+  ],
+  "contracts": {
+    "layerRole": "frontend-feature",
+    "publicExports": [
+      "."
+    ],
+    "providedPorts": [
+      {
+        "name": "adminRouteContributions",
+        "export": "."
+      }
+    ],
+    "requiredPorts": [
+      {
+        "name": "zhiyaSdkInventory",
+        "provider": "@sdkwork/zhiya-pc-core",
+        "export": "."
+      }
+    ],
+    "runtimeEntrypoints": [
+      "package.json#scripts.typecheck",
+      "package.json#scripts.test"
+    ],
+    "routeManifest": [
+      "app.zhiya.admin.dashboard"
+    ],
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": []
+  },
+  "verification": {
+    "commands": [
+      "pnpm --filter @sdkwork/zhiya-pc-admin-platform typecheck",
+      "pnpm --filter @sdkwork/zhiya-pc-admin-platform test"
+    ]
+  }
+}

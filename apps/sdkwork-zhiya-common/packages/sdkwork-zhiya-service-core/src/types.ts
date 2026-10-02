@@ -14,6 +14,9 @@ export type {
   EducationTag,
 } from '@sdkwork/zhiya-intent-core';
 
+/** Governance status of an org, set by the platform admin (PRD §25.3). */
+export type OrgStatus = 'normal' | 'suspended';
+
 /** Education organization (PRD §3.3). */
 export interface Org {
   id: string;
@@ -361,6 +364,29 @@ export interface OrgActivityInput {
   introduction: string;
   notice: string;
   tags: EducationTag[];
+}
+
+/** Org row in the platform admin console (PRD §25.3). */
+export interface OrgAdminView extends Org {
+  status: OrgStatus;
+  activityCount: number;
+}
+
+/** Platform-wide KPI block (PRD §25.1). */
+export interface PlatformStats {
+  totalFamilies: number;
+  totalChildren: number;
+  totalOrgs: number;
+  suspendedOrgs: number;
+  totalActivities: number;
+  offlineActivities: number;
+  totalOrders: number;
+  paidOrders: number;
+  gmv: number;
+  refundAmount: number;
+  checkInCount: number;
+  reviewCount: number;
+  computedAt: string;
 }
 
 /** AI structured reply (PRD §14). Copy is i18n-keyed; data is real. */

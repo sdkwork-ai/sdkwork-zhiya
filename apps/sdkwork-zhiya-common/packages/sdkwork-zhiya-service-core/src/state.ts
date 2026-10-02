@@ -50,6 +50,8 @@ const KEYS = {
   messages: 'zhiya.messages',
   enrolled: 'zhiya.enrolled-overrides',
   orgActivities: 'zhiya.org-activities',
+  orgStatuses: 'zhiya.org-statuses',
+  activityStatuses: 'zhiya.activity-status-overrides',
 } as const;
 
 function readJson<T>(storage: KVStorage | null, key: string): T | null {
@@ -102,6 +104,8 @@ export interface ZhiyaMockState {
   messages: Message[];
   enrolled: EnrolledOverrides;
   orgActivities: Activity[];
+  orgStatuses: Record<string, 'normal' | 'suspended'>;
+  activityStatuses: Record<string, 'published' | 'offline'>;
   /* helpers shared by clients */
   persist: () => void;
   notify: (message: Omit<Message, 'id' | 'createdAt' | 'read'>) => Message;
@@ -125,6 +129,10 @@ export function createZhiyaMockState(options: MockStateOptions = {}): ZhiyaMockS
   const enrolled =
     readJson<EnrolledOverrides>(storage, KEYS.enrolled) ?? { activity: {}, session: {} };
   const orgActivities = readJson<Activity[]>(storage, KEYS.orgActivities) ?? [];
+  const orgStatuses =
+    readJson<Record<string, 'normal' | 'suspended'>>(storage, KEYS.orgStatuses) ?? {};
+  const activityStatuses =
+    readJson<Record<string, 'published' | 'offline'>>(storage, KEYS.activityStatuses) ?? {};
 
   const state: ZhiyaMockState = {
     now,
@@ -143,6 +151,8 @@ export function createZhiyaMockState(options: MockStateOptions = {}): ZhiyaMockS
     messages,
     enrolled,
     orgActivities,
+    orgStatuses,
+    activityStatuses,
     persist() {
       writeJson(storage, KEYS.family, state.family);
       writeJson(storage, KEYS.orders, state.orders);
@@ -153,6 +163,8 @@ export function createZhiyaMockState(options: MockStateOptions = {}): ZhiyaMockS
       writeJson(storage, KEYS.messages, state.messages);
       writeJson(storage, KEYS.enrolled, state.enrolled);
       writeJson(storage, KEYS.orgActivities, state.orgActivities);
+      writeJson(storage, KEYS.orgStatuses, state.orgStatuses);
+      writeJson(storage, KEYS.activityStatuses, state.activityStatuses);
     },
     notify(partial) {
       const message: Message = {
@@ -207,6 +219,11 @@ export function hydrateEnrollmentOverrides(state: ZhiyaMockState): void {
     if (delta !== undefined && delta !== 0) {
       activity.enrolled = Math.max(0, activity.enrolled + delta);
     }
+    // Re-apply admin take-down/republish overrides (survive reloads).
+    const statusOverride = state.activityStatuses[activity.id];
+    if (statusOverride !== undefined) {
+      activity.status = statusOverride;
+    }
     for (const session of activity.sessions) {
       const sessionDelta = state.enrolled.session[session.id];
       if (sessionDelta !== undefined && sessionDelta !== 0) {
@@ -227,5 +244,7 @@ export function clearZhiyaMockState(state: ZhiyaMockState): void {
   state.messages = [buildWelcomeMessage(state.now())];
   state.enrolled = { activity: {}, session: {} };
   state.orgActivities = [];
+  state.orgStatuses = {};
+  state.activityStatuses = {};
   state.persist();
 }

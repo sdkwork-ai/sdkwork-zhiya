@@ -16,6 +16,7 @@ import { aiI18nResources } from '@sdkwork/zhiya-pc-ai';
 import { mallI18nResources } from '@sdkwork/zhiya-pc-mall';
 import { tradeI18nResources } from '@sdkwork/zhiya-pc-trade';
 import { profileI18nResources } from '@sdkwork/zhiya-pc-profile';
+import { adminI18nResources } from '@sdkwork/zhiya-pc-admin-platform';
 import { orgI18nResources } from '@sdkwork/zhiya-pc-org';
 
 import { App } from './App.js';
@@ -37,6 +38,7 @@ async function main(): Promise<void> {
       tradeI18nResources,
       profileI18nResources,
       orgI18nResources,
+      adminI18nResources,
     ),
     readStoredLocale(),
   );

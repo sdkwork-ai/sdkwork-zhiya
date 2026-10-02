@@ -12,4 +12,4 @@ Authority: `../../../sdkwork-specs/UI_ARCHITECTURE_SPEC.md`.
 | Theming | Single Tailwind bootstrap in `src/index.css`; `data-sdk-color-mode` + `.dark`; semantic tokens (`--sdk-color-*`) |
 | i18n | i18next, per-package fragments, locales zh-CN (default) + en-US, key prefix `zhiya.*` |
 | Services | Ports + registry in `@sdkwork/zhiya-service-core`; mock hub registered once in `src/bootstrap/sdkClients.ts` |
-| Surfaces planned | PC console / mini-program / platform admin console are future application roots, not part of this root |
+| Sibling surfaces | PC (`apps/sdkwork-zhiya-pc`, incl. platform admin), WeChat mini-program (`apps/sdkwork-zhiya-mini-program`), Flutter mobile (`apps/sdkwork-zhiya-flutter-mobile`) — all sharing this surface's route/i18n/service contracts (enforced by `tests/cross-surface-alignment.test.ts`) |

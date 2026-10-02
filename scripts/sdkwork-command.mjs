@@ -134,6 +134,8 @@ function main() {
           let status = pnpm(['typecheck']);
           if (status === 0) status = pnpm(['-r', '--if-present', 'test']);
           if (status === 0) status = pnpm(['build:h5:prod']);
+          if (status === 0) status = pnpm(['build:pc:prod']);
+          if (status === 0) status = pnpm(['--filter', 'sdkwork-zhiya-mini-program', 'build']);
           return status;
         })(),
       );

@@ -9,8 +9,17 @@ import type { ZhiyaMockState } from './state.js';
 
 const FAVORITES_KEY_LIMIT = 200;
 
-function matchesQuery(activity: Activity, query: ActivityQuery | undefined, now: Date): boolean {
+function matchesQuery(
+  state: ZhiyaMockState,
+  activity: Activity,
+  query: ActivityQuery | undefined,
+  now: Date,
+): boolean {
   if (activity.status !== 'published') {
+    return false;
+  }
+  // 平台暂停的机构，其活动对 C 端隐藏 (PRD §25.3 机构状态)。
+  if (state.orgStatuses[activity.orgId] === 'suspended') {
     return false;
   }
   if (new Date(activity.endTime).getTime() <= now.getTime()) {
@@ -72,7 +81,7 @@ export function createMockActivityClient(state: ZhiyaMockState): ActivityPort {
       const now = state.now();
       const matched = state
         .allActivities()
-        .filter((activity) => matchesQuery(activity, query, now));
+        .filter((activity) => matchesQuery(state, activity, query, now));
       return matched.sort(
         (left, right) => new Date(left.startTime).getTime() - new Date(right.startTime).getTime(),
       );
@@ -86,7 +95,7 @@ export function createMockActivityClient(state: ZhiyaMockState): ActivityPort {
       const now = state.now();
       return state
         .allActivities()
-        .filter((activity) => matchesQuery(activity, undefined, now))
+        .filter((activity) => matchesQuery(state, activity, undefined, now))
         .sort((left, right) => {
           const heat = right.enrolled / Math.max(right.quota, 1) - left.enrolled / Math.max(left.quota, 1);
           if (heat !== 0) {
