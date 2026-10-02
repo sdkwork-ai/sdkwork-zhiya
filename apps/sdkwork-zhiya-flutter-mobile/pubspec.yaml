@@ -1,0 +1,37 @@
+name: sdkwork_zhiya_flutter_mobile
+description: Zhiya (知鸭) — AI 时代的家庭教育与活动平台 Flutter mobile client.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sdkwork_zhiya_flutter_mobile_activity:
+    path: packages/sdkwork_zhiya_flutter_mobile_activity
+  sdkwork_zhiya_flutter_mobile_ai:
+    path: packages/sdkwork_zhiya_flutter_mobile_ai
+  sdkwork_zhiya_flutter_mobile_commons:
+    path: packages/sdkwork_zhiya_flutter_mobile_commons
+  sdkwork_zhiya_flutter_mobile_core:
+    path: packages/sdkwork_zhiya_flutter_mobile_core
+  sdkwork_zhiya_flutter_mobile_home:
+    path: packages/sdkwork_zhiya_flutter_mobile_home
+  sdkwork_zhiya_flutter_mobile_mall:
+    path: packages/sdkwork_zhiya_flutter_mobile_mall
+  sdkwork_zhiya_flutter_mobile_profile:
+    path: packages/sdkwork_zhiya_flutter_mobile_profile
+  sdkwork_zhiya_flutter_mobile_shell:
+    path: packages/sdkwork_zhiya_flutter_mobile_shell
+  sdkwork_zhiya_flutter_mobile_trade:
+    path: packages/sdkwork_zhiya_flutter_mobile_trade
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

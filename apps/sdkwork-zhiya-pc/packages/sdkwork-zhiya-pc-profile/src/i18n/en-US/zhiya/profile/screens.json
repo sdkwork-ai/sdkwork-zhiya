@@ -1,0 +1,96 @@
+{
+  "root": {
+    "title": "Profile",
+    "guest": "Not signed in",
+    "myActivities": "My activities",
+    "myOrders": "My orders",
+    "coupons": "Coupons",
+    "favorites": "Favorites",
+    "family": "My family",
+    "messages": "Messages",
+    "orgWorkspace": "Org workspace",
+    "settings": "Settings"
+  },
+  "login": {
+    "title": "Sign in to Zhiya",
+    "slogan": "Know your child, know education",
+    "phonePlaceholder": "Phone number",
+    "codePlaceholder": "Verification code",
+    "sendCode": "Send code",
+    "submit": "Sign in / Register",
+    "mockHint": "Demo: any phone number + any 6-digit code works",
+    "agreement": "By signing in you agree to the Terms and Privacy Policy",
+    "error": {
+      "phone": "Enter a valid 11-digit phone number",
+      "code": "Enter the 6-digit code"
+    }
+  },
+  "family": {
+    "title": "My family",
+    "addChild": "Add child",
+    "edit": "Edit",
+    "remove": "Remove"
+  },
+  "childEdit": {
+    "newTitle": "Add a child",
+    "editTitle": "Edit child profile",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Your child's nickname",
+    "gender": "Gender",
+    "boy": "Boy",
+    "girl": "Girl",
+    "secret": "Secret",
+    "birthDate": "Birth date",
+    "stage": "Education stage",
+    "interests": "Interests (multi-select)",
+    "notes": "Parent notes",
+    "notesPlaceholder": "Allergies, personality… kept private",
+    "save": "Save",
+    "error": {
+      "nickname": "Nickname is required"
+    }
+  },
+  "activities": {
+    "title": "My activities",
+    "all": "All",
+    "review": "Review"
+  },
+  "coupons": {
+    "title": "Coupons",
+    "claimable": "Available",
+    "claim": "Claim",
+    "noThreshold": "No threshold",
+    "overSpend": "Over {{amount}}",
+    "validDays": "Valid {{days}} days after claiming",
+    "expireAt": "Valid until {{date}}"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "activities": "Saved activities",
+    "goods": "Saved goods"
+  },
+  "messages": {
+    "title": "Messages",
+    "all": "All",
+    "markAll": "Mark all read"
+  },
+  "settings": {
+    "title": "Settings",
+    "colorMode": "Dark mode",
+    "dark": "Dark",
+    "light": "Light",
+    "locale": "Language 语言",
+    "clearData": "Clear local data",
+    "clearDataHint": "Clears demo family, orders, coupons stored locally",
+    "cleared": "Cleared — takes effect on next launch",
+    "about": "About Zhiya",
+    "version": "Zhiya v0.1.0 · Know your child, know education",
+    "signOut": "Sign out"
+  },
+  "child-new": {
+    "title": "Add a child"
+  },
+  "child-edit": {
+    "title": "Edit child profile"
+  }
+}

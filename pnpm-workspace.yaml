@@ -3,6 +3,10 @@ packages:
   - apps/sdkwork-zhiya-common/packages/*
   - apps/sdkwork-zhiya-h5
   - apps/sdkwork-zhiya-h5/packages/*
+  - apps/sdkwork-zhiya-pc
+  - apps/sdkwork-zhiya-pc/packages/*
+  - apps/sdkwork-zhiya-mini-program
+  - apps/sdkwork-zhiya-mini-program/packages/*
 
 allowBuilds:
   esbuild: true
@@ -31,3 +35,4 @@ catalog:
   "@testing-library/jest-dom": ^7.0.1
   "@testing-library/user-event": ^14.6.1
   esbuild: ^0.25.10
+  "miniprogram-api-typings": ^4.1.0

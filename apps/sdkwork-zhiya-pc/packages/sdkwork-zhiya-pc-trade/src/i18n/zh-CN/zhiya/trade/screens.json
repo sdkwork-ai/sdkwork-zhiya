@@ -1,0 +1,38 @@
+{
+  "orders": {
+    "title": "我的订单",
+    "all": "全部"
+  },
+  "detail": {
+    "title": "订单详情",
+    "notFound": "订单不存在",
+    "amount": "订单金额",
+    "discount": "优惠券抵扣",
+    "payable": "实付金额",
+    "createdAt": "创建时间",
+    "cancel": "取消订单",
+    "pay": "去支付",
+    "refund": "申请退款",
+    "review": "去评价",
+    "actionError": {
+      "not-open": "当前状态不支持该操作",
+      "not-found": "订单不存在",
+      "already-checked-in": "已核销的订单不支持退款，请联系机构"
+    }
+  },
+  "review": {
+    "title": "评价活动",
+    "notReviewable": "该订单暂不可评价",
+    "finishedHint": "活动已结束，分享你的真实体验吧",
+    "overall": "综合评分",
+    "experience": "活动体验",
+    "teacher": "教师",
+    "environment": "环境",
+    "service": "服务",
+    "star": "{{value}} 星",
+    "recommend": "愿意推荐给其他家长",
+    "placeholder": "孩子玩得怎么样？有什么亮点或建议都可以说～",
+    "submit": "发布评价",
+    "failed": "发布失败，请稍后重试"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "workspace": {
+    "title": "Org workspace",
+    "todayRegistrations": "Today regs",
+    "pendingCheckIns": "To check in",
+    "salesToday": "Sales today",
+    "publishedActivities": "Live activities",
+    "totalRegistrations": "Total regs",
+    "completionRate": "Completion",
+    "manageActivities": "Activities",
+    "manageRegistrations": "Check-in"
+  },
+  "activities": {
+    "title": "Activity management",
+    "new": "New",
+    "all": "All",
+    "published": "Live",
+    "draft": "Draft",
+    "offline": "Offline",
+    "offlineAction": "Take offline",
+    "publish": "Publish",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "edit": {
+    "newTitle": "New activity",
+    "editTitle": "Edit activity",
+    "title": "Title",
+    "titlePlaceholder": "e.g. Scratch trial class",
+    "subtitle": "Subtitle",
+    "category": "Category",
+    "mode": "Format",
+    "address": "Address",
+    "onlineLink": "Online link",
+    "price": "Price (¥)",
+    "originalPrice": "Original (¥)",
+    "quota": "Quota",
+    "ageRange": "Age range",
+    "startTime": "Start",
+    "endTime": "End",
+    "tags": "Directions",
+    "introduction": "Introduction",
+    "notice": "Notice",
+    "addressFallback": "Address TBD",
+    "saveDraft": "Save draft",
+    "savePublish": "Save & publish",
+    "error": {
+      "title": "Title is required",
+      "time": "Set a valid start/end time"
+    }
+  },
+  "registrations": {
+    "title": "Registrations",
+    "noActivities": "No live activities yet — create one first",
+    "voucherPlaceholder": "Enter or scan the voucher code",
+    "verify": "Verify",
+    "checkIn": "Check in",
+    "checkedIn": "{{child}} checked in",
+    "completed": "Activity completed — {{count}} orders moved to review",
+    "completeActivity": "Mark activity ended",
+    "anonymous": "Parent",
+    "error": {
+      "voucher-not-found": "Voucher not found, double-check the code",
+      "voucher-not-paid": "Order unpaid or cancelled",
+      "voucher-already-used": "Voucher already used"
+    }
+  },
+  "activity-edit": {
+    "title": "Edit activity"
+  }
+}

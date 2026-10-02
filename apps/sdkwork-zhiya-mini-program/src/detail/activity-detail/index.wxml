@@ -1,0 +1,44 @@
+<view wx:if="{{detail}}">
+  <view class="hero">{{detail.emoji}}</view>
+  <view class="panel">
+    <view class="row">
+      <view style="flex: 1;">
+        <view class="row-title">{{detail.title}}</view>
+        <view class="row-desc">{{detail.subtitle}}</view>
+      </view>
+      <text class="tag">{{detail.categoryLabel}}</text>
+    </view>
+    <view class="row">
+      <view class="price" style="font-size: 36rpx;">{{detail.priceLabel}}</view>
+      <text class="price-original" wx:if="{{detail.originalLabel}}">{{detail.originalLabel}}</text>
+      <view style="flex: 1;"></view>
+      <text class="row-desc">{{detail.quotaLabel}}</text>
+    </view>
+    <view class="row"><view class="row-desc">时间：{{detail.startLabel}} ~ {{detail.endLabel}}</view></view>
+    <view class="row"><view class="row-desc">地点：{{detail.address}}</view></view>
+    <view class="row"><view class="row-desc">{{detail.ageLabel}}</view></view>
+    <view class="row"><view class="row-desc">主办：{{detail.orgName}}</view></view>
+  </view>
+  <view class="panel">
+    <view class="row-title" style="padding: 24rpx;">活动介绍</view>
+    <view class="row-desc" style="padding: 0 24rpx 24rpx; line-height: 1.6;">{{detail.introduction}}</view>
+  </view>
+  <view class="panel" wx:if="{{detail.notice}}">
+    <view class="row-title" style="padding: 24rpx;">活动须知</view>
+    <view class="row-desc" style="padding: 0 24rpx 24rpx; line-height: 1.6;">{{detail.notice}}</view>
+  </view>
+  <view class="panel" wx:if="{{detail.reviews.length > 0}}">
+    <view class="row-title" style="padding: 24rpx;">{{detail.ratingLabel}}</view>
+    <view wx:for="{{detail.reviews}}" wx:key="id" class="row">
+      <view style="flex: 1;">
+        <view class="row-title">{{item.authorName}} <text style="color: var(--sdk-color-brand);">{{item.stars}}</text></view>
+        <view class="row-desc">{{item.content}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="footer">
+    <button class="btn-brand" style="flex: 1;" bindtap="goRegister" disabled="{{detail.remaining === 0}}">
+      {{detail.remaining === 0 ? '已满员' : '立即报名'}}
+    </button>
+  </view>
+</view>

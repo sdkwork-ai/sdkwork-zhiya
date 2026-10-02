@@ -1,0 +1,1 @@
+.form-input { border: 1rpx solid var(--sdk-color-border-subtle); border-radius: 16rpx; padding: 16rpx 20rpx; font-size: 28rpx; background-color: var(--sdk-color-surface-panel); }

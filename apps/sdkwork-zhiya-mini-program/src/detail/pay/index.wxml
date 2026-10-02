@@ -1,0 +1,27 @@
+<view wx:if="{{order}}">
+  <view class="panel" style="text-align: center; padding: 40rpx 0;">
+    <view class="row-desc">应付金额</view>
+    <view class="price" style="font-size: 64rpx;">{{order.payableLabel}}</view>
+    <view class="row-desc" style="margin-top: 8rpx;">{{order.title}}</view>
+  </view>
+  <view class="panel">
+    <view class="row" data-method="wechat" bindtap="onMethod">
+      <text class="row-glyph">💬</text>
+      <view class="row-title" style="flex: 1;">微信支付</view>
+      <text wx:if="{{method === 'wechat'}}" style="color: var(--sdk-color-brand);">●</text>
+    </view>
+    <view class="row" data-method="alipay" bindtap="onMethod">
+      <text class="row-glyph">🅰️</text>
+      <view class="row-title" style="flex: 1;">支付宝</view>
+      <text wx:if="{{method === 'alipay'}}" style="color: var(--sdk-color-brand);">●</text>
+    </view>
+  </view>
+  <view class="panel">
+    <view class="row"><view class="row-desc" style="flex: 1;">订单金额</view><view class="row-desc">{{order.amountLabel}}</view></view>
+    <view class="row" wx:if="{{order.discountLabel}}"><view class="row-desc" style="flex: 1; color: var(--sdk-color-success);">优惠券抵扣</view><view class="row-desc" style="color: var(--sdk-color-success);">{{order.discountLabel}}</view></view>
+  </view>
+  <view class="row-desc" style="text-align: center; padding: 16rpx;">演示环境模拟支付，不会产生真实扣款</view>
+  <view style="padding: 16rpx 24rpx calc(32rpx + env(safe-area-inset-bottom));">
+    <button class="btn-brand" bindtap="onPay" disabled="{{paying}}">{{paying ? '支付中…' : '立即支付'}}</button>
+  </view>
+</view>

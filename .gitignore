@@ -46,3 +46,7 @@ Thumbs.db
 .vscode/
 *.sqlite-shm
 *.sqlite-wal
+
+# Dart/Flutter build output
+.dart_tool/
+**/.dart_tool/

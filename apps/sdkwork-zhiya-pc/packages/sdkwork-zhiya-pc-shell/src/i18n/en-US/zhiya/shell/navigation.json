@@ -1,0 +1,17 @@
+{
+  "rail": {
+    "label": "Main navigation",
+    "guest": "Not signed in",
+    "slogan": "Know your child, know education"
+  },
+  "footer": {
+    "brand": "Zhiya · AI-native family education & activity platform · Discover great courses, experience great education"
+  },
+  "tab": {
+    "home": "Home",
+    "activity": "Activities",
+    "ai": "AI",
+    "mall": "Mall",
+    "profile": "Profile"
+  }
+}

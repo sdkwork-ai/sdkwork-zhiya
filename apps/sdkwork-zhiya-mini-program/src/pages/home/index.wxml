@@ -1,0 +1,50 @@
+<view>
+  <view class="panel" bindtap="goAi">
+    <view class="row">
+      <text class="row-glyph">🦆</text>
+      <view style="flex: 1;">
+        <view class="row-title">问问知鸭</view>
+        <view class="row-desc">孩子适合体验什么？让我来帮你</view>
+      </view>
+      <text style="color: var(--sdk-color-text-muted);">›</text>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="row" bindtap="goActivity">
+      <text class="row-glyph">🎯</text>
+      <view class="row-title" style="flex: 1;">附近热门活动</view>
+      <text style="color: var(--sdk-color-brand); font-size: 24rpx;">全部 ›</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <block wx:elif="{{overview}}">
+    <view wx:for="{{overview.recommendations}}" wx:key="id" class="panel" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="row">
+        <text class="row-glyph">{{item.emoji}}</text>
+        <view style="flex: 1; min-width: 0;">
+          <view class="row-title">{{item.title}}</view>
+          <view class="row-desc">{{item.orgName}} · {{item.categoryLabel}}</view>
+          <view class="row-desc">{{item.startLabel}} · {{item.quotaLabel}}</view>
+        </view>
+        <view style="text-align: right;">
+          <view class="price">{{item.priceLabel}}</view>
+          <text wx:if="{{item.originalLabel}}" class="price-original">{{item.originalLabel}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="page-title">热门体验包</view>
+    <view wx:for="{{overview.hotPackages}}" wx:key="id" class="panel">
+      <view class="row">
+        <text class="row-glyph">{{item.emoji}}</text>
+        <view style="flex: 1; min-width: 0;">
+          <view class="row-title">{{item.title}}</view>
+          <view class="row-desc">含{{item.activityCount}}个活动 · {{item.purchasedCount}}人已购买</view>
+        </view>
+        <view class="price">{{item.priceLabel}}</view>
+      </view>
+    </view>
+  </block>
+</view>

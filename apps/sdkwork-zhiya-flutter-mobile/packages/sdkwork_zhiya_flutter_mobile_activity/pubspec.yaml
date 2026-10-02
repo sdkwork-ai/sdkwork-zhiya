@@ -1,0 +1,20 @@
+name: sdkwork_zhiya_flutter_mobile_activity
+description: Zhiya Flutter mobile activity capability package.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sdkwork_zhiya_flutter_mobile_core:
+    path: ../sdkwork_zhiya_flutter_mobile_core
+  sdkwork_zhiya_flutter_mobile_commons:
+    path: ../sdkwork_zhiya_flutter_mobile_commons
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter

@@ -1,0 +1,32 @@
+<view>
+  <view class="page-title">我的家庭</view>
+  <view class="panel">
+    <view wx:if="{{children.length === 0}}" class="empty">还没有添加孩子</view>
+    <view wx:for="{{children}}" wx:key="id" class="row">
+      <text class="row-glyph">{{item.emoji}}</text>
+      <view style="flex: 1;">
+        <view class="row-title">{{item.nickname}}</view>
+        <view class="row-desc">{{item.stageLabel}}{{item.interestsLabel ? ' · ' + item.interestsLabel : ''}}</view>
+      </view>
+      <text class="row-desc" data-id="{{item.id}}" bindtap="onRemove">删除</text>
+    </view>
+  </view>
+
+  <view style="padding: 8rpx 24rpx;">
+    <button class="btn-brand" bindtap="toggleForm">{{showForm ? '收起' : '添加孩子'}}</button>
+  </view>
+
+  <view wx:if="{{showForm}}" class="panel" style="padding: 24rpx;">
+    <view class="row-desc" style="margin-bottom: 8rpx;">昵称</view>
+    <input value="{{nickname}}" bindinput="onNickname" placeholder="孩子的昵称或小名" class="form-input" />
+    <view class="row-desc" style="margin: 16rpx 0 8rpx;">出生日期</view>
+    <picker mode="date" value="{{birthDate}}" start="2010-01-01" end="2024-12-31" bindchange="onBirthDate">
+      <view class="form-input">{{birthDate}}</view>
+    </picker>
+    <view class="row-desc" style="margin: 16rpx 0 8rpx;">教育阶段</view>
+    <picker range="{{stageLabels}}" value="{{stageIndex}}" bindchange="onStage">
+      <view class="form-input">{{stageLabels[stageIndex]}}</view>
+    </picker>
+    <button class="btn-brand" style="margin-top: 24rpx;" bindtap="onSave" disabled="{{saving}}">{{saving ? '保存中…' : '保存'}}</button>
+  </view>
+</view>

@@ -38,9 +38,9 @@ function parseFlags(argv) {
   return flags;
 }
 
-function run(command, args) {
+function run(command, args, cwdOverride) {
   const result = spawnSync(command, args, {
-    cwd: repoRoot,
+    cwd: cwdOverride === undefined ? repoRoot : path.resolve(repoRoot, cwdOverride),
     stdio: 'inherit',
     shell: process.platform === 'win32',
     windowsHide: true,
@@ -92,6 +92,10 @@ function check() {
     () => run('node', ['../sdkwork-specs/tools/check-tailwind-integration.mjs', '--root', '.']),
     () => run('node', ['../sdkwork-specs/tools/check-i18n-standard.mjs', '--root', '.']),
     () => run('node', ['../sdkwork-specs/tools/check-workspace-packages-layout.mjs', '--root', path.join('apps', 'sdkwork-zhiya-common'), '--mode', 'enforce']),
+    () => pnpm(['--filter', 'sdkwork-zhiya-mini-program', 'typecheck']),
+    () => pnpm(['--filter', 'sdkwork-zhiya-mini-program', 'test']),
+    () => run('flutter', ['analyze', '--no-pub'], path.join('apps', 'sdkwork-zhiya-flutter-mobile')),
+    () => run('flutter', ['test', '--no-pub'], path.join('apps', 'sdkwork-zhiya-flutter-mobile')),
   ];
   for (const step of steps) {
     const stepStatus = step();

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-zhiya-flutter-mobile",
+    "displayName": "Zhiya Flutter Mobile",
+    "version": "0.1.0",
+    "type": "flutter-mobile-app-root",
+    "root": "apps/sdkwork-zhiya-flutter-mobile",
+    "domain": "zhiya",
+    "capability": "family-education-platform",
+    "surface": "app",
+    "languages": ["dart"],
+    "status": "DRAFT",
+    "manifests": ["pubspec.yaml", "sdkwork.app.config.json", "specs/component.spec.json"]
+  },
+  "canonicalSpecs": [
+    { "file": "APPLICATION_SPEC.md", "path": "../../../sdkwork-specs/APPLICATION_SPEC.md", "purpose": "Application-wide contract." },
+    { "file": "APP_MANIFEST_SPEC.md", "path": "../../../sdkwork-specs/APP_MANIFEST_SPEC.md", "purpose": "App manifest authority." },
+    { "file": "UI_ARCHITECTURE_SPEC.md", "path": "../../../sdkwork-specs/UI_ARCHITECTURE_SPEC.md", "purpose": "UI architecture manifest requirements." },
+    { "file": "APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md", "path": "../../../sdkwork-specs/APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md", "purpose": "Cross-client architecture alignment." },
+    { "file": "FLUTTER_APP_MOBILE_ARCHITECTURE_SPEC.md", "path": "../../../sdkwork-specs/FLUTTER_APP_MOBILE_ARCHITECTURE_SPEC.md", "purpose": "Flutter mobile architecture authority." },
+    { "file": "APP_FLUTTER_UI_SPEC.md", "path": "../../../sdkwork-specs/APP_FLUTTER_UI_SPEC.md", "purpose": "Flutter UI conventions." },
+    { "file": "DART_CODE_SPEC.md", "path": "../../../sdkwork-specs/DART_CODE_SPEC.md", "purpose": "Dart language standard." },
+    { "file": "TEST_SPEC.md", "path": "../../../sdkwork-specs/TEST_SPEC.md", "purpose": "Test baseline." },
+    { "file": "NAMING_SPEC.md", "path": "../../../sdkwork-specs/NAMING_SPEC.md", "purpose": "Canonical naming lattice." }
+  ],
+  "contracts": {
+    "layerRole": "frontend-shell",
+    "publicExports": ["lib/main.dart"],
+    "providedPorts": [],
+    "requiredPorts": [],
+    "runtimeEntrypoints": ["lib/main.dart", "pubspec.yaml#environment.sdk"],
+    "routeManifest": null,
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": ["etc/sdkwork.deployment.config.json"]
+  },
+  "verification": { "commands": ["flutter analyze", "flutter test"] }
+}

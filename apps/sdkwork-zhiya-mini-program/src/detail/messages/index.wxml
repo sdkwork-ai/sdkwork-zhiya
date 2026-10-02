@@ -1,0 +1,20 @@
+<view>
+  <view class="mark-all" bindtap="onMarkAll">全部已读</view>
+  <scroll-view scroll-x class="chips">
+    <view wx:for="{{categories}}" wx:key="id" class="chip {{category === item.id ? 'chip-active' : ''}}" data-id="{{item.id}}" bindtap="onCategory">{{item.label}}</view>
+  </scroll-view>
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{messages.length === 0}}" class="empty">这里还空空如也</view>
+  <block wx:else>
+    <view wx:for="{{messages}}" wx:key="id" class="panel">
+      <view class="row">
+        <view style="flex: 1; min-width: 0;">
+          <view class="row-title">{{item.title}}</view>
+          <view class="row-desc">{{item.body}}</view>
+          <view class="row-desc">{{item.categoryLabel}} · {{item.timeLabel}}</view>
+        </view>
+        <view wx:if="{{!item.read}}" class="dot"></view>
+      </view>
+    </view>
+  </block>
+</view>

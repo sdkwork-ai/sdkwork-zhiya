@@ -1,0 +1,88 @@
+{
+  "root": { "title": "活动" },
+  "filter": {
+    "all": "全部",
+    "allModes": "全部形式",
+    "free": "免费"
+  },
+  "detail": {
+    "title": "活动详情",
+    "notFound": "活动不存在或已下架",
+    "timeLabel": "时间",
+    "onlineLink": "进入线上课堂",
+    "ageLabel": "适合 {{min}}-{{max}} 岁孩子",
+    "introduction": "活动介绍",
+    "notice": "活动须知",
+    "org": "主办机构",
+    "orgContactHint": "报名后可与机构在线沟通",
+    "contactOrg": "联系机构",
+    "reviews": "用户评价",
+    "reviewsWithRating": "用户评价 {{rating}} · {{count}}条",
+    "noReviews": "还没有评价，来抢沙发",
+    "favorite": "收藏",
+    "share": "分享",
+    "registerNow": "立即报名",
+    "soldOut": "已满员"
+  },
+  "register": {
+    "title": "确认报名",
+    "noChild": "还没有添加孩子",
+    "noChildHint": "报名前请先为孩子建立资料，系统会自动检查适龄",
+    "addChild": "去添加孩子",
+    "chooseChild": "选择参加儿童",
+    "chooseSession": "选择场次",
+    "coupons": "选择优惠券",
+    "couponMinSpend": "满 {{amount}} 可用",
+    "agreement": "报名即同意《知鸭活动报名与退款规则》",
+    "submit": "提交订单",
+    "error": {
+      "activity-not-found": "活动不存在或已下架",
+      "session-not-found": "场次不存在，请重新选择",
+      "child-not-found": "请选择参加的孩子",
+      "not-open": "活动当前不可报名",
+      "age-not-fit": "孩子年龄不在活动适龄范围内",
+      "sold-out": "来晚一步，名额已被抢光",
+      "duplicate": "该孩子已报名此活动，无需重复报名",
+      "time-conflict": "与已报名活动时间冲突，请调整场次",
+      "coupon-invalid": "优惠券不可用，请重新选择"
+    }
+  },
+  "pay": {
+    "title": "收银台",
+    "orderMissing": "订单不存在",
+    "payableLabel": "应付金额",
+    "amountLabel": "订单金额",
+    "discountLabel": "优惠券抵扣",
+    "wechat": "微信支付",
+    "alipay": "支付宝",
+    "payNow": "立即支付",
+    "paying": "支付中…",
+    "mockHint": "当前为演示环境模拟支付，不会产生真实扣款"
+  },
+  "success": {
+    "title": "报名成功！",
+    "packageTitle": "购买成功！",
+    "orderNo": "订单号 {{orderId}}",
+    "packageHint": "体验包已放入「我的订单」，权益预约功能即将上线",
+    "backHome": "返回首页",
+    "viewOrders": "查看订单"
+  },
+  "packages": {
+    "title": "教育体验包",
+    "subtitle": "一个包体验多家机构，低成本找到孩子的兴趣",
+    "notFound": "体验包不存在"
+  },
+  "package": {
+    "title": "体验包详情",
+    "notFound": "体验包不存在",
+    "validDays": "有效期 {{days}} 天",
+    "includes": "包含 {{count}} 个体验活动",
+    "rulesTitle": "购买须知",
+    "rule1": "· 体验包购买后在有效期内可用，过期未使用的权益自动失效",
+    "rule2": "· 每个活动需单独预约场次，到场出示凭证核销",
+    "rule3": "· 未核销的权益支持按规则退款",
+    "buy": "¥{{price}} 立即购买",
+    "buyFailed": "下单失败，请稍后重试",
+    "morePackages": "查看全部体验包"
+  }
+}

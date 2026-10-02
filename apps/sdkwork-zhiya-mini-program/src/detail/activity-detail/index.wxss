@@ -1,0 +1,2 @@
+.hero { text-align: center; font-size: 100rpx; padding: 60rpx 0; background-color: var(--sdk-color-brand-soft); }
+.footer { position: fixed; left: 0; right: 0; bottom: 0; padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom)); background-color: var(--sdk-color-surface-panel); border-top: 1rpx solid var(--sdk-color-border-subtle); display: flex; }

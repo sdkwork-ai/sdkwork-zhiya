@@ -1,0 +1,31 @@
+<view>
+  <view class="panel">
+    <view class="row">
+      <text class="row-glyph">🦆</text>
+      <view style="flex: 1;">
+        <view class="row-title">鸭家长</view>
+        <view class="row-desc">知孩子，也知教育</view>
+      </view>
+    </view>
+  </view>
+  <view class="panel">
+    <view wx:for="{{entries}}" wx:key="key" class="row" data-url="{{item.url}}" bindtap="go">
+      <text class="row-glyph">{{item.glyph}}</text>
+      <view style="flex: 1;">
+        <view class="row-title">{{item.title}}</view>
+        <view class="row-desc">{{item.desc}}</view>
+      </view>
+      <text style="color: var(--sdk-color-text-muted);">›</text>
+    </view>
+  </view>
+  <view class="panel">
+    <view class="row" bindtap="goActivity">
+      <text class="row-glyph">🎟️</text>
+      <view style="flex: 1;">
+        <view class="row-title">我的活动</view>
+        <view class="row-desc">待参加 / 待评价都在订单里</view>
+      </view>
+      <text style="color: var(--sdk-color-text-muted);">›</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,71 @@
+{
+  "workspace": {
+    "title": "机构工作台",
+    "todayRegistrations": "今日报名",
+    "pendingCheckIns": "待核销",
+    "salesToday": "今日销售额",
+    "publishedActivities": "在架活动",
+    "totalRegistrations": "累计报名",
+    "completionRate": "活动完成率",
+    "manageActivities": "活动管理",
+    "manageRegistrations": "报名核销"
+  },
+  "activities": {
+    "title": "活动管理",
+    "new": "新建活动",
+    "all": "全部",
+    "published": "已上架",
+    "draft": "草稿",
+    "offline": "已下架",
+    "publish": "上架",
+    "edit": "编辑",
+    "delete": "删除",
+    "offlineAction": "下架"
+  },
+  "edit": {
+    "newTitle": "新建活动",
+    "editTitle": "编辑活动",
+    "title": "活动标题",
+    "titlePlaceholder": "例如：少儿编程体验课",
+    "subtitle": "副标题",
+    "category": "活动分类",
+    "mode": "活动形式",
+    "address": "活动地址",
+    "onlineLink": "线上链接",
+    "price": "售价（¥）",
+    "originalPrice": "原价（¥）",
+    "quota": "名额",
+    "ageRange": "适龄范围",
+    "startTime": "开始时间",
+    "endTime": "结束时间",
+    "tags": "教育方向",
+    "introduction": "活动介绍",
+    "notice": "活动须知",
+    "addressFallback": "地址待补充",
+    "saveDraft": "存为草稿",
+    "savePublish": "保存并上架",
+    "error": {
+      "title": "请填写活动标题",
+      "time": "请设置有效的开始/结束时间"
+    }
+  },
+  "registrations": {
+    "title": "报名管理",
+    "noActivities": "还没有已上架的活动，先去创建一个吧",
+    "voucherPlaceholder": "输入或扫描家长凭证码",
+    "verify": "核销",
+    "checkIn": "核销签到",
+    "checkedIn": "{{child}} 核销成功",
+    "completed": "已确认活动结束，{{count}} 个订单进入待评价",
+    "completeActivity": "活动结束确认",
+    "anonymous": "家长",
+    "error": {
+      "voucher-not-found": "凭证码不存在，请核对后重试",
+      "voucher-not-paid": "该订单未支付或已取消",
+      "voucher-already-used": "该凭证已核销过"
+    }
+  },
+  "activity-edit": {
+    "title": "编辑活动"
+  }
+}

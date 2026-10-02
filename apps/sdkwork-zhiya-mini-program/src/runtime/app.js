@@ -1,0 +1,2811 @@
+"use strict";
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+
+// src/bootstrap/runtime.ts
+var runtime_exports = {};
+__export(runtime_exports, {
+  appApi: () => appApi,
+  bootstrapRuntime: () => bootstrapRuntime
+});
+module.exports = __toCommonJS(runtime_exports);
+
+// <define:__SDKWORK_RUNTIME_ENV__>
+var define_SDKWORK_RUNTIME_ENV_default = { environment: "development", deploymentProfile: "standalone", profileId: "standalone.development", runtimeTarget: "mini-program", appApiBaseUrl: "/", sdkBaseUrl: "/" };
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-intent-core/src/types.ts
+function emptyIntent() {
+  return { categories: [], tags: [], freeOnly: false, keywords: [], wantsPlan: false };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-intent-core/src/recognizer.ts
+var CATEGORY_RULES = [
+  { category: "trial", patterns: ["\u4F53\u9A8C\u8BFE", "\u8BD5\u542C", "\u4F53\u9A8C\u73ED"] },
+  { category: "online-course", patterns: ["\u7EBF\u4E0A\u8BFE", "\u7EBF\u4E0A\u8BFE\u7A0B", "\u7F51\u8BFE", "\u76F4\u64AD\u8BFE"] },
+  { category: "open-course", patterns: ["\u516C\u5F00\u8BFE", "\u8BB2\u5EA7"] },
+  { category: "parent-child", patterns: ["\u4EB2\u5B50", "\u4EB2\u5B50\u6D3B\u52A8", "\u5E26\u5A03", "\u905B\u5A03"] },
+  { category: "study-tour", patterns: ["\u7814\u5B66", "\u6E38\u5B66"] },
+  { category: "summer-camp", patterns: ["\u590F\u4EE4\u8425"] },
+  { category: "winter-camp", patterns: ["\u51AC\u4EE4\u8425"] },
+  { category: "competition", patterns: ["\u6BD4\u8D5B", "\u7ADE\u8D5B", "\u8003\u7EA7"] },
+  { category: "exhibition", patterns: ["\u5C55\u89C8", "\u5C55\u4F1A", "\u535A\u7269\u9986", "\u7F8E\u672F\u9986"] },
+  { category: "training", patterns: ["\u8BAD\u7EC3\u8425", "\u96C6\u8BAD", "\u57F9\u8BAD\u73ED"] }
+];
+var TAG_RULES = [
+  { tag: "programming", patterns: ["\u7F16\u7A0B", "scratch", "python", "\u4EE3\u7801"] },
+  { tag: "robotics", patterns: ["\u673A\u5668\u4EBA"] },
+  { tag: "science", patterns: ["\u79D1\u5B66", "\u5B9E\u9A8C", "stem"] },
+  { tag: "art", patterns: ["\u7F8E\u672F", "\u7ED8\u753B", "\u753B\u753B", "\u827A\u672F", "\u521B\u610F"] },
+  { tag: "music", patterns: ["\u97F3\u4E50", "\u94A2\u7434", "\u4E50\u5668", "\u58F0\u4E50"] },
+  { tag: "english", patterns: ["\u82F1\u8BED", "\u82F1\u6587"] },
+  { tag: "sports", patterns: ["\u4F53\u80B2", "\u8FD0\u52A8", "\u6E38\u6CF3", "\u7BEE\u7403", "\u8DB3\u7403", "\u4F53\u80FD"] },
+  { tag: "thinking", patterns: ["\u601D\u7EF4", "\u903B\u8F91", "\u6570\u5B66\u601D\u7EF4", "\u56F4\u68CB"] },
+  { tag: "drama", patterns: ["\u620F\u5267", "\u8868\u6F14", "\u53E3\u624D", "\u4E3B\u6301"] },
+  { tag: "nature", patterns: ["\u81EA\u7136", "\u6237\u5916", "\u9732\u8425", "\u519C\u8015"] }
+];
+var TIME_RULES = [
+  ["today", ["\u4ECA\u5929", "\u4ECA\u65E5", "\u660E\u5929"]],
+  ["weekend", ["\u5468\u672B", "\u5468\u516D", "\u5468\u65E5", "\u661F\u671F\u516D", "\u661F\u671F\u65E5"]],
+  ["holiday", ["\u5047\u671F", "\u8282\u5047\u65E5", "\u5BD2\u5047", "\u6691\u5047", "\u56FD\u5E86", "\u4E94\u4E00"]],
+  ["weekday", ["\u5DE5\u4F5C\u65E5", "\u5468\u5185"]]
+];
+function extractPhrase(query, patterns) {
+  let rest = query;
+  let matched = false;
+  for (const pattern of patterns) {
+    if (rest.includes(pattern)) {
+      matched = true;
+      rest = rest.split(pattern).join(" ");
+    }
+  }
+  return { matched, rest };
+}
+function extractAge(query) {
+  const match = /(\d{1,2})\s*岁/.exec(query);
+  if (match === null) {
+    return { age: void 0, rest: query };
+  }
+  const age = Number.parseInt(match[1] ?? "", 10);
+  if (!Number.isFinite(age) || age < 1 || age > 18) {
+    return { age: void 0, rest: query };
+  }
+  return { age, rest: query.replace(match[0], " ") };
+}
+function extractBudget(query) {
+  const patterns = [
+    /预算\s*(\d{1,5})\s*(?:元|块)?/,
+    /(\d{1,5})\s*(?:元|块)\s*(?:以内|以下|之内)/,
+    /(?:不超过|最多)\s*(\d{1,5})\s*(?:元|块)?/
+  ];
+  for (const pattern of patterns) {
+    const match = pattern.exec(query);
+    const raw = match?.[1];
+    if (raw !== void 0) {
+      const value = Number.parseInt(raw, 10);
+      if (Number.isFinite(value) && value > 0) {
+        return { budgetMax: value, rest: query.replace(match[0], " ") };
+      }
+    }
+  }
+  return { budgetMax: void 0, rest: query };
+}
+function recognizeActivityIntent(rawQuery) {
+  const intent = emptyIntent();
+  const query = rawQuery.toLowerCase().trim();
+  if (query.length === 0) {
+    return intent;
+  }
+  let rest = query;
+  const age = extractAge(rest);
+  intent.age = age.age;
+  rest = age.rest;
+  const budget = extractBudget(rest);
+  intent.budgetMax = budget.budgetMax;
+  rest = budget.rest;
+  for (const rule of CATEGORY_RULES) {
+    const extracted = extractPhrase(rest, rule.patterns);
+    if (extracted.matched) {
+      intent.categories.push(rule.category);
+      rest = extracted.rest;
+    }
+  }
+  for (const rule of TAG_RULES) {
+    const extracted = extractPhrase(rest, rule.patterns);
+    if (extracted.matched) {
+      intent.tags.push(rule.tag);
+      rest = extracted.rest;
+    }
+  }
+  if (rest.includes("\u7EBF\u4E0A")) {
+    intent.mode = "online";
+    rest = rest.split("\u7EBF\u4E0A").join(" ");
+  } else if (rest.includes("\u7EBF\u4E0B")) {
+    intent.mode = "offline";
+    rest = rest.split("\u7EBF\u4E0B").join(" ");
+  }
+  if (rest.includes("\u514D\u8D39")) {
+    intent.freeOnly = true;
+    rest = rest.split("\u514D\u8D39").join(" ");
+  }
+  for (const [time, patterns] of TIME_RULES) {
+    const extracted = extractPhrase(rest, patterns);
+    if (extracted.matched) {
+      intent.time = time;
+      rest = extracted.rest;
+      break;
+    }
+  }
+  if (/(计划|安排|规划|搭配|组合)/u.test(rest)) {
+    intent.wantsPlan = true;
+    rest = rest.replace(/(体验?计划|安排|规划|搭配|组合)/gu, " ");
+  }
+  const keywords = rest.split(/[\s，。！？,.!?、：:；;（）()【】\[\]{}"'·…—]+/u).map((keyword) => keyword.trim()).filter((keyword) => keyword.length > 0);
+  intent.keywords = keywords.length > 0 ? keywords : query.trim().length > 0 ? [query.trim()] : [];
+  return intent;
+}
+function isEmptyIntent(intent) {
+  return intent.age === void 0 && intent.budgetMax === void 0 && intent.categories.length === 0 && intent.tags.length === 0 && intent.mode === void 0 && !intent.freeOnly && intent.time === void 0 && !intent.wantsPlan;
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/ports.ts
+var RegistrationError = class extends Error {
+  constructor(code, message) {
+    super(message);
+    __publicField(this, "code");
+    this.name = "RegistrationError";
+    this.code = code;
+  }
+};
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/inventory.ts
+var registry = /* @__PURE__ */ new Map();
+function registerZhiyaClient(name, implementation) {
+  if (registry.has(name)) {
+    throw new Error(`zhiya client already registered: ${name}`);
+  }
+  registry.set(name, implementation);
+}
+function getZhiyaClient(name) {
+  const implementation = registry.get(name);
+  if (!implementation) {
+    throw new Error(
+      `zhiya client not registered: ${name}. Register it in src/bootstrap/sdkClients.ts before rendering screens.`
+    );
+  }
+  return implementation;
+}
+function resetZhiyaClients() {
+  registry.clear();
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/seeds.ts
+function iso(date) {
+  return date.toISOString();
+}
+function nextWeekday(from, weekday, hour, minute) {
+  const result = new Date(from);
+  result.setHours(hour, minute, 0, 0);
+  let delta = (weekday - result.getDay() + 7) % 7;
+  if (delta === 0 && result.getTime() <= from.getTime()) {
+    delta = 7;
+  }
+  result.setDate(result.getDate() + delta);
+  return result;
+}
+function addDays(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+var ORGS = [
+  {
+    id: "org-1",
+    name: "\u7AE5\u7A0B\u672A\u6765\u5C11\u513F\u7F16\u7A0B",
+    logo: "\u{1F4BB}",
+    summary: "\u4E13\u6CE8 6-16 \u5C81\u5C11\u513F\u7F16\u7A0B\u4E0E\u673A\u5668\u4EBA\u6559\u80B2\uFF0C\u8986\u76D6 Scratch\u3001Python\u3001\u4FE1\u606F\u5B66\u7ADE\u8D5B\u3002",
+    district: "\u5317\u4EAC\xB7\u6D77\u6DC0",
+    rating: 4.8
+  },
+  {
+    id: "org-2",
+    name: "\u79D1\u5B66\u76D2\u5B50\u5B9E\u9A8C\u5BA4",
+    logo: "\u{1F9EA}",
+    summary: "\u5728\u5BB6\u4E2D\u4E5F\u80FD\u505A\u7684\u79D1\u5B66\u5B9E\u9A8C\u8BFE\uFF0C\u8986\u76D6\u7269\u8D28\u3001\u751F\u547D\u3001\u5730\u7403\u4E0E\u592A\u7A7A\u56DB\u5927\u4E3B\u9898\u3002",
+    district: "\u5317\u4EAC\xB7\u671D\u9633",
+    rating: 4.7
+  },
+  {
+    id: "org-3",
+    name: "\u5C0F\u5929\u9E45\u827A\u672F\u4E2D\u5FC3",
+    logo: "\u{1F3A8}",
+    summary: "\u521B\u610F\u7F8E\u672F\u3001\u4E66\u6CD5\u4E0E\u5C55\u89C8\u5BFC\u89C8\uFF0C\u8BA9\u5B69\u5B50\u5728\u827A\u672F\u91CC\u81EA\u7531\u8868\u8FBE\u3002",
+    district: "\u5317\u4EAC\xB7\u671D\u9633",
+    rating: 4.6
+  },
+  {
+    id: "org-4",
+    name: "\u542F\u822A\u5C11\u513F\u4F53\u80B2",
+    logo: "\u26BD",
+    summary: "\u4F53\u80FD\u3001\u7403\u7C7B\u4E0E\u6237\u5916\u8FD0\u52A8\u8BFE\u7A0B\uFF0C\u8BA9\u8FD0\u52A8\u6210\u4E3A\u4E60\u60EF\u3002",
+    district: "\u5317\u4EAC\xB7\u4E30\u53F0",
+    rating: 4.5
+  },
+  {
+    id: "org-5",
+    name: "\u60A6\u8BFB\u661F\u7403\u82F1\u6587\u9986",
+    logo: "\u{1F4DA}",
+    summary: "\u82F1\u6587\u7ED8\u672C\u3001\u81EA\u7136\u62FC\u8BFB\u4E0E\u620F\u5267\u8868\u8FBE\uFF0C\u62D2\u7EDD\u54D1\u5DF4\u82F1\u8BED\u3002",
+    district: "\u5317\u4EAC\xB7\u897F\u57CE",
+    rating: 4.7
+  },
+  {
+    id: "org-6",
+    name: "\u9633\u5149\u4EB2\u5B50\u4FF1\u4E50\u90E8",
+    logo: "\u{1F3D5}\uFE0F",
+    summary: "\u4EB2\u5B50\u6D3B\u52A8\u3001\u81EA\u7136\u7814\u5B66\u4E0E\u8425\u5730\u6559\u80B2\uFF0C\u628A\u5468\u672B\u8FD8\u7ED9\u5B69\u5B50\u3002",
+    district: "\u5317\u4EAC\xB7\u660C\u5E73",
+    rating: 4.9
+  }
+];
+var ACTIVITY_SPECS = [
+  {
+    id: "act-101",
+    orgId: "org-1",
+    orgName: "\u7AE5\u7A0B\u672A\u6765\u5C11\u513F\u7F16\u7A0B",
+    category: "trial",
+    mode: "offline",
+    title: "\u5C11\u513F\u7F16\u7A0B Scratch \u4F53\u9A8C\u8BFE",
+    subtitle: "90 \u5206\u949F\u505A\u51FA\u7B2C\u4E00\u4E2A\u5C0F\u6E38\u620F",
+    emoji: "\u{1F4BB}",
+    ageMin: 6,
+    ageMax: 12,
+    startOffsetDays: 3,
+    startHour: 9,
+    durationHours: 1.5,
+    price: 19,
+    originalPrice: 299,
+    quota: 12,
+    enrolled: 7,
+    tags: ["programming", "thinking"],
+    introduction: "\u4EE5Scratch\u4E3A\u8F7D\u4F53\u7684\u7F16\u7A0B\u542F\u8499\u4F53\u9A8C\u8BFE\u3002\u5B69\u5B50\u5C06\u5728\u8001\u5E08\u5E26\u9886\u4E0B\u5B8C\u6210\u4E00\u4E2A\u53EF\u4EE5\u8FD0\u884C\u7684\u5C0F\u6E38\u620F\uFF0C\u5B66\u4E60\u987A\u5E8F\u3001\u5FAA\u73AF\u4E0E\u6761\u4EF6\u4E09\u5927\u57FA\u7840\u7ED3\u6784\uFF0C\u73B0\u573A\u4F53\u9A8C\u201C\u6307\u4EE4\u9A71\u52A8\u7684\u6210\u5C31\u611F\u201D\u3002",
+    notice: "\u8BF7\u81EA\u5E26\u7B14\u8BB0\u672C\u7535\u8111\uFF08\u53EF\u73B0\u573A\u79DF\u501F\uFF09\uFF1B\u5BB6\u957F\u53EF\u5728\u540E\u6392\u65C1\u542C\uFF1B\u8BF7\u63D0\u524D 10 \u5206\u949F\u5230\u5E97\u7B7E\u5230\u3002",
+    address: "\u5317\u4EAC\u5E02\u6D77\u6DC0\u533A\u4E2D\u5173\u6751\u5927\u8857 27 \u53F7 3 \u5C42",
+    sessions: [
+      { id: "act-101-s1", label: "\u5468\u516D 09:30 \u573A", weekday: 6, hour: 9, minute: 30, durationHours: 1.5, quota: 12, enrolled: 5 },
+      { id: "act-101-s2", label: "\u5468\u65E5 15:00 \u573A", weekday: 0, hour: 15, minute: 0, durationHours: 1.5, quota: 12, enrolled: 2 }
+    ]
+  },
+  {
+    id: "act-102",
+    orgId: "org-1",
+    orgName: "\u7AE5\u7A0B\u672A\u6765\u5C11\u513F\u7F16\u7A0B",
+    category: "online-course",
+    mode: "online",
+    title: "Python \u8DA3\u5473\u5165\u95E8\u76F4\u64AD\u8425",
+    subtitle: "\u56DB\u5468\u5165\u95E8\uFF0C\u5199\u51FA\u4F60\u7684\u7B2C\u4E00\u4E2A\u7A0B\u5E8F",
+    emoji: "\u{1F40D}",
+    ageMin: 9,
+    ageMax: 15,
+    startOffsetDays: 5,
+    startHour: 19,
+    durationHours: 1.5,
+    price: 99,
+    originalPrice: 599,
+    quota: 60,
+    enrolled: 31,
+    tags: ["programming"],
+    introduction: "\u56DB\u5468\u7EBF\u4E0A\u76F4\u64AD\u8425\uFF0C\u4ECE\u53D8\u91CF\u3001\u5FAA\u73AF\u5230\u51FD\u6570\uFF0C\u6BCF\u5468\u4E00\u4E2A\u4E3B\u9898\u5C0F\u9879\u76EE\uFF08\u731C\u6570\u5B57\u3001\u7ED8\u5236\u56FE\u5F62\u3001\u7B80\u6613\u95EE\u7B54\u673A\u5668\u4EBA\uFF09\uFF0C\u914D\u52A9\u6559\u7B54\u7591\u4E0E\u8BFE\u540E\u7EC3\u4E60\u3002",
+    notice: "\u5F00\u8BFE\u524D\u53D1\u9001\u76F4\u64AD\u94FE\u63A5\u4E0E\u8BB2\u4E49\uFF1B\u652F\u6301\u56DE\u653E 90 \u5929\uFF1B\u9700\u81EA\u5907\u7535\u8111\u3002",
+    address: "\u7EBF\u4E0A\u76F4\u64AD",
+    onlineLink: "https://live.zhiya.example/python-starter"
+  },
+  {
+    id: "act-103",
+    orgId: "org-2",
+    orgName: "\u79D1\u5B66\u76D2\u5B50\u5B9E\u9A8C\u5BA4",
+    category: "trial",
+    mode: "offline",
+    title: "\u79D1\u5B66\u5B9E\u9A8C\uFF1A\u706B\u5C71\u5927\u7206\u53D1",
+    subtitle: "\u52A8\u624B\u505A\u4E00\u6B21\u201C\u5B89\u5168\u55B7\u53D1\u201D",
+    emoji: "\u{1F30B}",
+    ageMin: 5,
+    ageMax: 10,
+    startOffsetDays: 2,
+    startHour: 14,
+    durationHours: 1,
+    price: 29.9,
+    originalPrice: 199,
+    quota: 10,
+    enrolled: 4,
+    tags: ["science"],
+    introduction: "\u7ECF\u5178\u79D1\u5B66\u542F\u8499\u5B9E\u9A8C\u8BFE\u3002\u5B69\u5B50\u5C06\u4EB2\u624B\u642D\u5EFA\u706B\u5C71\u6A21\u578B\uFF0C\u7528\u9178\u78B1\u53CD\u5E94\u6A21\u62DF\u55B7\u53D1\uFF0C\u7406\u89E3\u5316\u5B66\u53CD\u5E94\u4E0E\u5730\u8D28\u6784\u9020\u7684\u6709\u8DA3\u8054\u7CFB\uFF0C\u5E76\u628A\u5B9E\u9A8C\u76D2\u5E26\u56DE\u5BB6\u3002",
+    notice: "\u5B9E\u9A8C\u6750\u6599\u7531\u673A\u6784\u63D0\u4F9B\uFF1B\u8BF7\u7A7F\u4E0D\u6015\u5F04\u810F\u7684\u8863\u670D\uFF1B\u5B9E\u9A8C\u6709\u8F7B\u5FAE\u6C14\u5473\uFF0C\u654F\u611F\u513F\u7AE5\u8BF7\u63D0\u524D\u544A\u77E5\u3002",
+    address: "\u5317\u4EAC\u5E02\u671D\u9633\u533A\u5927\u60A6\u57CE\u5199\u5B57\u697C B \u5EA7 12 \u5C42",
+    sessions: [
+      { id: "act-103-s1", label: "\u5468\u4E94 16:30 \u573A", weekday: 5, hour: 16, minute: 30, durationHours: 1, quota: 10, enrolled: 4 }
+    ]
+  },
+  {
+    id: "act-104",
+    orgId: "org-3",
+    orgName: "\u5C0F\u5929\u9E45\u827A\u672F\u4E2D\u5FC3",
+    category: "trial",
+    mode: "offline",
+    title: "\u521B\u610F\u7F8E\u672F\u4F53\u9A8C\u8BFE",
+    subtitle: "\u4E00\u5757\u753B\u5E03\uFF0C\u4E00\u4E2A\u6545\u4E8B",
+    emoji: "\u{1F3A8}",
+    ageMin: 4,
+    ageMax: 8,
+    startOffsetDays: 4,
+    startHour: 10,
+    durationHours: 1.5,
+    price: 0,
+    originalPrice: 168,
+    quota: 8,
+    enrolled: 6,
+    tags: ["art"],
+    introduction: "\u514D\u8D39\u516C\u76CA\u4F53\u9A8C\u8BFE\u3002\u4EE5\u201C\u6211\u7684\u5BB6\u5EAD\u201D\u4E3A\u4E3B\u9898\u8FDB\u884C\u81EA\u7531\u521B\u4F5C\uFF0C\u8001\u5E08\u5F15\u5BFC\u5B69\u5B50\u89C2\u5BDF\u4E0E\u8868\u8FBE\uFF0C\u8BFE\u540E\u4E3A\u5BB6\u957F\u89E3\u8BFB\u5B69\u5B50\u7684\u753B\u9762\u8BED\u8A00\u3002",
+    notice: "\u514D\u8D39\u540D\u989D\u6709\u9650\uFF0C\u8BF7\u6309\u65F6\u5230\u573A\uFF1B\u753B\u6750\u7531\u673A\u6784\u63D0\u4F9B\uFF1B\u4F5C\u54C1\u53EF\u5E26\u8D70\u3002",
+    address: "\u5317\u4EAC\u5E02\u671D\u9633\u533A\u671B\u4EAC SOHO T1 2201"
+  },
+  {
+    id: "act-105",
+    orgId: "org-4",
+    orgName: "\u542F\u822A\u5C11\u513F\u4F53\u80B2",
+    category: "open-course",
+    mode: "offline",
+    title: "\u5C11\u513F\u4F53\u80FD\u516C\u5F00\u8BFE",
+    subtitle: "\u8DD1\u3001\u8DF3\u3001\u722C\uFF0C\u91CA\u653E\u80FD\u91CF",
+    emoji: "\u{1F3C3}",
+    ageMin: 4,
+    ageMax: 12,
+    startOffsetDays: 3,
+    startHour: 15,
+    durationHours: 1,
+    price: 0,
+    originalPrice: 128,
+    quota: 20,
+    enrolled: 12,
+    tags: ["sports"],
+    introduction: "\u9762\u5411 4-12 \u5C81\u7684\u514D\u8D39\u4F53\u80FD\u516C\u5F00\u8BFE\uFF0C\u6309\u5E74\u9F84\u5206\u7EC4\u8FDB\u884C\u7075\u654F\u3001\u5E73\u8861\u4E0E\u534F\u8C03\u8BAD\u7EC3\uFF0C\u6559\u7EC3\u540C\u6B65\u8BB2\u89E3\u5BB6\u5EAD\u8FD0\u52A8\u5EFA\u8BAE\u3002",
+    notice: "\u8BF7\u7A7F\u8FD0\u52A8\u670D\u4E0E\u8FD0\u52A8\u978B\uFF1B\u81EA\u5E26\u6C34\u676F\uFF1B\u4F53\u80FD\u4E0D\u4F73\u6216\u8FD1\u671F\u4F24\u75C5\u8BF7\u63D0\u524D\u544A\u77E5\u6559\u7EC3\u3002",
+    address: "\u5317\u4EAC\u5E02\u4E30\u53F0\u533A\u4E3D\u6CFD\u4F53\u80B2\u573A 2 \u53F7\u9986"
+  },
+  {
+    id: "act-106",
+    orgId: "org-6",
+    orgName: "\u9633\u5149\u4EB2\u5B50\u4FF1\u4E50\u90E8",
+    category: "parent-child",
+    mode: "offline",
+    title: "\u5468\u672B\u4EB2\u5B50\u9732\u8425\u4F1A",
+    subtitle: "\u642D\u5E10\u7BF7\u3001\u70B9\u7BDD\u706B\u3001\u6570\u661F\u661F",
+    emoji: "\u26FA",
+    ageMin: 3,
+    ageMax: 12,
+    startOffsetDays: 6,
+    startHour: 14,
+    durationHours: 22,
+    price: 199,
+    originalPrice: 458,
+    quota: 15,
+    enrolled: 9,
+    tags: ["nature", "sports"],
+    introduction: "\u4E00\u591C\u9732\u8425\u4EB2\u5B50\u6D3B\u52A8\uFF1A\u4EB2\u5B50\u534F\u4F5C\u642D\u5E10\u7BF7\u3001\u7BDD\u706B\u665A\u4F1A\u3001\u591C\u89C2\u661F\u7A7A\u4E0E\u6668\u95F4\u5F92\u6B65\u3002\u8D39\u7528\u542B\u573A\u5730\u3001\u9910\u98DF\u4E0E\u88C5\u5907\u79DF\u8D41\uFF08\u4E00\u5927\u4E00\u5C0F\uFF09\u3002",
+    notice: "\u81EA\u9A7E\u524D\u5F80\uFF1B\u8425\u5730\u6709\u70ED\u6C34\u4E0E\u536B\u751F\u95F4\uFF1B\u591C\u95F4\u6E29\u5EA6\u8F83\u4F4E\uFF0C\u8BF7\u4E3A\u5B69\u5B50\u51C6\u5907\u4FDD\u6696\u7761\u888B\u3002",
+    address: "\u5317\u4EAC\u5E02\u660C\u5E73\u533A\u5341\u4E09\u9675\u9547\u4EB2\u5B50\u8425\u5730"
+  },
+  {
+    id: "act-107",
+    orgId: "org-6",
+    orgName: "\u9633\u5149\u4EB2\u5B50\u4FF1\u4E50\u90E8",
+    category: "study-tour",
+    mode: "offline",
+    title: "\u81EA\u7136\u63A2\u7D22\u4E00\u65E5\u7814\u5B66",
+    subtitle: "\u50CF\u535A\u7269\u5B66\u5BB6\u4E00\u6837\u89C2\u5BDF\u79CB\u5929",
+    emoji: "\u{1F342}",
+    ageMin: 6,
+    ageMax: 12,
+    startOffsetDays: 7,
+    startHour: 8,
+    durationHours: 9,
+    price: 258,
+    originalPrice: 480,
+    quota: 24,
+    enrolled: 16,
+    tags: ["nature", "science"],
+    introduction: "\u8DDF\u968F\u81EA\u7136\u8001\u5E08\u8FDB\u5165\u5C71\u533A\u6B65\u9053\uFF0C\u5B66\u4E60\u4F7F\u7528\u653E\u5927\u955C\u3001\u671B\u8FDC\u955C\u4E0E\u89C2\u5BDF\u624B\u8D26\uFF0C\u5B8C\u6210\u201C\u690D\u7269\u6807\u672C + \u9E1F\u7C7B\u89C2\u5BDF\u201D\u53CC\u4EFB\u52A1\uFF0C\u5F80\u8FD4\u5927\u5DF4\u542B\u5348\u9910\u3002",
+    notice: "\u96C6\u5408\u70B9\u5730\u94C1\u53E3\u53D1\u8F66\uFF1B\u8BF7\u7A7F\u957F\u88E4\u8FD0\u52A8\u978B\uFF1B\u5C71\u5730\u4FE1\u53F7\u5F31\uFF0C\u8BF7\u51C6\u65F6\u5F52\u961F\u3002",
+    address: "\u5317\u4EAC\u5E02\u95E8\u5934\u6C9F\u533A\u5999\u5CF0\u5C71\u81EA\u7136\u8425\u5730\uFF08\u96C6\u5408\u70B9\uFF1A\u91D1\u5B89\u6865\u5730\u94C1\u7AD9\uFF09"
+  },
+  {
+    id: "act-108",
+    orgId: "org-5",
+    orgName: "\u60A6\u8BFB\u661F\u7403\u82F1\u6587\u9986",
+    category: "open-course",
+    mode: "online",
+    title: "\u82F1\u6587\u7ED8\u672C\u516C\u5F00\u8BFE\uFF1AThe Very Hungry Caterpillar",
+    subtitle: "\u548C\u5916\u6559\u4E00\u8D77\u201C\u5403\u201D\u51FA\u4E00\u5468\u5355\u8BCD",
+    emoji: "\u{1F41B}",
+    ageMin: 3,
+    ageMax: 8,
+    startOffsetDays: 1,
+    startHour: 20,
+    durationHours: 0.5,
+    price: 0,
+    originalPrice: 99,
+    quota: 100,
+    enrolled: 47,
+    tags: ["english"],
+    introduction: "30 \u5206\u949F\u514D\u8D39\u7EBF\u4E0A\u516C\u5F00\u8BFE\u3002\u5916\u6559\u4EE5\u7ECF\u5178\u7ED8\u672C\u5E26\u5B69\u5B50\u8BA4\u8BC6\u4E00\u5468\u4E03\u5929\u4E0E\u98DF\u7269\u5355\u8BCD\uFF0C\u5BB6\u957F\u540C\u6B65\u83B7\u5F97\u4EB2\u5B50\u5171\u8BFB\u6307\u5BFC\u3002",
+    notice: "\u5F00\u8BFE\u524D 15 \u5206\u949F\u8FDB\u5165\u6559\u5BA4\uFF1B\u9700\u8981\u9EA6\u514B\u98CE\u6743\u9650\uFF1B\u8BFE\u540E\u9886\u53D6\u7ED8\u672C\u62D3\u5C55\u5305\u3002",
+    address: "\u7EBF\u4E0A\u76F4\u64AD",
+    onlineLink: "https://live.zhiya.example/caterpillar"
+  },
+  {
+    id: "act-109",
+    orgId: "org-1",
+    orgName: "\u7AE5\u7A0B\u672A\u6765\u5C11\u513F\u7F16\u7A0B",
+    category: "trial",
+    mode: "offline",
+    title: "\u673A\u5668\u4EBA\u642D\u5EFA\u4F53\u9A8C\u8BFE",
+    subtitle: "\u4ECE\u96F6\u4EF6\u5230\u4F1A\u52A8\u7684\u673A\u5668\u4EBA",
+    emoji: "\u{1F916}",
+    ageMin: 6,
+    ageMax: 12,
+    startOffsetDays: 4,
+    startHour: 14,
+    durationHours: 1.5,
+    price: 39,
+    originalPrice: 299,
+    quota: 10,
+    enrolled: 3,
+    tags: ["robotics", "programming"],
+    introduction: "\u4F7F\u7528\u79EF\u6728\u5F0F\u673A\u5668\u4EBA\u5957\u4EF6\uFF0C\u5B8C\u6210\u4E00\u8F86\u53EF\u4EE5\u907F\u969C\u7684\u5C0F\u8F66\u3002\u5B69\u5B50\u5C06\u7406\u89E3\u4F20\u611F\u5668\u3001\u9A6C\u8FBE\u4E0E\u7A0B\u5E8F\u7684\u5173\u7CFB\uFF0C\u4F53\u9A8C\u201C\u7269\u7406\u4E16\u754C\u7F16\u7A0B\u201D\u3002",
+    notice: "\u5957\u4EF6\u7531\u673A\u6784\u63D0\u4F9B\uFF1B\u9002\u5408\u52A8\u624B\u80FD\u529B\u8F83\u5F3A\u7684\u5B69\u5B50\uFF1B\u5BB6\u957F\u53EF\u89C2\u6469\u6700\u540E 20 \u5206\u949F\u6210\u679C\u5C55\u793A\u3002",
+    address: "\u5317\u4EAC\u5E02\u6D77\u6DC0\u533A\u4E2D\u5173\u6751\u5927\u8857 27 \u53F7 3 \u5C42"
+  },
+  {
+    id: "act-110",
+    orgId: "org-3",
+    orgName: "\u5C0F\u5929\u9E45\u827A\u672F\u4E2D\u5FC3",
+    category: "exhibition",
+    mode: "offline",
+    title: "\u7F8E\u672F\u9986\u513F\u7AE5\u5C55\u89C8\u5BFC\u89C8\u56E2",
+    subtitle: "\u628A\u770B\u5C55\u53D8\u6210\u4E00\u573A\u5BFB\u5B9D",
+    emoji: "\u{1F5BC}\uFE0F",
+    ageMin: 5,
+    ageMax: 12,
+    startOffsetDays: 8,
+    startHour: 13,
+    durationHours: 2,
+    price: 49,
+    originalPrice: 128,
+    quota: 15,
+    enrolled: 8,
+    tags: ["art"],
+    introduction: "\u4E13\u4E1A\u513F\u7AE5\u5BFC\u89C8\u8001\u5E08\u5E26\u9886\u53C2\u89C2\u5F53\u5B63\u513F\u7AE5\u827A\u672F\u5C55\uFF0C\u8BBE\u7F6E\u201C\u5BFB\u627E\u540D\u753B\u7EC6\u8282\u201D\u4EFB\u52A1\u5361\uFF0C\u7ED3\u675F\u540E\u4EB2\u5B50\u5171\u521B\u4E00\u5E45\u5C0F\u4F5C\u54C1\u3002",
+    notice: "\u95E8\u7968\u81EA\u7406\uFF08\u513F\u7AE5\u514D\u7968\uFF09\uFF1B\u8BF7\u63D0\u524D 15 \u5206\u949F\u5728\u7F8E\u672F\u9986\u524D\u53F0\u96C6\u5408\u3002",
+    address: "\u5317\u4EAC\u5E02\u671D\u9633\u533A\u4ECA\u65E5\u7F8E\u672F\u9986 2 \u53F7\u9986"
+  },
+  {
+    id: "act-111",
+    orgId: "org-1",
+    orgName: "\u7AE5\u7A0B\u672A\u6765\u5C11\u513F\u7F16\u7A0B",
+    category: "training",
+    mode: "offline",
+    title: "\u5C11\u513F\u56F4\u68CB\u601D\u7EF4\u8BAD\u7EC3\u8425",
+    subtitle: "\u4E94\u5929\u5165\u95E8\uFF0C\u4E00\u751F\u53D7\u7528\u7684\u601D\u7EF4\u8FD0\u52A8",
+    emoji: "\u26AB",
+    ageMin: 5,
+    ageMax: 12,
+    startOffsetDays: 10,
+    startHour: 9,
+    durationHours: 2,
+    price: 199,
+    originalPrice: 899,
+    quota: 16,
+    enrolled: 6,
+    tags: ["thinking"],
+    introduction: "\u4E94\u5929\u8425\u5730\u5F0F\u8BAD\u7EC3\u8425\uFF1A\u89C4\u5219\u5165\u95E8 \u2192 \u5403\u5B50\u6280\u5DE7 \u2192 \u5E03\u5C40\u601D\u7EF4 \u2192 \u5BF9\u6297\u5B9E\u6218 \u2192 \u7ED3\u4E1A\u5C0F\u6BD4\u8D5B\uFF0C\u953B\u70BC\u4E13\u6CE8\u529B\u4E0E\u8BA1\u7B97\u529B\u3002",
+    notice: "\u8FDE\u7EED\u4E94\u5929\u4E0A\u8BFE\uFF1B\u68CB\u5177\u7531\u673A\u6784\u63D0\u4F9B\uFF1B\u7ED3\u4E1A\u9881\u53D1\u7B49\u7EA7\u8BC1\u4E66\u3002",
+    address: "\u5317\u4EAC\u5E02\u6D77\u6DC0\u533A\u4E2D\u5173\u6751\u5927\u8857 27 \u53F7 5 \u5C42"
+  },
+  {
+    id: "act-112",
+    orgId: "org-5",
+    orgName: "\u60A6\u8BFB\u661F\u7403\u82F1\u6587\u9986",
+    category: "competition",
+    mode: "offline",
+    title: '"\u7528\u82F1\u8BED\u8BB2\u4E2D\u56FD\u6545\u4E8B"\u521D\u9009',
+    subtitle: "3 \u5206\u949F\u82F1\u6587\u6F14\u8BB2\uFF0C\u5C55\u793A\u5B69\u5B50\u81EA\u5DF1",
+    emoji: "\u{1F3A4}",
+    ageMin: 7,
+    ageMax: 14,
+    startOffsetDays: 12,
+    startHour: 10,
+    durationHours: 3,
+    price: 69,
+    originalPrice: 198,
+    quota: 40,
+    enrolled: 22,
+    tags: ["english", "drama"],
+    introduction: "\u5E02\u7EA7\u5C55\u6F14\u6D3B\u52A8\u521D\u9009\u3002\u6BCF\u4F4D\u9009\u624B 3 \u5206\u949F\u82F1\u6587\u81EA\u6211\u5C55\u793A\uFF0C\u8BC4\u59D4\u73B0\u573A\u70B9\u8BC4\u5E76\u7ED9\u51FA\u664B\u7EA7\u5EFA\u8BAE\uFF0C\u6240\u6709\u9009\u624B\u83B7\u5F97\u7535\u5B50\u53C2\u6F14\u8BC1\u4E66\u3002",
+    notice: "\u9898\u76EE\u81EA\u9009\uFF08\u4E2D\u56FD\u8282\u65E5/\u6211\u7684\u5BB6\u4E61/\u6211\u6700\u7231\u7684\u4E66\uFF09\uFF1B\u53EF\u5E26\u9053\u5177\uFF1B\u5BB6\u957F\u53EF\u8FDB\u5165\u89C2\u8D5B\u3002",
+    address: "\u5317\u4EAC\u5E02\u897F\u57CE\u533A\u6587\u5316\u4E2D\u5FC3\u5C0F\u5267\u573A"
+  }
+];
+var PACKAGE_SEEDS = [
+  {
+    id: "pkg-201",
+    title: "\u513F\u7AE5\u79D1\u6280\u63A2\u7D22\u4F53\u9A8C\u5305",
+    emoji: "\u{1F680}",
+    summary: "\u7F16\u7A0B\u3001\u673A\u5668\u4EBA\u3001\u79D1\u5B66\u5B9E\u9A8C\u3001\u521B\u610F\u7F8E\u672F\u4E00\u6B21\u4F53\u9A8C\uFF0C\u627E\u5230\u5B69\u5B50\u7684\u5174\u8DA3\u65B9\u5411\u3002",
+    ageMin: 5,
+    ageMax: 12,
+    price: 99,
+    originalPrice: 399,
+    validDays: 90,
+    purchasedCount: 326,
+    activityIds: ["act-101", "act-109", "act-103", "act-104"]
+  },
+  {
+    id: "pkg-202",
+    title: "\u5468\u672B\u4EB2\u5B50\u6210\u957F\u4F53\u9A8C\u5305",
+    emoji: "\u{1F986}",
+    summary: "\u9732\u8425\u3001\u7814\u5B66\u3001\u5C55\u89C8\u5BFC\u89C8\u4E09\u5927\u4EB2\u5B50\u573A\u666F\uFF0C\u628A\u5468\u672B\u8FC7\u6210\u5C0F\u5047\u671F\u3002",
+    ageMin: 3,
+    ageMax: 12,
+    price: 159,
+    originalPrice: 598,
+    validDays: 60,
+    purchasedCount: 158,
+    activityIds: ["act-106", "act-107", "act-110"]
+  }
+];
+var GOODS_SEEDS = [
+  {
+    id: "goods-301",
+    title: "\u5BB6\u5EAD\u79D1\u5B66\u5B9E\u9A8C\u5957\u88C5 \xB7 100 \u4E2A\u5C0F\u5B9E\u9A8C",
+    emoji: "\u{1F9EB}",
+    category: "science",
+    price: 129,
+    originalPrice: 199,
+    summary: "\u4E0E\u79D1\u5B66\u76D2\u5B50\u5B9E\u9A8C\u8BFE\u914D\u5957\u7684\u5BB6\u5EAD\u7248\u6750\u6599\u76D2\u3002",
+    detail: "\u5305\u542B 100 \u4E2A\u5B89\u5168\u79D1\u5B66\u5C0F\u5B9E\u9A8C\u7684\u6750\u6599\u4E0E\u56FE\u6587\u89C6\u9891\u6559\u7A0B\uFF0C\u8986\u76D6\u5316\u5B66\u53CD\u5E94\u3001\u7269\u7406\u73B0\u8C61\u4E0E\u81EA\u7136\u89C2\u5BDF\uFF0C\u9002\u5408 5-12 \u5C81\u513F\u7AE5\u5728\u5BB6\u957F\u966A\u540C\u4E0B\u64CD\u4F5C\u3002",
+    spec: "\u6750\u6599\u76D2 \xD71 / \u56FE\u6587\u624B\u518C \xD71 / \u89C6\u9891\u8BFE\u7A0B\u5361 \xD71",
+    sales: 1204
+  },
+  {
+    id: "goods-302",
+    title: "Scratch \u5C11\u513F\u7F16\u7A0B\u542F\u8499\u6559\u6750",
+    emoji: "\u{1F4D7}",
+    category: "books",
+    price: 45,
+    originalPrice: 59,
+    summary: "\u7F16\u7A0B\u4F53\u9A8C\u8BFE\u8BFE\u540E\u7EC3\u4E60\u7684\u5B98\u65B9\u914D\u5957\u6559\u6750\u3002",
+    detail: "12 \u4E2A\u9879\u76EE\u5F0F\u7AE0\u8282\uFF0C\u4ECE\u7B2C\u4E00\u4E2A\u52A8\u753B\u5230\u5B8C\u6574\u5C0F\u6E38\u620F\uFF0C\u914D\u626B\u7801\u89C6\u9891\u8BB2\u89E3\uFF0C\u4E0E\u7EBF\u4E0B\u4F53\u9A8C\u8BFE\u5927\u7EB2\u4E00\u4E00\u5BF9\u5E94\u3002",
+    spec: "16 \u5F00 / 188 \u9875 / \u5168\u5F69\u5370\u5237",
+    sales: 862
+  },
+  {
+    id: "goods-303",
+    title: "\u513F\u7AE5\u7ED8\u753B\u8721\u7B14 48 \u8272",
+    emoji: "\u{1F58D}\uFE0F",
+    category: "painting",
+    price: 29.9,
+    originalPrice: 49,
+    summary: "\u521B\u610F\u7F8E\u672F\u8BFE\u540C\u6B3E\uFF0C\u53EF\u6C34\u6D17\u4E0D\u810F\u624B\u3002",
+    detail: "48 \u8272\u4E1D\u6ED1\u8721\u7B14\uFF0C\u9644\u8D60\u586B\u8272\u672C\u4E00\u672C\uFF0C\u7B14\u8EAB\u5706\u6DA6\u9632\u6233\u4F24\uFF0C\u53EF\u6C34\u6D17\u914D\u65B9\uFF0C\u753B\u5230\u8863\u670D\u684C\u9762\u4E0A\u4E5F\u80FD\u8F7B\u677E\u6E05\u6D17\u3002",
+    spec: "48 \u8272 / \u586B\u8272\u672C \xD71",
+    sales: 2310
+  },
+  {
+    id: "goods-304",
+    title: "\u5165\u95E8\u673A\u5668\u4EBA\u62FC\u88C5\u5957\u4EF6",
+    emoji: "\u{1F6E0}\uFE0F",
+    category: "robotics",
+    price: 199,
+    originalPrice: 299,
+    summary: "\u673A\u5668\u4EBA\u4F53\u9A8C\u8BFE\u540C\u6B3E\u6559\u5177\u5BB6\u5EAD\u7248\u3002",
+    detail: "\u53EF\u642D\u5EFA 6 \u79CD\u9020\u578B\uFF0C\u542B\u4E3B\u63A7\u3001\u9A6C\u8FBE\u4E0E\u7EA2\u5916\u4F20\u611F\u5668\uFF0C\u56FE\u5F62\u5316\u7F16\u7A0B App \u914D\u5957\uFF0C\u652F\u6301\u4F53\u9A8C\u8BFE\u540E\u7EED\u8BFE\u7A0B\u5168\u90E8\u9879\u76EE\u3002",
+    spec: "\u96F6\u4EF6 218 \u4EF6 / \u5145\u7535\u7535\u6C60 \xD71",
+    sales: 536
+  },
+  {
+    id: "goods-305",
+    title: "\u9519\u9898\u6574\u7406\u7B14\u8BB0\u672C\u5957\u88C5",
+    emoji: "\u{1F4D3}",
+    category: "stationery",
+    price: 15.9,
+    originalPrice: 25,
+    summary: "\u8BED\u6570\u82F1\u4E09\u79D1\u5206\u518C\uFF0C\u517B\u6210\u6574\u7406\u597D\u4E60\u60EF\u3002",
+    detail: "\u8BED/\u6570/\u82F1\u4E09\u79D1\u5206\u518C\u8BBE\u8BA1\uFF0C\u5DE6\u53F3\u5206\u533A\u8BB0\u5F55\u539F\u9898\u4E0E\u53CD\u601D\uFF0C\u9644\u8BA2\u6B63\u8BA1\u5212\u6253\u5361\u8868\uFF0C\u9002\u5408\u5C0F\u5B66\u4E2D\u9AD8\u5E74\u7EA7\u3002",
+    spec: "A5 / \u4E09\u518C\u88C5",
+    sales: 3305
+  },
+  {
+    id: "goods-306",
+    title: "\u513F\u7AE5\u62A4\u773C\u5B66\u4E60\u53F0\u706F",
+    emoji: "\u{1F4A1}",
+    category: "supplies",
+    price: 89,
+    originalPrice: 139,
+    summary: "\u7F51\u8BFE\u665A\u5199\u4F5C\u4E1A\u90FD\u8212\u670D\u7684\u5149\u7EBF\u3002",
+    detail: "AA \u7EA7\u7167\u5EA6\uFF0C\u65E0\u9891\u95EA\u65E0\u53EF\u89C6\u9891\u95EA\uFF0C\u8272\u6E29\u4E09\u6863\u8C03\u8282\uFF0C60 \u79D2\u5EF6\u65F6\u5173\u706F\uFF0C\u5B66\u4E60\u7F51\u8BFE\u4E24\u76F8\u5B9C\u3002",
+    spec: "AA \u7EA7\u7167\u5EA6 / \u4E09\u6863\u8272\u6E29 / Type-C \u4F9B\u7535",
+    sales: 987
+  },
+  {
+    id: "goods-307",
+    title: "\u56F4\u68CB\u5165\u95E8\u6559\u5177\u5957\u88C5",
+    emoji: "\u26AB",
+    category: "teaching-aids",
+    price: 69,
+    originalPrice: 99,
+    summary: "\u601D\u7EF4\u8BAD\u7EC3\u8425\u8BFE\u540E\u5BF9\u5F08\u5957\u88C5\u3002",
+    detail: "19 \u8DEF\u78C1\u6027\u6298\u53E0\u68CB\u76D8\u914D\u53CC\u9762\u68CB\u5B50\uFF0C\u9644\u300A\u4EB2\u5B50\u5BF9\u5F08\u5165\u95E8 20 \u8BFE\u300B\u5C0F\u518C\u5B50\uFF0C\u65B9\u4FBF\u5BB6\u5EAD\u590D\u76D8\u7EC3\u4E60\u3002",
+    spec: "\u6298\u53E0\u68CB\u76D8 / \u68CB\u5B50 361 \u9897 / \u624B\u518C \xD71",
+    sales: 431
+  },
+  {
+    id: "goods-308",
+    title: "Python \u8DA3\u5473\u7F16\u7A0B\u7EC3\u4E60\u518C",
+    emoji: "\u{1F40D}",
+    category: "programming",
+    price: 39,
+    originalPrice: 55,
+    summary: "Python \u76F4\u64AD\u8425\u914D\u5957\u8BFE\u540E\u7EC3\u4E60\u3002",
+    detail: "40 \u4E2A\u9636\u68AF\u5F0F\u7EC3\u4E60\u9879\u76EE\uFF0C\u914D\u5728\u7EBF\u5224\u9898\u7801\uFF0C\u6BCF\u7AE0\u9644\u201C\u5BB6\u957F\u966A\u8BFB\u6307\u5357\u201D\uFF0C\u4E0E\u56DB\u5468\u76F4\u64AD\u8425\u8FDB\u5EA6\u540C\u6B65\u3002",
+    spec: "16 \u5F00 / 132 \u9875 / \u9644\u5728\u7EBF\u9898\u5E93",
+    sales: 645
+  }
+];
+var COUPON_TEMPLATES = [
+  {
+    id: "tpl-newbie",
+    title: "\u65B0\u4EBA\u7ACB\u51CF\u5238",
+    scope: "platform",
+    amountOff: 10,
+    minSpend: 0,
+    validDays: 30,
+    total: 1e4,
+    claimed: 3612,
+    newbieOnly: true
+  },
+  {
+    id: "tpl-platform-30",
+    title: "\u5E73\u53F0\u6EE1 199 \u51CF 30",
+    scope: "platform",
+    amountOff: 30,
+    minSpend: 199,
+    validDays: 15,
+    total: 5e3,
+    claimed: 2041,
+    newbieOnly: false
+  },
+  {
+    id: "tpl-org-1-20",
+    title: "\u7AE5\u7A0B\u672A\u6765\u7F16\u7A0B\u4E13\u4EAB\u5238",
+    scope: "org",
+    orgId: "org-1",
+    amountOff: 20,
+    minSpend: 0,
+    validDays: 30,
+    total: 500,
+    claimed: 187,
+    newbieOnly: false
+  },
+  {
+    id: "tpl-act-103-5",
+    title: "\u706B\u5C71\u5B9E\u9A8C\u8BFE\u7ACB\u51CF 5 \u5143",
+    scope: "activity",
+    activityId: "act-103",
+    amountOff: 5,
+    minSpend: 0,
+    validDays: 7,
+    total: 100,
+    claimed: 43,
+    newbieOnly: false
+  },
+  {
+    id: "tpl-pkg-201-15",
+    title: "\u79D1\u6280\u63A2\u7D22\u4F53\u9A8C\u5305\u7ACB\u51CF 15",
+    scope: "package",
+    packageId: "pkg-201",
+    amountOff: 15,
+    minSpend: 0,
+    validDays: 30,
+    total: 300,
+    claimed: 88,
+    newbieOnly: false
+  }
+];
+function buildSessions(spec, from) {
+  if (spec.sessions === void 0) {
+    const start = addDays(new Date(from), spec.startOffsetDays);
+    start.setHours(spec.startHour, 0, 0, 0);
+    const end = new Date(start.getTime() + spec.durationHours * 36e5);
+    return [
+      {
+        id: `${spec.id}-s1`,
+        label: "\u6B63\u573A\u6B21",
+        startTime: iso(start),
+        endTime: iso(end),
+        quota: spec.quota,
+        enrolled: Math.min(spec.enrolled, spec.quota)
+      }
+    ];
+  }
+  return spec.sessions.map((session) => {
+    const start = nextWeekday(from, session.weekday, session.hour, session.minute);
+    const end = new Date(start.getTime() + session.durationHours * 36e5);
+    return {
+      id: session.id,
+      label: session.label,
+      startTime: iso(start),
+      endTime: iso(end),
+      quota: session.quota,
+      enrolled: session.enrolled
+    };
+  });
+}
+function buildSeedCatalog(context) {
+  const now = context.now();
+  const activities = ACTIVITY_SPECS.map((spec) => {
+    const start = addDays(new Date(now), spec.startOffsetDays);
+    start.setHours(spec.startHour, 0, 0, 0);
+    const end = new Date(start.getTime() + spec.durationHours * 36e5);
+    return {
+      id: spec.id,
+      orgId: spec.orgId,
+      orgName: spec.orgName,
+      category: spec.category,
+      mode: spec.mode,
+      title: spec.title,
+      subtitle: spec.subtitle,
+      emoji: spec.emoji,
+      ageMin: spec.ageMin,
+      ageMax: spec.ageMax,
+      startTime: iso(start),
+      endTime: iso(end),
+      address: spec.address,
+      onlineLink: spec.onlineLink,
+      price: spec.price,
+      originalPrice: spec.originalPrice,
+      quota: spec.quota,
+      enrolled: spec.enrolled,
+      tags: spec.tags,
+      introduction: spec.introduction,
+      notice: spec.notice,
+      status: "published",
+      orgCreated: false,
+      sessions: buildSessions(spec, now),
+      createdAt: iso(now)
+    };
+  });
+  return {
+    orgs: [...ORGS],
+    activities,
+    packages: [...PACKAGE_SEEDS],
+    goods: [...GOODS_SEEDS],
+    couponTemplates: [...COUPON_TEMPLATES]
+  };
+}
+function buildWelcomeMessage(now) {
+  return {
+    id: "msg-welcome",
+    category: "system",
+    title: "\u6B22\u8FCE\u6765\u5230\u77E5\u9E2D",
+    body: "\u77E5\u5B69\u5B50\uFF0C\u4E5F\u77E5\u6559\u80B2\u3002\u5148\u4E3A\u5B69\u5B50\u6DFB\u52A0\u8D44\u6599\uFF0C\u518D\u770B\u770B\u9644\u8FD1\u7684\u4F53\u9A8C\u8BFE\u5427\uFF01",
+    createdAt: iso(now),
+    read: false
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/state.ts
+function defaultStorage() {
+  try {
+    return globalThis.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+var KEYS = {
+  family: "zhiya.family",
+  orders: "zhiya.orders",
+  coupons: "zhiya.coupons",
+  reviews: "zhiya.reviews",
+  favorites: "zhiya.favorites",
+  goodsFavorites: "zhiya.goods-favorites",
+  messages: "zhiya.messages",
+  enrolled: "zhiya.enrolled-overrides",
+  orgActivities: "zhiya.org-activities"
+};
+function readJson(storage, key) {
+  if (storage === null) {
+    return null;
+  }
+  try {
+    const raw = storage.getItem(key);
+    if (raw === null) {
+      return null;
+    }
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+function writeJson(storage, key, value) {
+  if (storage === null) {
+    return;
+  }
+  try {
+    storage.setItem(key, JSON.stringify(value));
+  } catch {
+  }
+}
+function createZhiyaMockState(options = {}) {
+  const storage = options.storage === void 0 ? defaultStorage() : options.storage;
+  const now = options.now ?? (() => /* @__PURE__ */ new Date());
+  const context = { now };
+  const seeds = buildSeedCatalog(context);
+  const family = readJson(storage, KEYS.family);
+  const orders = readJson(storage, KEYS.orders) ?? [];
+  const coupons = readJson(storage, KEYS.coupons) ?? [];
+  const reviews = readJson(storage, KEYS.reviews) ?? [];
+  const favorites = readJson(storage, KEYS.favorites) ?? [];
+  const goodsFavorites = readJson(storage, KEYS.goodsFavorites) ?? [];
+  const messages = readJson(storage, KEYS.messages) ?? [buildWelcomeMessage(now())];
+  const enrolled = readJson(storage, KEYS.enrolled) ?? { activity: {}, session: {} };
+  const orgActivities = readJson(storage, KEYS.orgActivities) ?? [];
+  const state = {
+    now,
+    storage,
+    orgs: seeds.orgs,
+    activities: seeds.activities,
+    packages: seeds.packages,
+    goods: seeds.goods,
+    couponTemplates: seeds.couponTemplates,
+    family,
+    orders,
+    coupons,
+    reviews,
+    favorites,
+    goodsFavorites,
+    messages,
+    enrolled,
+    orgActivities,
+    persist() {
+      writeJson(storage, KEYS.family, state.family);
+      writeJson(storage, KEYS.orders, state.orders);
+      writeJson(storage, KEYS.coupons, state.coupons);
+      writeJson(storage, KEYS.reviews, state.reviews);
+      writeJson(storage, KEYS.favorites, state.favorites);
+      writeJson(storage, KEYS.goodsFavorites, state.goodsFavorites);
+      writeJson(storage, KEYS.messages, state.messages);
+      writeJson(storage, KEYS.enrolled, state.enrolled);
+      writeJson(storage, KEYS.orgActivities, state.orgActivities);
+    },
+    notify(partial) {
+      const message = {
+        ...partial,
+        id: `msg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+        createdAt: now().toISOString(),
+        read: false
+      };
+      state.messages.unshift(message);
+      return message;
+    },
+    findActivity(activityId) {
+      return state.activities.find((activity) => activity.id === activityId) ?? state.orgActivities.find((activity) => activity.id === activityId) ?? null;
+    },
+    allActivities() {
+      return [...state.activities, ...state.orgActivities];
+    }
+  };
+  return state;
+}
+function applyEnrollmentDelta(state, activityId, sessionId, delta) {
+  const activity = state.findActivity(activityId);
+  if (activity !== null) {
+    activity.enrolled = Math.max(0, activity.enrolled + delta);
+    state.enrolled.activity[activityId] = (state.enrolled.activity[activityId] ?? 0) + delta;
+  }
+  const target = activity?.sessions.find((session) => session.id === sessionId);
+  if (target !== void 0) {
+    target.enrolled = Math.max(0, target.enrolled + delta);
+    state.enrolled.session[sessionId] = (state.enrolled.session[sessionId] ?? 0) + delta;
+  }
+}
+function hydrateEnrollmentOverrides(state) {
+  for (const activity of state.allActivities()) {
+    const delta = state.enrolled.activity[activity.id];
+    if (delta !== void 0 && delta !== 0) {
+      activity.enrolled = Math.max(0, activity.enrolled + delta);
+    }
+    for (const session of activity.sessions) {
+      const sessionDelta = state.enrolled.session[session.id];
+      if (sessionDelta !== void 0 && sessionDelta !== 0) {
+        session.enrolled = Math.max(0, session.enrolled + sessionDelta);
+      }
+    }
+  }
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/familyClient.ts
+var CHILD_EMOJIS = ["\u{1F423}", "\u{1F430}", "\u{1F98A}", "\u{1F43C}", "\u{1F428}", "\u{1F42F}"];
+function makeId(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function createMockFamilyClient(state) {
+  const ensureFamily = (name) => {
+    if (state.family === null) {
+      state.family = {
+        id: makeId("fam"),
+        name: name ?? "\u6211\u7684\u5BB6\u5EAD",
+        children: []
+      };
+      state.persist();
+    }
+    return state.family;
+  };
+  return {
+    async getFamily() {
+      return state.family;
+    },
+    async ensureFamily(name) {
+      return ensureFamily(name);
+    },
+    async listChildren() {
+      return state.family?.children ?? [];
+    },
+    async getChild(childId) {
+      return state.family?.children.find((child) => child.id === childId) ?? null;
+    },
+    async addChild(input) {
+      const family = ensureFamily();
+      const child = {
+        id: makeId("child"),
+        nickname: input.nickname,
+        emoji: input.emoji ?? CHILD_EMOJIS[family.children.length % CHILD_EMOJIS.length],
+        gender: input.gender,
+        birthDate: input.birthDate,
+        interests: [...input.interests],
+        stage: input.stage,
+        notes: input.notes
+      };
+      family.children.push(child);
+      state.persist();
+      return child;
+    },
+    async updateChild(childId, patch) {
+      const family = state.family;
+      const child = family?.children.find((entry) => entry.id === childId);
+      if (family === null || family === void 0 || child === void 0) {
+        throw new Error(`child not found: ${childId}`);
+      }
+      if (patch.nickname !== void 0) child.nickname = patch.nickname;
+      if (patch.emoji !== void 0) child.emoji = patch.emoji;
+      if (patch.gender !== void 0) child.gender = patch.gender;
+      if (patch.birthDate !== void 0) child.birthDate = patch.birthDate;
+      if (patch.interests !== void 0) child.interests = [...patch.interests];
+      if (patch.stage !== void 0) child.stage = patch.stage;
+      if (patch.notes !== void 0) child.notes = patch.notes;
+      state.persist();
+      return child;
+    },
+    async removeChild(childId) {
+      const family = state.family;
+      if (family === null || family === void 0) {
+        return;
+      }
+      family.children = family.children.filter((child) => child.id !== childId);
+      state.persist();
+    }
+  };
+}
+function ageOf(child, at) {
+  const birth = /* @__PURE__ */ new Date(`${child.birthDate}T00:00:00`);
+  if (Number.isNaN(birth.getTime())) {
+    return 0;
+  }
+  let age = at.getFullYear() - birth.getFullYear();
+  const beforeBirthday = at.getMonth() < birth.getMonth() || at.getMonth() === birth.getMonth() && at.getDate() < birth.getDate();
+  if (beforeBirthday) {
+    age -= 1;
+  }
+  return Math.max(age, 0);
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/activityClient.ts
+var FAVORITES_KEY_LIMIT = 200;
+function matchesQuery(activity, query, now) {
+  if (activity.status !== "published") {
+    return false;
+  }
+  if (new Date(activity.endTime).getTime() <= now.getTime()) {
+    return false;
+  }
+  if (query === void 0) {
+    return true;
+  }
+  if (query.category !== void 0 && activity.category !== query.category) {
+    return false;
+  }
+  if (query.mode !== void 0 && activity.mode !== query.mode) {
+    return false;
+  }
+  if (query.freeOnly === true && activity.price !== 0) {
+    return false;
+  }
+  if (query.childAge !== void 0) {
+    if (query.childAge < activity.ageMin || query.childAge > activity.ageMax) {
+      return false;
+    }
+  }
+  if (query.keyword !== void 0 && query.keyword.trim().length > 0) {
+    const keyword = query.keyword.trim().toLowerCase();
+    const haystack = `${activity.title} ${activity.subtitle} ${activity.orgName} ${activity.introduction} ${activity.tags.join(" ")}`.toLowerCase();
+    if (!haystack.includes(keyword)) {
+      return false;
+    }
+  }
+  return true;
+}
+function createMockActivityClient(state) {
+  let hydrated = false;
+  const hydrate = () => {
+    if (hydrated) {
+      return;
+    }
+    hydrated = true;
+    for (const activity of state.allActivities()) {
+      const delta = state.enrolled.activity[activity.id];
+      if (delta !== void 0 && delta !== 0) {
+        activity.enrolled = Math.max(0, activity.enrolled + delta);
+      }
+      for (const session of activity.sessions) {
+        const sessionDelta = state.enrolled.session[session.id];
+        if (sessionDelta !== void 0 && sessionDelta !== 0) {
+          session.enrolled = Math.max(0, session.enrolled + sessionDelta);
+        }
+      }
+    }
+  };
+  return {
+    async listActivities(query) {
+      hydrate();
+      const now = state.now();
+      const matched = state.allActivities().filter((activity) => matchesQuery(activity, query, now));
+      return matched.sort(
+        (left, right) => new Date(left.startTime).getTime() - new Date(right.startTime).getTime()
+      );
+    },
+    async getActivity(activityId) {
+      hydrate();
+      return state.findActivity(activityId);
+    },
+    async listHomeRecommendations() {
+      hydrate();
+      const now = state.now();
+      return state.allActivities().filter((activity) => matchesQuery(activity, void 0, now)).sort((left, right) => {
+        const heat = right.enrolled / Math.max(right.quota, 1) - left.enrolled / Math.max(left.quota, 1);
+        if (heat !== 0) {
+          return heat;
+        }
+        return new Date(left.startTime).getTime() - new Date(right.startTime).getTime();
+      }).slice(0, 10);
+    },
+    async listOrgs(keyword) {
+      const orgs = [...state.orgs];
+      if (keyword === void 0 || keyword.trim().length === 0) {
+        return orgs;
+      }
+      const needle = keyword.trim().toLowerCase();
+      return orgs.filter(
+        (org) => `${org.name} ${org.summary} ${org.district}`.toLowerCase().includes(needle)
+      );
+    },
+    async listFavoriteActivities() {
+      hydrate();
+      return state.favorites.map((id) => state.findActivity(id)).filter((activity) => activity !== null);
+    },
+    async toggleFavorite(activityId) {
+      const index = state.favorites.indexOf(activityId);
+      if (index >= 0) {
+        state.favorites.splice(index, 1);
+      } else {
+        state.favorites.push(activityId);
+        if (state.favorites.length > FAVORITES_KEY_LIMIT) {
+          state.favorites.shift();
+        }
+      }
+      state.persist();
+      return state.favorites.includes(activityId);
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/packageClient.ts
+function createMockPackageClient(state) {
+  return {
+    async listPackages() {
+      return [...state.packages];
+    },
+    async getPackage(packageId) {
+      return state.packages.find((entry) => entry.id === packageId) ?? null;
+    },
+    async listHotPackages() {
+      return [...state.packages].sort((left, right) => right.purchasedCount - left.purchasedCount);
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/mallClient.ts
+function createMockMallClient(state) {
+  return {
+    async listGoods(category, keyword) {
+      return state.goods.filter((goods) => {
+        if (category !== void 0 && goods.category !== category) {
+          return false;
+        }
+        if (keyword !== void 0 && keyword.trim().length > 0) {
+          const needle = keyword.trim().toLowerCase();
+          const haystack = `${goods.title} ${goods.summary} ${goods.detail}`.toLowerCase();
+          if (!haystack.includes(needle)) {
+            return false;
+          }
+        }
+        return true;
+      });
+    },
+    async getGoods(goodsId) {
+      return state.goods.find((goods) => goods.id === goodsId) ?? null;
+    },
+    async listFavoriteGoods() {
+      return state.goodsFavorites.map((id) => state.goods.find((goods) => goods.id === id)).filter((goods) => goods !== void 0);
+    },
+    async toggleFavoriteGoods(goodsId) {
+      const index = state.goodsFavorites.indexOf(goodsId);
+      if (index >= 0) {
+        state.goodsFavorites.splice(index, 1);
+      } else {
+        state.goodsFavorites.push(goodsId);
+      }
+      state.persist();
+      return state.goodsFavorites.includes(goodsId);
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/orderStatus.ts
+function deriveOrderStatus(state, order) {
+  if (order.status !== "paid") {
+    return order.status;
+  }
+  if (order.reviewId !== void 0) {
+    return "completed";
+  }
+  if (order.type === "package") {
+    return "upcoming";
+  }
+  const item = order.items[0];
+  const activity = state.findActivity(item?.activityId ?? "");
+  if (activity === null) {
+    return "upcoming";
+  }
+  const now = state.now().getTime();
+  if (order.orgCompleted || new Date(activity.endTime).getTime() <= now) {
+    return "pending-review";
+  }
+  const session = activity.sessions.find((entry) => entry.id === item?.sessionId);
+  const start = new Date(session?.startTime ?? activity.startTime).getTime();
+  if (order.checkInState === "checked-in" || start <= now) {
+    return "ongoing";
+  }
+  return "upcoming";
+}
+function withDerivedStatus(state, order) {
+  const derived = deriveOrderStatus(state, order);
+  return { ...order, status: derived };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/orderClient.ts
+function makeId2(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function makeVoucherCode() {
+  const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  let code = "ZY";
+  for (let index = 0; index < 6; index += 1) {
+    code += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return code;
+}
+function rangesOverlap(aStart, aEnd, bStart, bEnd) {
+  return aStart.getTime() < bEnd.getTime() && bStart.getTime() < aEnd.getTime();
+}
+function createMockOrderClient(state, deps = {}) {
+  const isNewUser = deps.isNewUser ?? (() => state.orders.length === 0);
+  function couponApplies(coupon, ref, amount, orgId) {
+    if (coupon.state !== "unused") {
+      return false;
+    }
+    if (coupon.expireAt <= state.now().toISOString()) {
+      return false;
+    }
+    switch (coupon.scope) {
+      case "platform":
+        break;
+      case "org":
+        if (coupon.orgId === void 0 || coupon.orgId !== orgId) {
+          return false;
+        }
+        break;
+      case "activity":
+        if (ref.kind !== "activity" || coupon.activityId !== ref.id) {
+          return false;
+        }
+        break;
+      case "package":
+        if (ref.kind !== "package" || coupon.packageId !== ref.id) {
+          return false;
+        }
+        break;
+    }
+    if (coupon.minSpend > amount) {
+      return false;
+    }
+    if (coupon.templateId === "tpl-newbie" && !isNewUser()) {
+      return false;
+    }
+    return true;
+  }
+  function computeDiscount(coupon, amount) {
+    if (coupon === null) {
+      return 0;
+    }
+    return Math.min(coupon.amountOff, amount);
+  }
+  async function resolveCouponForDraft(couponId, ref, amount, orgId) {
+    if (couponId === void 0) {
+      return { coupon: null, discount: 0 };
+    }
+    const coupon = state.coupons.find((entry) => entry.id === couponId);
+    if (coupon === void 0 || !couponApplies(coupon, ref, amount, orgId)) {
+      throw new RegistrationError("coupon-invalid", `coupon not applicable: ${String(couponId)}`);
+    }
+    return { coupon, discount: computeDiscount(coupon, amount) };
+  }
+  return {
+    async previewRegistration(draft) {
+      const activity = state.findActivity(draft.activityId);
+      if (activity === null) {
+        throw new RegistrationError("activity-not-found", `activity not found: ${draft.activityId}`);
+      }
+      const session = activity.sessions.find((entry) => entry.id === draft.sessionId);
+      if (session === void 0) {
+        throw new RegistrationError("session-not-found", `session not found: ${draft.sessionId}`);
+      }
+      const { coupon, discount } = await resolveCouponForDraft(
+        draft.couponId,
+        { kind: "activity", id: activity.id },
+        activity.price,
+        activity.orgId
+      );
+      return {
+        amount: activity.price,
+        discount,
+        payable: activity.price - discount,
+        coupon
+      };
+    },
+    async createRegistrationOrder(draft) {
+      const activity = state.findActivity(draft.activityId);
+      if (activity === null) {
+        throw new RegistrationError("activity-not-found", `activity not found: ${draft.activityId}`);
+      }
+      const session = activity.sessions.find((entry) => entry.id === draft.sessionId);
+      if (session === void 0) {
+        throw new RegistrationError("session-not-found", `session not found: ${draft.sessionId}`);
+      }
+      const child = state.family?.children.find((entry) => entry.id === draft.childId);
+      if (child === void 0 || child === null) {
+        throw new RegistrationError("child-not-found", `child not found: ${draft.childId}`);
+      }
+      const now = state.now();
+      if (activity.status !== "published" || new Date(activity.startTime).getTime() <= now.getTime()) {
+        throw new RegistrationError("not-open", `activity not open: ${activity.id}`);
+      }
+      if (activity.enrolled >= activity.quota) {
+        throw new RegistrationError("sold-out", `activity sold out: ${activity.id}`);
+      }
+      if (session.enrolled >= session.quota) {
+        throw new RegistrationError("sold-out", `session sold out: ${session.id}`);
+      }
+      const childAge = ageOf(child, now);
+      if (childAge < activity.ageMin || childAge > activity.ageMax) {
+        throw new RegistrationError("age-not-fit", `child age ${childAge} outside [${activity.ageMin}, ${activity.ageMax}]`);
+      }
+      const duplicate = state.orders.find(
+        (order2) => order2.type === "activity" && (order2.status === "paid" || order2.status === "pending-payment") && order2.items.some(
+          (item2) => item2.activityId === activity.id && (item2.childId === void 0 || item2.childId === child.id)
+        )
+      );
+      if (duplicate !== void 0) {
+        throw new RegistrationError("duplicate", `duplicate registration: ${activity.id}/${child.id}`);
+      }
+      const sessionStart = new Date(session.startTime);
+      const sessionEnd = new Date(session.endTime);
+      const conflict = state.orders.find((order2) => {
+        if (order2.type !== "activity" || order2.status !== "paid" && order2.status !== "pending-payment") {
+          return false;
+        }
+        return order2.items.some((item2) => {
+          if (item2.childId !== child.id) {
+            return false;
+          }
+          const other = state.findActivity(item2.activityId ?? "");
+          const otherSession = other?.sessions.find((entry) => entry.id === item2.sessionId);
+          if (other === null || other === void 0 || otherSession === void 0) {
+            return false;
+          }
+          return rangesOverlap(sessionStart, sessionEnd, new Date(otherSession.startTime), new Date(otherSession.endTime));
+        });
+      });
+      if (conflict !== void 0) {
+        throw new RegistrationError("time-conflict", `time conflict with order ${conflict.id}`);
+      }
+      const item = buildItem(activity, session.id, child.id, child.nickname);
+      const { coupon, discount } = await resolveCouponForDraft(
+        draft.couponId,
+        { kind: "activity", id: activity.id },
+        activity.price,
+        activity.orgId
+      );
+      const order = {
+        id: makeId2("ord"),
+        type: "activity",
+        status: "pending-payment",
+        items: [item],
+        amount: activity.price,
+        discount,
+        payable: activity.price - discount,
+        couponId: coupon?.id,
+        checkInState: "none",
+        orgCompleted: false,
+        createdAt: now.toISOString(),
+        contactPhone: "138****8000"
+      };
+      state.orders.unshift(order);
+      state.persist();
+      state.notify({
+        category: "registration",
+        title: "\u62A5\u540D\u8BA2\u5355\u5DF2\u521B\u5EFA",
+        body: `\u300C${activity.title}\u300D\u8BA2\u5355\u5DF2\u521B\u5EFA\uFF0C\u8BF7\u5C3D\u5FEB\u5B8C\u6210\u652F\u4ED8\u3002`,
+        orderId: order.id
+      });
+      return withDerivedStatus(state, order);
+    },
+    async createPackageOrder(packageId, couponId) {
+      const pkg = state.packages.find((entry) => entry.id === packageId);
+      if (pkg === void 0) {
+        throw new RegistrationError("activity-not-found", `package not found: ${packageId}`);
+      }
+      const now = state.now();
+      const placeholderItem = {
+        id: makeId2("item"),
+        orderType: "package",
+        packageId: pkg.id,
+        title: pkg.title,
+        emoji: pkg.emoji,
+        orgId: "platform",
+        orgName: "\u77E5\u9E2D\u5E73\u53F0",
+        price: pkg.price
+      };
+      const { coupon, discount } = await resolveCouponForDraft(
+        couponId,
+        { kind: "package", id: pkg.id },
+        pkg.price,
+        "platform"
+      );
+      const order = {
+        id: makeId2("ord"),
+        type: "package",
+        status: "pending-payment",
+        items: [placeholderItem],
+        amount: pkg.price,
+        discount,
+        payable: pkg.price - discount,
+        couponId: coupon?.id,
+        checkInState: "none",
+        orgCompleted: false,
+        createdAt: now.toISOString(),
+        contactPhone: "138****8000"
+      };
+      state.orders.unshift(order);
+      state.persist();
+      state.notify({
+        category: "registration",
+        title: "\u4F53\u9A8C\u5305\u8BA2\u5355\u5DF2\u521B\u5EFA",
+        body: `\u300C${pkg.title}\u300D\u8BA2\u5355\u5DF2\u521B\u5EFA\uFF0C\u8BF7\u5C3D\u5FEB\u5B8C\u6210\u652F\u4ED8\u3002`,
+        orderId: order.id
+      });
+      return withDerivedStatus(state, order);
+    },
+    async payOrder(orderId, method) {
+      const order = requireOrder(orderId);
+      if (order.status !== "pending-payment") {
+        throw new RegistrationError("not-open", `order not payable: ${orderId}`);
+      }
+      const now = state.now();
+      order.status = "paid";
+      order.payMethod = method;
+      order.paidAt = now.toISOString();
+      if (order.couponId !== void 0) {
+        const coupon = state.coupons.find((entry) => entry.id === order.couponId);
+        if (coupon !== void 0) {
+          coupon.state = "used";
+          coupon.usedByOrderId = order.id;
+        }
+      }
+      if (order.type === "activity") {
+        const item = order.items[0];
+        if (item !== void 0) {
+          applyEnrollmentDelta(state, item.activityId ?? "", item.sessionId ?? "", 1);
+        }
+        order.voucherCode = makeVoucherCode();
+        state.notify({
+          category: "payment",
+          title: "\u652F\u4ED8\u6210\u529F",
+          body: `\u300C${item?.title ?? "\u6D3B\u52A8"}\u300D\u62A5\u540D\u6210\u529F\uFF0C\u51ED\u8BC1\u7801 ${order.voucherCode}\u3002`,
+          orderId: order.id
+        });
+      } else {
+        state.notify({
+          category: "payment",
+          title: "\u652F\u4ED8\u6210\u529F",
+          body: `\u300C${order.items[0]?.title ?? "\u4F53\u9A8C\u5305"}\u300D\u8D2D\u4E70\u6210\u529F\uFF0C\u53EF\u5728\u6211\u7684\u8BA2\u5355\u4E2D\u4F7F\u7528\u3002`,
+          orderId: order.id
+        });
+      }
+      state.persist();
+      return withDerivedStatus(state, order);
+    },
+    async cancelOrder(orderId) {
+      const order = requireOrder(orderId);
+      if (order.status !== "pending-payment") {
+        throw new RegistrationError("not-open", `order not cancellable: ${orderId}`);
+      }
+      order.status = "cancelled";
+      state.persist();
+      state.notify({
+        category: "refund",
+        title: "\u8BA2\u5355\u5DF2\u53D6\u6D88",
+        body: `\u8BA2\u5355 ${order.id} \u5DF2\u53D6\u6D88\u3002`,
+        orderId: order.id
+      });
+      return withDerivedStatus(state, order);
+    },
+    async refundOrder(orderId) {
+      const order = requireOrder(orderId);
+      if (order.status !== "paid") {
+        throw new RegistrationError("not-open", `order not refundable: ${orderId}`);
+      }
+      if (order.type === "activity" && order.checkInState === "checked-in") {
+        throw new RegistrationError("not-open", `already checked in: ${orderId}`);
+      }
+      const now = state.now();
+      if (order.type === "activity") {
+        const item = order.items[0];
+        if (item !== void 0) {
+          applyEnrollmentDelta(state, item.activityId ?? "", item.sessionId ?? "", -1);
+        }
+      }
+      order.status = "refunded";
+      order.refundedAt = now.toISOString();
+      state.persist();
+      state.notify({
+        category: "refund",
+        title: "\u9000\u6B3E\u6210\u529F",
+        body: `\u8BA2\u5355 ${order.id} \u5DF2\u9000\u6B3E \xA5${order.payable.toFixed(2)}\uFF0C\u9884\u8BA1 1-3 \u4E2A\u5DE5\u4F5C\u65E5\u5230\u8D26\u3002`,
+        orderId: order.id
+      });
+      return withDerivedStatus(state, order);
+    },
+    async getOrder(orderId) {
+      const order = state.orders.find((entry) => entry.id === orderId);
+      return order !== void 0 ? withDerivedStatus(state, order) : null;
+    },
+    async listOrders(filter) {
+      const derived = state.orders.map((order) => withDerivedStatus(state, order));
+      return derived.filter((order) => {
+        if (filter?.type !== void 0 && order.type !== filter.type) {
+          return false;
+        }
+        const status = filter?.status;
+        if (status === void 0 || status === "all") {
+          return true;
+        }
+        return order.status === status;
+      });
+    },
+    async listApplicableCoupons(ref, amount, options) {
+      return state.coupons.filter((coupon) => couponApplies(coupon, ref, amount, options?.orgId)).sort((left, right) => right.amountOff - left.amountOff);
+    }
+  };
+  function requireOrder(orderId) {
+    const order = state.orders.find((entry) => entry.id === orderId);
+    if (order === void 0) {
+      throw new RegistrationError("activity-not-found", `order not found: ${orderId}`);
+    }
+    return order;
+  }
+}
+function buildItem(activity, sessionId, childId, childName) {
+  const item = {
+    id: makeId2("item"),
+    orderType: "activity",
+    activityId: activity.id,
+    sessionId,
+    title: activity.title,
+    emoji: activity.emoji,
+    orgId: activity.orgId,
+    orgName: activity.orgName,
+    price: activity.price
+  };
+  if (childId !== void 0) item.childId = childId;
+  if (childName !== void 0) item.childName = childName;
+  return item;
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/couponClient.ts
+function makeId3(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function createMockCouponClient(state, deps = {}) {
+  const isNewUser = deps.isNewUser ?? (() => state.orders.length === 0);
+  function toUserCoupon(template, now) {
+    const expire = new Date(now.getTime() + template.validDays * 864e5);
+    const coupon = {
+      id: makeId3("cpn"),
+      templateId: template.id,
+      title: template.title,
+      scope: template.scope,
+      amountOff: template.amountOff,
+      minSpend: template.minSpend,
+      claimedAt: now.toISOString(),
+      expireAt: expire.toISOString(),
+      state: "unused"
+    };
+    if (template.orgId !== void 0) coupon.orgId = template.orgId;
+    if (template.activityId !== void 0) coupon.activityId = template.activityId;
+    if (template.packageId !== void 0) coupon.packageId = template.packageId;
+    return coupon;
+  }
+  return {
+    async listClaimable() {
+      const claimedTemplateIds = new Set(state.coupons.filter((coupon) => coupon.state === "unused").map((coupon) => coupon.templateId));
+      return state.couponTemplates.filter((template) => {
+        if (template.claimed >= template.total) {
+          return false;
+        }
+        if (template.newbieOnly && !isNewUser()) {
+          return false;
+        }
+        return !claimedTemplateIds.has(template.id);
+      });
+    },
+    async listMyCoupons(couponState) {
+      const now = state.now().toISOString();
+      for (const coupon of state.coupons) {
+        if (coupon.state === "unused" && coupon.expireAt <= now) {
+          coupon.state = "expired";
+        }
+      }
+      const all = [...state.coupons].sort((left, right) => right.claimedAt.localeCompare(left.claimedAt));
+      return couponState === void 0 ? all : all.filter((coupon) => coupon.state === couponState);
+    },
+    async claim(templateId) {
+      const template = state.couponTemplates.find((entry) => entry.id === templateId);
+      if (template === void 0) {
+        throw new Error(`coupon template not found: ${templateId}`);
+      }
+      if (template.claimed >= template.total) {
+        throw new Error(`coupon sold out: ${templateId}`);
+      }
+      if (template.newbieOnly && !isNewUser()) {
+        throw new Error(`coupon is newbie-only: ${templateId}`);
+      }
+      const alreadyHeld = state.coupons.some(
+        (coupon2) => coupon2.templateId === templateId && coupon2.state === "unused"
+      );
+      if (alreadyHeld) {
+        throw new Error(`coupon already claimed: ${templateId}`);
+      }
+      const coupon = toUserCoupon(template, state.now());
+      template.claimed += 1;
+      state.coupons.unshift(coupon);
+      state.persist();
+      state.notify({
+        category: "coupon",
+        title: "\u4F18\u60E0\u5238\u5230\u8D26",
+        body: `\u300C${template.title}\u300D\u5DF2\u653E\u5165\u4F60\u7684\u5361\u5305\uFF0C\u62A5\u540D\u65F6\u53EF\u76F4\u63A5\u62B5\u6263\u3002`
+      });
+      return coupon;
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/reviewClient.ts
+function makeId4(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function createMockReviewClient(state) {
+  return {
+    async submitReview(input) {
+      const order = state.orders.find((entry) => entry.id === input.orderId);
+      if (order === void 0) {
+        throw new Error(`order not found: ${input.orderId}`);
+      }
+      if (order.status !== "paid" || order.reviewId !== void 0) {
+        throw new Error(`order not reviewable: ${input.orderId}`);
+      }
+      const item = order.items[0];
+      if (item?.activityId === void 0) {
+        throw new Error(`order has no activity: ${input.orderId}`);
+      }
+      const activity = state.findActivity(item.activityId);
+      const ended = order.orgCompleted || activity !== null && new Date(activity.endTime).getTime() <= state.now().getTime();
+      if (!ended) {
+        throw new Error(`activity not finished: ${String(item.activityId)}`);
+      }
+      const review = {
+        id: makeId4("rev"),
+        orderId: order.id,
+        activityId: item.activityId,
+        authorName: input.authorName,
+        childName: item.childName,
+        overall: clampScore(input.overall),
+        experience: clampScore(input.experience),
+        teacher: clampScore(input.teacher),
+        environment: clampScore(input.environment),
+        service: clampScore(input.service),
+        recommend: input.recommend,
+        content: input.content,
+        createdAt: state.now().toISOString()
+      };
+      state.reviews.unshift(review);
+      order.reviewId = review.id;
+      state.persist();
+      state.notify({
+        category: "activity",
+        title: "\u8BC4\u4EF7\u6210\u529F",
+        body: `\u611F\u8C22\u4F60\u5BF9\u300C${item.title}\u300D\u7684\u8BC4\u4EF7\uFF0C\u6210\u957F\u8BB0\u5F55\u53C8\u591A\u4E86\u4E00\u7B14\uFF01`,
+        orderId: order.id
+      });
+      return review;
+    },
+    async listByActivity(activityId) {
+      return state.reviews.filter((review) => review.activityId === activityId).sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+    },
+    async getByOrder(orderId) {
+      return state.reviews.find((review) => review.orderId === orderId) ?? null;
+    }
+  };
+}
+function clampScore(value) {
+  if (!Number.isFinite(value)) {
+    return 5;
+  }
+  return Math.min(5, Math.max(1, Math.round(value)));
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/checkinClient.ts
+var VerifyVoucherError = class extends Error {
+  constructor(code, message) {
+    super(message);
+    __publicField(this, "code");
+    this.name = "VerifyVoucherError";
+    this.code = code;
+  }
+};
+function createMockCheckInClient(state) {
+  function toView(orderId) {
+    const order = state.orders.find((entry) => entry.id === orderId);
+    if (order === void 0 || order.type !== "activity") {
+      return null;
+    }
+    const item = order.items[0];
+    if (item?.activityId === void 0 || item.sessionId === void 0) {
+      return null;
+    }
+    const activity = state.findActivity(item.activityId);
+    if (activity === null) {
+      return null;
+    }
+    const session = activity.sessions.find((entry) => entry.id === item.sessionId);
+    return {
+      orderId: order.id,
+      activityId: activity.id,
+      activityTitle: activity.title,
+      sessionId: item.sessionId,
+      sessionLabel: session?.label ?? "",
+      childName: item.childName ?? "",
+      parentPhone: order.contactPhone,
+      voucherCode: order.voucherCode ?? "",
+      status: deriveOrderStatus(state, order),
+      checkInState: order.checkInState,
+      createdAt: order.createdAt
+    };
+  }
+  return {
+    async listOrgRegistrations(filter) {
+      const views = state.orders.map((order) => toView(order.id)).filter((view) => view !== null).filter((view) => view.voucherCode.length > 0).filter((view) => filter?.activityId === void 0 || view.activityId === filter.activityId).filter((view) => filter?.pendingOnly === true ? view.checkInState === "none" && view.status !== "refunded" && view.status !== "cancelled" : true).sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+      return views;
+    },
+    async verifyVoucher(code) {
+      const normalized = code.trim().toUpperCase();
+      if (normalized.length === 0) {
+        throw new VerifyVoucherError("voucher-not-found", "empty voucher code");
+      }
+      const order = state.orders.find(
+        (entry) => entry.type === "activity" && (entry.voucherCode ?? "").toUpperCase() === normalized
+      );
+      if (order === void 0) {
+        throw new VerifyVoucherError("voucher-not-found", `voucher not found: ${normalized}`);
+      }
+      if (order.status !== "paid") {
+        throw new VerifyVoucherError("voucher-not-paid", `order not paid: ${order.id}`);
+      }
+      if (order.checkInState === "checked-in") {
+        throw new VerifyVoucherError("voucher-already-used", `voucher already used: ${normalized}`);
+      }
+      order.checkInState = "checked-in";
+      state.persist();
+      const view = toView(order.id);
+      if (view === null) {
+        throw new VerifyVoucherError("voucher-not-found", `registration view missing: ${order.id}`);
+      }
+      state.notify({
+        category: "activity",
+        title: "\u7B7E\u5230\u6210\u529F",
+        body: `\u300C${view.activityTitle}\u300D\u5DF2\u7B7E\u5230\uFF0C\u795D\u73A9\u5F97\u5F00\u5FC3\uFF01`,
+        orderId: order.id
+      });
+      return view;
+    },
+    async completeActivity(activityId) {
+      let completed = 0;
+      for (const order of state.orders) {
+        if (order.type !== "activity" || order.status !== "paid" || order.orgCompleted) {
+          continue;
+        }
+        const item = order.items[0];
+        if (item?.activityId !== activityId) {
+          continue;
+        }
+        order.orgCompleted = true;
+        completed += 1;
+        state.notify({
+          category: "activity",
+          title: "\u6D3B\u52A8\u5DF2\u7ED3\u675F",
+          body: `\u300C${item.title}\u300D\u5DF2\u7ED3\u675F\uFF0C\u53BB\u7ED9\u5B83\u6253\u4E2A\u5206\u5427\uFF01`,
+          orderId: order.id
+        });
+      }
+      if (completed > 0) {
+        state.persist();
+      }
+      return completed;
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/messageClient.ts
+function createMockMessageClient(state) {
+  return {
+    async listMessages(category) {
+      const sorted = [...state.messages].sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+      if (category === void 0 || category === "all") {
+        return sorted;
+      }
+      return sorted.filter((message) => message.category === category);
+    },
+    async unreadCount() {
+      return state.messages.filter((message) => !message.read).length;
+    },
+    async markRead(messageId) {
+      const message = state.messages.find((entry) => entry.id === messageId);
+      if (message !== void 0) {
+        message.read = true;
+        state.persist();
+      }
+    },
+    async markAllRead(category) {
+      for (const message of state.messages) {
+        if (category === void 0 || category === "all" || message.category === category) {
+          message.read = true;
+        }
+      }
+      state.persist();
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/aiClient.ts
+var FOLLOW_UPS = [
+  "8\u5C81\u5B69\u5B50\u9002\u5408\u5B66\u4EC0\u4E48\uFF1F",
+  "\u5468\u672B\u6709\u4EC0\u4E48\u4EB2\u5B50\u6D3B\u52A8\uFF1F",
+  "\u60F3\u8BA9\u5B69\u5B50\u4F53\u9A8C\u7F16\u7A0B\uFF0C\u6709\u4EC0\u4E48\u8BFE\u7A0B\uFF1F",
+  "\u9884\u7B97100\u5143\uFF0C\u5E2E\u6211\u5B89\u6392\u4E00\u4E2A\u5468\u672B\u4F53\u9A8C\u8BA1\u5212\u3002"
+];
+function makeId5() {
+  return `ai-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function matchesIntent(activity, intent, now) {
+  if (activity.status !== "published") {
+    return false;
+  }
+  if (new Date(activity.endTime).getTime() <= now.getTime()) {
+    return false;
+  }
+  if (intent.age !== void 0 && (intent.age < activity.ageMin || intent.age > activity.ageMax)) {
+    return false;
+  }
+  if (intent.categories.length > 0 && !intent.categories.includes(activity.category)) {
+    return false;
+  }
+  if (intent.tags.length > 0 && !intent.tags.some((tag) => activity.tags.includes(tag))) {
+    return false;
+  }
+  if (intent.mode !== void 0 && activity.mode !== intent.mode) {
+    return false;
+  }
+  if (intent.freeOnly && activity.price !== 0) {
+    return false;
+  }
+  if (intent.time !== void 0) {
+    const starts = [activity.startTime, ...activity.sessions.map((session) => session.startTime)];
+    if (intent.time === "weekend") {
+      const weekend = starts.some((start) => {
+        const day = new Date(start).getDay();
+        return day === 0 || day === 6;
+      });
+      if (!weekend) {
+        return false;
+      }
+    } else if (intent.time === "today") {
+      const dayEnd = new Date(now);
+      dayEnd.setHours(23, 59, 59, 999);
+      const within = starts.some((start) => new Date(start).getTime() <= dayEnd.getTime() + 864e5);
+      if (!within) {
+        return false;
+      }
+    }
+  }
+  const hasStructured = intent.age !== void 0 || intent.budgetMax !== void 0 || intent.categories.length > 0 || intent.tags.length > 0 || intent.mode !== void 0 || intent.freeOnly || intent.time !== void 0;
+  if (intent.keywords.length > 0 && !hasStructured) {
+    const haystack = `${activity.title} ${activity.subtitle} ${activity.orgName} ${activity.introduction}`.toLowerCase();
+    const matched = intent.keywords.some((keyword) => haystack.includes(keyword.toLowerCase()));
+    if (!matched) {
+      return false;
+    }
+  }
+  return true;
+}
+function heatOf(activity) {
+  return activity.enrolled / Math.max(activity.quota, 1);
+}
+function buildExperiencePlan(candidates, budgetMax) {
+  const budget = budgetMax > 0 ? budgetMax : 300;
+  const affordable = candidates.filter((activity) => activity.price <= budget).sort((left, right) => heatOf(right) - heatOf(left));
+  const chosen = [];
+  const usedCategories = /* @__PURE__ */ new Set();
+  let totalCost = 0;
+  for (const activity of affordable) {
+    if (chosen.length >= 4) {
+      break;
+    }
+    if (usedCategories.has(activity.category) && chosen.length < affordable.length) {
+      continue;
+    }
+    if (totalCost + activity.price > budget) {
+      continue;
+    }
+    chosen.push(activity);
+    usedCategories.add(activity.category);
+    totalCost += activity.price;
+  }
+  if (chosen.length === 0) {
+    return null;
+  }
+  return {
+    totalBudget: budget,
+    totalCost,
+    weeks: chosen.map((activity, index) => ({
+      weekIndex: index + 1,
+      activityId: activity.id,
+      title: activity.title,
+      price: activity.price
+    }))
+  };
+}
+function createMockAiClient(state) {
+  function searchActivities(query) {
+    const intent = recognizeActivityIntent(query);
+    const now = state.now();
+    const activities = state.allActivities().filter((activity) => matchesIntent(activity, intent, now)).sort((left, right) => heatOf(right) - heatOf(left));
+    return { activities, intent };
+  }
+  return {
+    async search(query) {
+      return searchActivities(query).activities.slice(0, 6);
+    },
+    async ask(query) {
+      const { activities, intent } = searchActivities(query);
+      const now = state.now();
+      const followUps = [...FOLLOW_UPS];
+      if (intent.wantsPlan) {
+        const plan = buildExperiencePlan(activities, intent.budgetMax ?? 300);
+        if (plan !== null) {
+          const params = { count: plan.weeks.length, budget: plan.totalCost };
+          return {
+            id: makeId5(),
+            messageKey: "zhiya.ai.reply.plan",
+            params,
+            activities: plan.weeks.map((week) => state.findActivity(week.activityId)).filter((activity) => activity !== null),
+            plan,
+            followUps
+          };
+        }
+      }
+      if (activities.length > 0) {
+        const structured = !isEmptyIntent(intent);
+        const params = { count: activities.length };
+        if (intent.age !== void 0) {
+          params.age = intent.age;
+        }
+        if (intent.budgetMax !== void 0) {
+          params.budget = intent.budgetMax;
+        }
+        return {
+          id: makeId5(),
+          messageKey: structured ? "zhiya.ai.reply.recommend" : "zhiya.ai.reply.found",
+          params,
+          activities: activities.slice(0, 4),
+          followUps
+        };
+      }
+      return {
+        id: makeId5(),
+        messageKey: "zhiya.ai.reply.fallback",
+        params: {},
+        activities: state.allActivities().filter((activity) => activity.status === "published" && new Date(activity.endTime).getTime() > now.getTime()).sort((left, right) => heatOf(right) - heatOf(left)).slice(0, 3),
+        followUps
+      };
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/orgClient.ts
+var MY_ORG_ID = "org-1";
+function makeId6(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function createMockOrgClient(state) {
+  function myOrg() {
+    const org = state.orgs.find((entry) => entry.id === MY_ORG_ID);
+    if (org === void 0) {
+      throw new Error(`org not found: ${MY_ORG_ID}`);
+    }
+    return org;
+  }
+  function orgActivities() {
+    return state.orgActivities.filter((activity) => activity.orgId === MY_ORG_ID);
+  }
+  function buildSession(input, activityId) {
+    const start = new Date(input.startTime);
+    const end = new Date(input.endTime);
+    return [
+      {
+        id: `${activityId}-s1`,
+        label: `${start.getMonth() + 1}\u6708${start.getDate()}\u65E5 ${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")} \u573A`,
+        startTime: start.toISOString(),
+        endTime: end.toISOString(),
+        quota: input.quota,
+        enrolled: 0
+      }
+    ].slice(0, end.getTime() > start.getTime() ? 1 : 1);
+  }
+  function toActivity(input, status, now) {
+    const id = makeId6("act");
+    return {
+      id,
+      orgId: MY_ORG_ID,
+      orgName: myOrg().name,
+      category: input.category,
+      mode: input.mode,
+      title: input.title,
+      subtitle: input.subtitle,
+      emoji: input.emoji ?? "\u{1F4CC}",
+      ageMin: input.ageMin,
+      ageMax: input.ageMax,
+      startTime: new Date(input.startTime).toISOString(),
+      endTime: new Date(input.endTime).toISOString(),
+      address: input.address,
+      onlineLink: input.onlineLink,
+      price: input.price,
+      originalPrice: input.originalPrice,
+      quota: input.quota,
+      enrolled: 0,
+      tags: [...input.tags],
+      introduction: input.introduction,
+      notice: input.notice,
+      status,
+      orgCreated: true,
+      sessions: buildSession(input, id),
+      createdAt: now.toISOString()
+    };
+  }
+  return {
+    async getMyOrg() {
+      return myOrg();
+    },
+    async getWorkspaceStats() {
+      const now = state.now();
+      const dayStart = new Date(now);
+      dayStart.setHours(0, 0, 0, 0);
+      const myActivities = state.allActivities().filter((activity) => activity.orgId === MY_ORG_ID);
+      const published = myActivities.filter((activity) => activity.status === "published");
+      const registrations = state.orders.filter(
+        (order) => order.type === "activity" && (order.status === "paid" || order.status === "refunded") && order.items.some((item) => item.activityId !== void 0 && published.some((activity) => activity.id === item.activityId))
+      );
+      const todayRegistrations = registrations.filter((order) => (order.paidAt ?? order.createdAt) >= dayStart.toISOString()).length;
+      const pendingCheckIns = registrations.filter(
+        (order) => order.status === "paid" && order.checkInState === "none"
+      ).length;
+      const salesToday = registrations.filter((order) => order.status === "paid" && (order.paidAt ?? "") >= dayStart.toISOString()).reduce((sum, order) => sum + order.payable, 0);
+      const completed = registrations.filter((order) => deriveOrderStatus(state, order) === "completed").length;
+      const completionRate = registrations.length === 0 ? 0 : completed / registrations.length;
+      return {
+        todayRegistrations,
+        pendingCheckIns,
+        salesToday,
+        publishedActivities: published.length,
+        totalRegistrations: registrations.length,
+        completionRate,
+        rating: myOrg().rating
+      };
+    },
+    async listOrgActivities(status) {
+      const mine = orgActivities().sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+      return status === void 0 ? mine : mine.filter((activity) => activity.status === status);
+    },
+    async createActivity(input, publish) {
+      const activity = toActivity(input, publish ? "published" : "draft", state.now());
+      state.orgActivities.unshift(activity);
+      state.persist();
+      return activity;
+    },
+    async updateActivity(activityId, input) {
+      const activity = state.orgActivities.find((entry) => entry.id === activityId);
+      if (activity === void 0) {
+        throw new Error(`org activity not found: ${activityId}`);
+      }
+      activity.title = input.title;
+      activity.subtitle = input.subtitle;
+      activity.category = input.category;
+      activity.mode = input.mode;
+      if (input.emoji !== void 0) activity.emoji = input.emoji;
+      activity.ageMin = input.ageMin;
+      activity.ageMax = input.ageMax;
+      activity.startTime = new Date(input.startTime).toISOString();
+      activity.endTime = new Date(input.endTime).toISOString();
+      activity.address = input.address;
+      activity.onlineLink = input.onlineLink;
+      activity.price = input.price;
+      activity.originalPrice = input.originalPrice;
+      activity.quota = input.quota;
+      activity.introduction = input.introduction;
+      activity.notice = input.notice;
+      activity.tags = [...input.tags];
+      const session = activity.sessions[0];
+      if (session !== void 0) {
+        session.startTime = activity.startTime;
+        session.endTime = activity.endTime;
+        session.quota = input.quota;
+      }
+      state.persist();
+      return activity;
+    },
+    async publishActivity(activityId) {
+      const activity = state.orgActivities.find((entry) => entry.id === activityId);
+      if (activity === void 0) {
+        throw new Error(`org activity not found: ${activityId}`);
+      }
+      activity.status = "published";
+      state.persist();
+      return activity;
+    },
+    async offlineActivity(activityId) {
+      const activity = state.orgActivities.find((entry) => entry.id === activityId);
+      if (activity === void 0) {
+        throw new Error(`org activity not found: ${activityId}`);
+      }
+      activity.status = "offline";
+      state.persist();
+      return activity;
+    },
+    async deleteActivity(activityId) {
+      state.orgActivities = state.orgActivities.filter((entry) => entry.id !== activityId);
+      state.persist();
+    }
+  };
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/hub.ts
+function createZhiyaServiceHub(options = {}) {
+  const state = createZhiyaMockState(options);
+  hydrateEnrollmentOverrides(state);
+  const family = createMockFamilyClient(state);
+  const activity = createMockActivityClient(state);
+  const pkg = createMockPackageClient(state);
+  const mall = createMockMallClient(state);
+  const order = createMockOrderClient(state, {
+    isNewUser: () => state.orders.filter((entry) => entry.status === "paid").length === 0
+  });
+  const coupon = createMockCouponClient(state, {
+    isNewUser: () => state.orders.filter((entry) => entry.status === "paid").length === 0
+  });
+  const review = createMockReviewClient(state);
+  const checkin = createMockCheckInClient(state);
+  const message = createMockMessageClient(state);
+  const ai = createMockAiClient(state);
+  const org = createMockOrgClient(state);
+  return { state, family, activity, package: pkg, mall, order, coupon, review, checkin, message, ai, org };
+}
+
+// packages/sdkwork-zhiya-mp-core/src/index.ts
+var host = null;
+function bindMiniProgramHost(port) {
+  host = port;
+}
+var runtimeConfig = null;
+function bindRuntimeConfig(config) {
+  runtimeConfig = config;
+}
+function bootstrapZhiyaClients() {
+  const hub = createZhiyaServiceHub();
+  resetZhiyaClients();
+  registerZhiyaClient("family", hub.family);
+  registerZhiyaClient("activity", hub.activity);
+  registerZhiyaClient("package", hub.package);
+  registerZhiyaClient("mall", hub.mall);
+  registerZhiyaClient("order", hub.order);
+  registerZhiyaClient("coupon", hub.coupon);
+  registerZhiyaClient("review", hub.review);
+  registerZhiyaClient("checkin", hub.checkin);
+  registerZhiyaClient("message", hub.message);
+  registerZhiyaClient("ai", hub.ai);
+  registerZhiyaClient("org", hub.org);
+}
+
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-route-core/src/tabs.ts
+var ZHIYA_TABS = [
+  { id: "home", path: "/home", titleKey: "zhiya.shell.tab.home" },
+  { id: "activity", path: "/activity", titleKey: "zhiya.shell.tab.activity" },
+  { id: "ai", path: "/ai", titleKey: "zhiya.shell.tab.ai" },
+  { id: "mall", path: "/mall", titleKey: "zhiya.shell.tab.mall" },
+  { id: "profile", path: "/profile", titleKey: "zhiya.shell.tab.profile" }
+];
+
+// packages/sdkwork-zhiya-mp-shell/src/index.ts
+var TAB_LABELS = {
+  home: "\u9996\u9875",
+  activity: "\u6D3B\u52A8",
+  ai: "AI",
+  mall: "\u5546\u57CE",
+  profile: "\u6211\u7684"
+};
+var TAB_PAGE_PATHS = ZHIYA_TABS.map((tab) => `pages/${tab.id}/index`);
+var PAGE_TITLES = {
+  "pages/home/index": "\u77E5\u9E2D",
+  "pages/activity/index": "\u6D3B\u52A8",
+  "pages/ai/index": "\u95EE\u77E5\u9E2D",
+  "pages/mall/index": "\u5546\u57CE",
+  "pages/profile/index": "\u6211\u7684",
+  "detail/activity-detail/index": "\u6D3B\u52A8\u8BE6\u60C5",
+  "detail/register/index": "\u786E\u8BA4\u62A5\u540D",
+  "detail/pay/index": "\u6536\u94F6\u53F0",
+  "detail/orders/index": "\u6211\u7684\u8BA2\u5355",
+  "detail/review/index": "\u8BC4\u4EF7\u6D3B\u52A8",
+  "detail/family/index": "\u6211\u7684\u5BB6\u5EAD",
+  "detail/messages/index": "\u6D88\u606F\u4E2D\u5FC3"
+};
+var ORDER_STATUS_LABELS = {
+  "pending-payment": "\u5F85\u652F\u4ED8",
+  upcoming: "\u5F85\u53C2\u52A0",
+  ongoing: "\u8FDB\u884C\u4E2D",
+  "pending-review": "\u5F85\u8BC4\u4EF7",
+  completed: "\u5DF2\u5B8C\u6210",
+  cancelled: "\u5DF2\u53D6\u6D88",
+  refunded: "\u5DF2\u9000\u6B3E"
+};
+var CATEGORY_LABELS = {
+  trial: "\u4F53\u9A8C\u8BFE",
+  "online-course": "\u7EBF\u4E0A\u8BFE\u7A0B",
+  "open-course": "\u516C\u5F00\u8BFE",
+  "parent-child": "\u4EB2\u5B50\u6D3B\u52A8",
+  "study-tour": "\u7814\u5B66",
+  "summer-camp": "\u590F\u4EE4\u8425",
+  "winter-camp": "\u51AC\u4EE4\u8425",
+  competition: "\u6BD4\u8D5B",
+  exhibition: "\u5C55\u89C8",
+  training: "\u8BAD\u7EC3\u8425",
+  other: "\u5176\u4ED6"
+};
+
+// packages/sdkwork-zhiya-mp-commons/src/index.ts
+function formatStart(iso2) {
+  const date = new Date(iso2);
+  if (Number.isNaN(date.getTime())) {
+    return iso2;
+  }
+  const pad = (input) => String(input).padStart(2, "0");
+  return `${date.getMonth() + 1}/${date.getDate()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+function formatPrice(value) {
+  if (value === 0) {
+    return "\u514D\u8D39";
+  }
+  return `\xA5${Number.isInteger(value) ? value : value.toFixed(value * 10 % 1 === 0 ? 1 : 2)}`;
+}
+function quotaLabel(quota, enrolled) {
+  const remaining = Math.max(quota - enrolled, 0);
+  return remaining === 0 ? "\u5DF2\u6EE1\u5458" : `\u4EC5\u5269${remaining}\u4E2A\u540D\u989D`;
+}
+var COUPON_SCOPE_LABELS = {
+  platform: "\u5E73\u53F0\u5238",
+  org: "\u5546\u5BB6\u5238",
+  activity: "\u6D3B\u52A8\u5238",
+  package: "\u4F53\u9A8C\u5305\u5238"
+};
+var COUPON_STATE_LABELS = {
+  unused: "\u672A\u4F7F\u7528",
+  used: "\u5DF2\u4F7F\u7528",
+  expired: "\u5DF2\u8FC7\u671F"
+};
+var MESSAGE_CATEGORY_LABELS = {
+  system: "\u7CFB\u7EDF\u901A\u77E5",
+  activity: "\u6D3B\u52A8\u901A\u77E5",
+  registration: "\u62A5\u540D\u901A\u77E5",
+  payment: "\u652F\u4ED8\u901A\u77E5",
+  refund: "\u9000\u6B3E\u901A\u77E5",
+  coupon: "\u4F18\u60E0\u901A\u77E5",
+  ai: "AI\u901A\u77E5"
+};
+var CHILD_STAGE_LABELS = {
+  kindergarten: "\u5E7C\u513F\u56ED",
+  "primary-low": "\u5C0F\u5B66\u4F4E\u5E74\u7EA7",
+  "primary-high": "\u5C0F\u5B66\u9AD8\u5E74\u7EA7",
+  junior: "\u521D\u4E2D",
+  senior: "\u9AD8\u4E2D"
+};
+var EDUCATION_TAG_LABELS = {
+  programming: "\u7F16\u7A0B",
+  robotics: "\u673A\u5668\u4EBA",
+  science: "\u79D1\u5B66",
+  art: "\u7F8E\u672F",
+  music: "\u97F3\u4E50",
+  english: "\u82F1\u8BED",
+  sports: "\u4F53\u80B2",
+  thinking: "\u601D\u7EF4",
+  drama: "\u620F\u5267",
+  nature: "\u81EA\u7136"
+};
+
+// packages/sdkwork-zhiya-mp-home/src/index.ts
+function toActivityCardView(activity, categoryLabel) {
+  return {
+    id: activity.id,
+    emoji: activity.emoji,
+    title: activity.title,
+    orgName: activity.orgName,
+    categoryLabel,
+    priceLabel: formatPrice(activity.price),
+    originalLabel: activity.originalPrice > activity.price ? `\xA5${activity.originalPrice}` : null,
+    quotaLabel: quotaLabel(activity.quota, activity.enrolled),
+    startLabel: formatStart(activity.startTime)
+  };
+}
+function toPackageCardView(pkg) {
+  return {
+    id: pkg.id,
+    emoji: pkg.emoji,
+    title: pkg.title,
+    summary: pkg.summary,
+    priceLabel: formatPrice(pkg.price),
+    originalLabel: pkg.originalPrice > pkg.price ? `\xA5${pkg.originalPrice}` : null,
+    purchasedCount: pkg.purchasedCount,
+    activityCount: pkg.activityIds.length
+  };
+}
+async function loadHomeOverview(categoryLabels) {
+  const activity = getZhiyaClient("activity");
+  const pkg = getZhiyaClient("package");
+  const [recommendations, hotPackages] = await Promise.all([
+    activity.listHomeRecommendations(),
+    pkg.listHotPackages()
+  ]);
+  return {
+    recommendations: recommendations.slice(0, 6).map((entry) => toActivityCardView(entry, categoryLabels[entry.category] ?? entry.category)),
+    hotPackages: hotPackages.map(toPackageCardView)
+  };
+}
+
+// packages/sdkwork-zhiya-mp-activity/src/index.ts
+async function listActivities(categoryLabels, category) {
+  const activity = getZhiyaClient("activity");
+  const list = await activity.listActivities({
+    category: category === void 0 || category === "all" ? void 0 : category
+  });
+  return list.map((entry) => toActivityCardView(entry, categoryLabels[entry.category] ?? entry.category));
+}
+async function loadActivityDetail(activityId, categoryLabel) {
+  const activityClient = getZhiyaClient("activity");
+  const reviewClient = getZhiyaClient("review");
+  const activity = await activityClient.getActivity(activityId);
+  if (activity === null) {
+    return null;
+  }
+  const reviews = await reviewClient.listByActivity(activityId);
+  const rating = reviews.length > 0 ? reviews.reduce((sum, review) => sum + review.overall, 0) / reviews.length : null;
+  return {
+    id: activity.id,
+    emoji: activity.emoji,
+    title: activity.title,
+    subtitle: activity.subtitle,
+    orgName: activity.orgName,
+    categoryLabel,
+    priceLabel: formatPrice(activity.price),
+    originalLabel: activity.originalPrice > activity.price ? `\xA5${activity.originalPrice}` : null,
+    startLabel: formatStart(activity.startTime),
+    endLabel: formatStart(activity.endTime),
+    address: activity.address,
+    ageLabel: `\u9002\u5408 ${activity.ageMin}-${activity.ageMax} \u5C81\u5B69\u5B50`,
+    quotaLabel: quotaLabel(activity.quota, activity.enrolled),
+    introduction: activity.introduction,
+    notice: activity.notice,
+    remaining: Math.max(activity.quota - activity.enrolled, 0),
+    ratingLabel: rating !== null ? `${rating.toFixed(1)} \u5206 \xB7 ${reviews.length}\u6761\u8BC4\u4EF7` : null,
+    reviews: reviews.slice(0, 5).map((review) => ({
+      id: review.id,
+      authorName: review.authorName,
+      stars: "\u2605".repeat(review.overall),
+      content: review.content
+    }))
+  };
+}
+async function loadRegisterPickers(activityId) {
+  const activityClient = getZhiyaClient("activity");
+  const familyClient = getZhiyaClient("family");
+  const orderClient = getZhiyaClient("order");
+  const activity = await activityClient.getActivity(activityId);
+  if (activity === null) {
+    return null;
+  }
+  const [children, coupons] = await Promise.all([
+    familyClient.listChildren(),
+    orderClient.listApplicableCoupons({ kind: "activity", id: activityId }, activity.price, {
+      orgId: activity.orgId
+    })
+  ]);
+  return {
+    activity: { id: activity.id, title: activity.title, priceLabel: formatPrice(activity.price) },
+    children: children.map((child) => ({ id: child.id, nickname: child.nickname })),
+    sessions: activity.sessions.map((session) => ({
+      id: session.id,
+      label: `${session.label} \xB7 ${formatStart(session.startTime)}`,
+      remaining: Math.max(session.quota - session.enrolled, 0)
+    })),
+    coupons: coupons.map((coupon) => ({
+      id: coupon.id,
+      title: coupon.title,
+      discountLabel: `-\xA5${coupon.amountOff}`
+    }))
+  };
+}
+var ERROR_MESSAGES = {
+  "age-not-fit": "\u5B69\u5B50\u5E74\u9F84\u4E0D\u5728\u6D3B\u52A8\u9002\u9F84\u8303\u56F4\u5185",
+  "sold-out": "\u6765\u665A\u4E00\u6B65\uFF0C\u540D\u989D\u5DF2\u88AB\u62A2\u5149",
+  duplicate: "\u8BE5\u5B69\u5B50\u5DF2\u62A5\u540D\u6B64\u6D3B\u52A8\uFF0C\u65E0\u9700\u91CD\u590D\u62A5\u540D",
+  "time-conflict": "\u4E0E\u5DF2\u62A5\u540D\u6D3B\u52A8\u65F6\u95F4\u51B2\u7A81\uFF0C\u8BF7\u8C03\u6574\u573A\u6B21",
+  "child-not-found": "\u8BF7\u9009\u62E9\u53C2\u52A0\u7684\u5B69\u5B50",
+  "coupon-invalid": "\u4F18\u60E0\u5238\u4E0D\u53EF\u7528\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9",
+  "not-open": "\u6D3B\u52A8\u5F53\u524D\u4E0D\u53EF\u62A5\u540D"
+};
+async function createRegistrationOrder(input) {
+  const orderClient = getZhiyaClient("order");
+  try {
+    const order = await orderClient.createRegistrationOrder({
+      activityId: input.activityId,
+      sessionId: input.sessionId,
+      childId: input.childId,
+      couponId: input.couponId
+    });
+    return { ok: true, orderId: order.id };
+  } catch (caught) {
+    if (caught instanceof RegistrationError) {
+      return { ok: false, error: ERROR_MESSAGES[caught.code] ?? ERROR_MESSAGES["not-open"] };
+    }
+    return { ok: false, error: ERROR_MESSAGES["not-open"] };
+  }
+}
+async function payOrder(orderId, method) {
+  const orderClient = getZhiyaClient("order");
+  try {
+    await orderClient.payOrder(orderId, method);
+    return true;
+  } catch {
+    return false;
+  }
+}
+var ACTIVITY_CATEGORY_TABS = [
+  { id: "all", label: "\u5168\u90E8" },
+  { id: "trial", label: "\u4F53\u9A8C\u8BFE" },
+  { id: "online-course", label: "\u7EBF\u4E0A\u8BFE" },
+  { id: "parent-child", label: "\u4EB2\u5B50" },
+  { id: "study-tour", label: "\u7814\u5B66" },
+  { id: "competition", label: "\u6BD4\u8D5B" },
+  { id: "exhibition", label: "\u5C55\u89C8" }
+];
+
+// packages/sdkwork-zhiya-mp-ai/src/index.ts
+var REPLY_TEXT = {
+  "zhiya.ai.reply.recommend": "\u7ED3\u5408\u4F60\u7684\u9700\u6C42\uFF0C\u4E3A\u4F60\u6311\u4E86\u8FD9\u4E9B\u6D3B\u52A8\uFF1A",
+  "zhiya.ai.reply.found": "\u5728\u77E5\u9E2D\u4E0A\u627E\u5230\u8FD9\u4E9B\u76F8\u5173\u7684\u6D3B\u52A8\uFF1A",
+  "zhiya.ai.reply.fallback": "\u8FD9\u4E2A\u95EE\u9898\u6709\u70B9\u8D85\u51FA\u6211\u7684\u6D3B\u52A8\u5E93\u5566\uFF0C\u5148\u770B\u770B\u70ED\u95E8\u6D3B\u52A8\u5427\uFF1A",
+  "zhiya.ai.reply.plan": "\u597D\u7684\uFF01\u6309\u4F60\u7684\u9884\u7B97\u4E3A\u4F60\u5B89\u6392\u4E86\u4F53\u9A8C\u8BA1\u5212\uFF1A",
+  "zhiya.ai.error": "\u54CE\u5440\uFF0C\u7F51\u7EDC\u5F00\u5C0F\u5DEE\u4E86\uFF0C\u7A0D\u540E\u518D\u8BD5\u8BD5\uFF5E"
+};
+var AI_SUGGESTIONS = [
+  "8\u5C81\u5B69\u5B50\u9002\u5408\u5B66\u4EC0\u4E48\uFF1F",
+  "\u5468\u672B\u6709\u4EC0\u4E48\u4EB2\u5B50\u6D3B\u52A8\uFF1F",
+  "\u60F3\u8BA9\u5B69\u5B50\u4F53\u9A8C\u7F16\u7A0B\uFF0C\u6709\u4EC0\u4E48\u8BFE\u7A0B\uFF1F",
+  "\u9884\u7B97100\u5143\uFF0C\u5E2E\u6211\u5B89\u6392\u4E00\u4E2A\u5468\u672B\u4F53\u9A8C\u8BA1\u5212\u3002"
+];
+async function sendAiTurn(text, categoryLabels) {
+  const ai = getZhiyaClient("ai");
+  try {
+    const reply = await ai.ask(text);
+    const text2 = REPLY_TEXT[reply.messageKey] ?? reply.messageKey;
+    const recommendations = reply.activities.map(
+      (activity) => toActivityCardView(activity, categoryLabels[activity.category] ?? activity.category)
+    );
+    if (reply.plan !== void 0) {
+      return {
+        role: "assistant",
+        text: `${text2}\uFF08\u5171 ${reply.plan.totalCost} \u5143\uFF09`,
+        recommendations,
+        plan: {
+          totalLabel: `\u5408\u8BA1 \xA5${reply.plan.totalCost}`,
+          weeks: reply.plan.weeks.map((week) => ({
+            weekIndex: week.weekIndex,
+            activityId: week.activityId,
+            title: week.title,
+            priceLabel: formatPrice(week.price)
+          }))
+        }
+      };
+    }
+    return { role: "assistant", text: text2, recommendations };
+  } catch {
+    return { role: "assistant", text: REPLY_TEXT["zhiya.ai.error"] ?? "\u51FA\u4E86\u70B9\u95EE\u9898\uFF0C\u8BF7\u91CD\u8BD5" };
+  }
+}
+
+// packages/sdkwork-zhiya-mp-mall/src/index.ts
+var GOODS_CATEGORY_ENTRIES = [
+  ["stationery", "\u6587\u5177"],
+  ["books", "\u56FE\u4E66"],
+  ["painting", "\u7ED8\u753B"],
+  ["science", "\u79D1\u5B66\u5B9E\u9A8C"],
+  ["programming", "\u7F16\u7A0B"],
+  ["robotics", "\u673A\u5668\u4EBA"],
+  ["teaching-aids", "\u6559\u5177"],
+  ["supplies", "\u5B66\u4E60\u7528\u54C1"]
+];
+var GOODS_CATEGORY_TABS = [
+  { id: "all", label: "\u5168\u90E8" },
+  ...GOODS_CATEGORY_ENTRIES.map(([id, label]) => ({ id, label }))
+];
+function toGoodsCardView(goods) {
+  return {
+    id: goods.id,
+    emoji: goods.emoji,
+    title: goods.title,
+    priceLabel: formatPrice(goods.price),
+    originalLabel: goods.originalPrice > goods.price ? `\xA5${goods.originalPrice}` : null,
+    salesLabel: `\u5DF2\u552E ${goods.sales}`
+  };
+}
+async function listGoods(category) {
+  const mall = getZhiyaClient("mall");
+  const list = await mall.listGoods(
+    category === void 0 || category === "all" ? void 0 : category
+  );
+  return list.map(toGoodsCardView);
+}
+async function loadGoodsDetail(goodsId) {
+  const mall = getZhiyaClient("mall");
+  const goods = await mall.getGoods(goodsId);
+  if (goods === null) {
+    return null;
+  }
+  return {
+    ...toGoodsCardView(goods),
+    summary: goods.summary,
+    detail: goods.detail,
+    spec: goods.spec
+  };
+}
+async function toggleGoodsFavorite(goodsId) {
+  const mall = getZhiyaClient("mall");
+  return mall.toggleFavoriteGoods(goodsId);
+}
+
+// packages/sdkwork-zhiya-mp-trade/src/index.ts
+var ORDER_STATUS_TABS = [
+  { id: "all", label: "\u5168\u90E8" },
+  { id: "pending-payment", label: "\u5F85\u652F\u4ED8" },
+  { id: "upcoming", label: "\u5F85\u53C2\u52A0" },
+  { id: "pending-review", label: "\u5F85\u8BC4\u4EF7" },
+  { id: "completed", label: "\u5DF2\u5B8C\u6210" },
+  { id: "refunded", label: "\u5DF2\u9000\u6B3E" }
+];
+async function listOrders(status) {
+  const order = getZhiyaClient("order");
+  const list = await order.listOrders({
+    status: status === void 0 || status === "all" ? void 0 : status
+  });
+  return list.map((entry) => {
+    const item = entry.items[0];
+    return {
+      id: entry.id,
+      emoji: item?.emoji ?? "\u{1F4E6}",
+      title: item?.title ?? "",
+      status: entry.status,
+      statusLabel: ORDER_STATUS_LABELS[entry.status] ?? entry.status,
+      payableLabel: formatPrice(entry.payable),
+      childName: item?.childName ?? null,
+      createdAtLabel: entry.createdAt.slice(5, 16).replace("T", " ")
+    };
+  });
+}
+async function loadOrderDetail(orderId) {
+  const order = getZhiyaClient("order");
+  const entry = await order.getOrder(orderId);
+  if (entry === null) {
+    return null;
+  }
+  const item = entry.items[0];
+  return {
+    id: entry.id,
+    emoji: item?.emoji ?? "\u{1F4E6}",
+    title: item?.title ?? "",
+    status: entry.status,
+    statusLabel: ORDER_STATUS_LABELS[entry.status] ?? entry.status,
+    payableLabel: formatPrice(entry.payable),
+    childName: item?.childName ?? null,
+    createdAtLabel: entry.createdAt.slice(0, 16).replace("T", " "),
+    amountLabel: formatPrice(entry.amount),
+    discountLabel: entry.discount > 0 ? `-\xA5${entry.discount}` : null,
+    voucherCode: entry.voucherCode ?? null,
+    checkInLabel: entry.type === "activity" && entry.voucherCode !== void 0 && entry.status !== "pending-payment" ? entry.checkInState === "checked-in" ? "\u5DF2\u7B7E\u5230" : "\u5F85\u6838\u9500" : null
+  };
+}
+async function runOrderAction(orderId, action) {
+  const order = getZhiyaClient("order");
+  try {
+    if (action === "pay") {
+      await order.payOrder(orderId, "wechat");
+      return "\u652F\u4ED8\u6210\u529F";
+    }
+    if (action === "cancel") {
+      await order.cancelOrder(orderId);
+      return "\u8BA2\u5355\u5DF2\u53D6\u6D88";
+    }
+    await order.refundOrder(orderId);
+    return "\u9000\u6B3E\u6210\u529F\uFF0C\u9884\u8BA1 1-3 \u4E2A\u5DE5\u4F5C\u65E5\u5230\u8D26";
+  } catch {
+    return "\u64CD\u4F5C\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5";
+  }
+}
+async function submitReview(orderId, scores) {
+  const review = getZhiyaClient("review");
+  try {
+    await review.submitReview({
+      orderId,
+      overall: scores.overall,
+      experience: scores.experience,
+      teacher: scores.teacher,
+      environment: scores.environment,
+      service: scores.service,
+      recommend: scores.recommend,
+      content: scores.content,
+      authorName: "\u9E2D\u5BB6\u957F"
+    });
+    return "\u8BC4\u4EF7\u6210\u529F\uFF0C\u611F\u8C22\u5206\u4EAB\uFF01";
+  } catch {
+    return "\u8BE5\u8BA2\u5355\u6682\u4E0D\u53EF\u8BC4\u4EF7";
+  }
+}
+
+// packages/sdkwork-zhiya-mp-profile/src/index.ts
+async function listChildren() {
+  const family = getZhiyaClient("family");
+  const children = await family.listChildren();
+  return children.map((child) => ({
+    id: child.id,
+    emoji: child.emoji,
+    nickname: child.nickname,
+    stageLabel: CHILD_STAGE_LABELS[child.stage] ?? child.stage,
+    interestsLabel: child.interests.map((tag) => EDUCATION_TAG_LABELS[tag] ?? tag).join(" / ")
+  }));
+}
+async function saveChild(childId, input) {
+  const family = getZhiyaClient("family");
+  const payload = {
+    nickname: input.nickname,
+    gender: input.gender,
+    birthDate: input.birthDate,
+    stage: input.stage,
+    interests: input.interests,
+    notes: void 0
+  };
+  try {
+    if (childId === null) {
+      await family.addChild(payload);
+      return "\u5B69\u5B50\u8D44\u6599\u5DF2\u4FDD\u5B58";
+    }
+    await family.updateChild(childId, payload);
+    return "\u5B69\u5B50\u8D44\u6599\u5DF2\u66F4\u65B0";
+  } catch {
+    return "\u4FDD\u5B58\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u586B\u5199\u5185\u5BB9";
+  }
+}
+async function removeChild(childId) {
+  const family = getZhiyaClient("family");
+  await family.removeChild(childId);
+}
+async function loadCoupons(tab) {
+  const coupon = getZhiyaClient("coupon");
+  if (tab === "claimable") {
+    const templates = await coupon.listClaimable();
+    return templates.map((template) => ({
+      id: template.id,
+      title: template.title,
+      faceLabel: `\xA5${template.amountOff}${template.minSpend > 0 ? ` \u6EE1${template.minSpend}` : ""}`,
+      scopeLabel: COUPON_SCOPE_LABELS[template.scope] ?? template.scope,
+      stateLabel: null
+    }));
+  }
+  const mine = await coupon.listMyCoupons(tab);
+  return mine.map((entry) => ({
+    id: entry.id,
+    title: entry.title,
+    faceLabel: `\xA5${entry.amountOff}${entry.minSpend > 0 ? ` \u6EE1${entry.minSpend}` : ""}`,
+    scopeLabel: COUPON_SCOPE_LABELS[entry.scope] ?? entry.scope,
+    stateLabel: COUPON_STATE_LABELS[entry.state] ?? entry.state
+  }));
+}
+async function claimCoupon(templateId) {
+  const coupon = getZhiyaClient("coupon");
+  try {
+    const claimed = await coupon.claim(templateId);
+    return `\u300C${claimed.title}\u300D\u5DF2\u5230\u8D26`;
+  } catch {
+    return "\u9886\u53D6\u5931\u8D25\uFF0C\u53EF\u80FD\u5DF2\u9886\u53D6\u8FC7";
+  }
+}
+async function loadMessages(category) {
+  const message = getZhiyaClient("message");
+  const list = await message.listMessages(
+    category === void 0 || category === "all" ? void 0 : category
+  );
+  return list.map((entry) => ({
+    id: entry.id,
+    title: entry.title,
+    body: entry.body,
+    categoryLabel: MESSAGE_CATEGORY_LABELS[entry.category] ?? entry.category,
+    timeLabel: entry.createdAt.slice(5, 16).replace("T", " "),
+    read: entry.read
+  }));
+}
+async function markAllMessagesRead(category) {
+  const message = getZhiyaClient("message");
+  await message.markAllRead(category === void 0 || category === "all" ? void 0 : category);
+}
+
+// src/bootstrap/runtime.ts
+function bindWxHost() {
+  bindMiniProgramHost({
+    navigateTo(url) {
+      wx.navigateTo({ url });
+    },
+    switchTab(url) {
+      wx.switchTab({ url });
+    },
+    showToast(title) {
+      wx.showToast({ title, icon: "none" });
+    }
+  });
+}
+function bootstrapRuntime() {
+  bindRuntimeConfig(define_SDKWORK_RUNTIME_ENV_default);
+  bindWxHost();
+  bootstrapZhiyaClients();
+  return {
+    shell: {
+      tabs: TAB_PAGE_PATHS,
+      labels: { ...TAB_LABELS },
+      titles: { ...PAGE_TITLES },
+      categoryTabs: ACTIVITY_CATEGORY_TABS,
+      goodsCategoryTabs: GOODS_CATEGORY_TABS,
+      orderStatusTabs: ORDER_STATUS_TABS
+    },
+    home: {
+      overview: () => loadHomeOverview(CATEGORY_LABELS)
+    },
+    activity: {
+      list: (category) => listActivities(CATEGORY_LABELS, category),
+      detail: (id) => loadActivityDetail(id, ""),
+      registerPickers: (id) => loadRegisterPickers(id),
+      createOrder: (input) => createRegistrationOrder(input),
+      pay: (orderId, method) => payOrder(orderId, method)
+    },
+    ai: {
+      suggestions: AI_SUGGESTIONS,
+      send: (text) => sendAiTurn(text, CATEGORY_LABELS)
+    },
+    mall: {
+      goods: (category) => listGoods(category),
+      detail: (id) => loadGoodsDetail(id),
+      toggleFavorite: (id) => toggleGoodsFavorite(id)
+    },
+    trade: {
+      orders: (status) => listOrders(status),
+      order: (id) => loadOrderDetail(id),
+      action: (id, action) => runOrderAction(id, action),
+      submitReview: (orderId, scores) => submitReview(orderId, scores)
+    },
+    profile: {
+      children: () => listChildren(),
+      saveChild: (childId, input) => saveChild(childId, input),
+      removeChild: (id) => removeChild(id),
+      coupons: (tab) => loadCoupons(tab),
+      claimCoupon: (templateId) => claimCoupon(templateId),
+      messages: (category) => loadMessages(category),
+      markAllRead: (category) => markAllMessagesRead(category)
+    }
+  };
+}
+var appApi = bootstrapRuntime();

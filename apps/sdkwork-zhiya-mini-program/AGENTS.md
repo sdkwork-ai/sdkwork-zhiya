@@ -1,0 +1,57 @@
+# Repository Guidelines — apps/sdkwork-zhiya-mini-program
+
+## SDKWORK Soul
+
+Agent execution follows `../../../sdkwork-specs/SOUL.md`: specs before memory, dictionary before context, evidence before completion, stop on ambiguity.
+
+## SDKWORK Standards
+
+Use `../../../sdkwork-specs/README.md` and `../../../sdkwork-specs/AGENTS_SPEC.md` as the global authority. Repository entrypoint: `../../AGENTS.md`.
+
+## Application Identity
+
+App surface: `sdkwork-zhiya-mini-program` — the WeChat mini-program client of Zhiya (知鸭). Domain `zhiya`; five native tabBar pages (首页/活动/AI/商城/我的) projected from the cross-surface route identities; the C-end flow (报名/支付/订单/评价/家庭/消息) lives in the `detail` subpackage. The org workspace is not part of the mini-program surface (merchants use PC/H5).
+
+## Local Dictionary Structure
+
+- `packages/sdkwork-zhiya-mp-*` — TypeScript capability packages; they never call `wx.*` — the typed host adapter boundary lives in `src/bootstrap/runtime.ts`.
+- `src/pages/` + `src/detail/` — native WeChat pages projected from route contributions.
+- `src/runtime/` — esbuild-bundled CommonJS runtime produced by `scripts/build-runtime.mjs` (committed so DevTools open directly).
+- `config/mini-program/` — per-profile runtime-env sources; `etc/` — the deployment index.
+
+## Spec Resolution Order
+
+Use dynamic progressive loading: read this file, then the app declaration, then the task row in `../../../sdkwork-specs/README.md`, then only selected standards; implementation files last. Language-specific standards load on demand only.
+
+## Required Specs By Task Type
+
+- Surface work: `../../../sdkwork-specs/MINI_PROGRAM_APP_ARCHITECTURE_SPEC.md`, `../../../sdkwork-specs/APP_MINI_PROGRAM_UI_SPEC.md`, `../../../sdkwork-specs/APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md`
+- Commands/workflows: `../../../sdkwork-specs/PNPM_SCRIPT_SPEC.md`, `../../../sdkwork-specs/GITHUB_WORKFLOW_SPEC.md`
+- List/search: `../../../sdkwork-specs/PAGINATION_SPEC.md` (run `check-pagination.mjs` once server pagination exists)
+- TypeScript: `../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md` (on-demand only)
+- Config: `../../../sdkwork-specs/SOURCE_CONFIG_SPEC.md`, `../../../sdkwork-specs/ENVIRONMENT_SPEC.md`
+- Naming: `../../../sdkwork-specs/NAMING_SPEC.md` (kebab-case `mp-*` packages; `wx` calls only in the bootstrap)
+
+## Code Style Rules
+
+UI pages bind data and events only; all domain logic flows through the bundled runtime (`appApi`). Shared domain logic lives in the common service family (`@sdkwork/zhiya-service-core` et al.) — never duplicated into the packages here. `src/index.ts` is each package's only public export boundary.
+
+## Build, Test, and Verification
+
+```bash
+pnpm typecheck && pnpm test && pnpm build
+```
+
+Open the WeChat DevTools with `miniprogramRoot=src/` (see `project.config.json`).
+
+## Agent Execution Rules
+
+Follow `../../../sdkwork-specs/SOUL.md`; develop on `main`; capture verification evidence before claiming completion.
+
+## Human Review Rules
+
+Human review before landing: `app.json` page/tab changes, runtime bundle regeneration, new packages, dependency additions.
+
+## Main-Branch Development
+
+Authority: `../../../sdkwork-specs/REPOSITORY_BASELINE_SPEC.md`. Develop on `main` directly.

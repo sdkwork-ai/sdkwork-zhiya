@@ -1,0 +1,17 @@
+{
+  "rail": {
+    "label": "主导航",
+    "guest": "未登录",
+    "slogan": "知孩子，也知教育"
+  },
+  "footer": {
+    "brand": "知鸭 Zhiya · AI 时代的家庭教育与活动平台 · 发现好课程，体验好教育"
+  },
+  "tab": {
+    "home": "首页",
+    "activity": "活动",
+    "ai": "AI",
+    "mall": "商城",
+    "profile": "我的"
+  }
+}

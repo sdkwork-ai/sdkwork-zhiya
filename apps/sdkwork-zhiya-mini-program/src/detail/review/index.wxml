@@ -1,0 +1,28 @@
+<view>
+  <view class="panel">
+    <view wx:for="{{dimensions}}" wx:key="id" class="row">
+      <view class="row-title" style="flex: 1;">{{item.label}}</view>
+      <view class="stars">
+        <text
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:for-item="value"
+          wx:key="*this"
+          class="star {{value <= item.score ? 'star-on' : ''}}"
+          data-dimension="{{item.id}}"
+          data-value="{{value}}"
+          bindtap="onScore"
+        >★</text>
+      </view>
+    </view>
+    <view class="row">
+      <view class="row-title" style="flex: 1;">愿意推荐给其他家长</view>
+      <switch checked="{{recommend}}" bindchange="onRecommend" color="#d97706" />
+    </view>
+  </view>
+  <view class="panel" style="padding: 24rpx;">
+    <textarea value="{{content}}" bindinput="onContent" maxlength="300" placeholder="孩子玩得怎么样？有什么亮点或建议都可以说～" style="width: 100%; height: 200rpx; font-size: 28rpx;" />
+  </view>
+  <view style="padding: 16rpx 24rpx calc(32rpx + env(safe-area-inset-bottom));">
+    <button class="btn-brand" bindtap="onSubmit" disabled="{{submitting}}">{{submitting ? '发布中…' : '发布评价'}}</button>
+  </view>
+</view>

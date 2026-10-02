@@ -8,6 +8,9 @@ not an app surface.
 | --- | --- | --- | --- | --- |
 | `sdkwork-zhiya-common/` | shared-package-family | no | Cross-surface contracts and services: route identity, AI intent recognition, domain model, SDK ports, mock service hub. | [README](sdkwork-zhiya-common/README.md) |
 | `sdkwork-zhiya-h5/` | primary-h5 (mobile-first) | yes | Primary C-end surface: 首页 / 活动 / AI / 商城 / 我的 five-tab app with the registration → payment → check-in → review loop, plus the embedded org (机构) workspace. | [README](sdkwork-zhiya-h5/README.md) |
+| `sdkwork-zhiya-pc/` | desktop-pc (browser) | yes | Desktop-class PC surface: five navigation-rail destinations mirroring the H5 cross-surface contracts, fluid wide-screen layouts, org workspace. | [README](sdkwork-zhiya-pc/README.md) |
+| `sdkwork-zhiya-mini-program/` | wechat-mini-program | yes (headless build + DevTools preview) | Native WeChat mini-program client: five tabBar pages + detail subpackage covering the C-end loop. | [README](sdkwork-zhiya-mini-program/README.md) |
+| `sdkwork-zhiya-flutter-mobile/` | flutter-mobile (iOS/Android) | yes (flutter analyze/test) | Flutter mobile client mirroring the five-tab contract with a Dart port of the domain + mock services. | [README](sdkwork-zhiya-flutter-mobile/README.md) |
 
 Shared logic flows only through `sdkwork-zhiya-common`; application roots must
 not import each other's UI or internals. New application roots (PC console,

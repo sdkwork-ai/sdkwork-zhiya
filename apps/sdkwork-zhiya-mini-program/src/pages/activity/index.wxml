@@ -1,0 +1,30 @@
+<view>
+  <scroll-view scroll-x class="chips">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="id"
+      class="chip {{category === item.id ? 'chip-active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="onCategory"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view wx:if="{{loading}}" class="empty">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="empty">这里还空空如也</view>
+  <block wx:else>
+    <view wx:for="{{list}}" wx:key="id" class="panel" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="row">
+        <text class="row-glyph">{{item.emoji}}</text>
+        <view style="flex: 1; min-width: 0;">
+          <view class="row-title">{{item.title}}</view>
+          <view class="row-desc">{{item.orgName}} · {{item.categoryLabel}}</view>
+          <view class="row-desc">{{item.startLabel}} · {{item.quotaLabel}}</view>
+        </view>
+        <view style="text-align: right;">
+          <view class="price">{{item.priceLabel}}</view>
+          <text wx:if="{{item.originalLabel}}" class="price-original">{{item.originalLabel}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,34 @@
+{
+  "root": {
+    "title": "Home"
+  },
+  "search": {
+    "title": "Search",
+    "hint": "Search courses, activities, organizations, and goods",
+    "activities": "Activities",
+    "packages": "Packages",
+    "orgs": "Organizations",
+    "goods": "Goods",
+    "orgRating": "{{rating}} pts",
+    "goodsSales": "{{count}} sold"
+  },
+  "city": "Beijing",
+  "messages": "Messages",
+  "searchPlaceholder": "Search courses, activities, orgs, goods",
+  "ai": {
+    "title": "Ask Zhiya 🦆",
+    "subtitle": "What should my child try? Let me help"
+  },
+  "quick": {
+    "label": "Quick entries",
+    "trial": "Trial",
+    "packages": "Packages",
+    "parentChild": "Family",
+    "studyTour": "Study tour",
+    "online": "Online",
+    "competition": "Contest"
+  },
+  "nearbyActivities": "Popular nearby",
+  "hotPackages": "Hot packages",
+  "more": "All"
+}

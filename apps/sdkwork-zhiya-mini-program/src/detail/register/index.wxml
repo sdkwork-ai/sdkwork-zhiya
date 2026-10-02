@@ -1,0 +1,44 @@
+<view wx:if="{{pickers}}">
+  <view class="panel">
+    <view class="row">
+      <view class="row-title" style="flex: 1;">{{pickers.activity.title}}</view>
+      <view class="price">{{pickers.activity.priceLabel}}</view>
+    </view>
+  </view>
+
+  <view class="page-title">选择参加儿童</view>
+  <view class="panel">
+    <view wx:if="{{pickers.children.length === 0}}" class="row" bindtap="goFamily">
+      <view class="row-desc" style="flex: 1;">还没有孩子资料，点此添加</view>
+      <text style="color: var(--sdk-color-brand);">去添加 ›</text>
+    </view>
+    <view wx:for="{{pickers.children}}" wx:key="id" class="row" data-id="{{item.id}}" bindtap="onChild">
+      <view class="row-title" style="flex: 1;">{{item.nickname}}</view>
+      <text wx:if="{{childId === item.id}}" style="color: var(--sdk-color-brand);">✓</text>
+    </view>
+  </view>
+
+  <view class="page-title">选择场次</view>
+  <view style="padding: 0 24rpx;">
+    <view wx:for="{{pickers.sessions}}" wx:key="id" class="chip {{sessionId === item.id ? 'chip-active' : ''}}" style="margin-bottom: 12rpx;" data-id="{{item.id}}" bindtap="onSession">
+      {{item.label}}（{{item.remaining === 0 ? '满员' : '剩' + item.remaining}})
+    </view>
+  </view>
+
+  <block wx:if="{{pickers.coupons.length > 0}}">
+    <view class="page-title">选择优惠券</view>
+    <view class="panel">
+      <view wx:for="{{pickers.coupons}}" wx:key="id" class="row" data-id="{{item.id}}" bindtap="onCoupon">
+        <view style="flex: 1;">
+          <view class="row-title">{{item.title}}</view>
+        </view>
+        <view class="price">{{item.discountLabel}}</view>
+        <text wx:if="{{couponId === item.id}}" style="color: var(--sdk-color-brand); margin-left: 12rpx;">✓</text>
+      </view>
+    </view>
+  </block>
+
+  <view style="padding: 32rpx 24rpx calc(32rpx + env(safe-area-inset-bottom));">
+    <button class="btn-brand" bindtap="onSubmit" disabled="{{submitting}}">{{submitting ? '提交中…' : '提交订单'}}</button>
+  </view>
+</view>

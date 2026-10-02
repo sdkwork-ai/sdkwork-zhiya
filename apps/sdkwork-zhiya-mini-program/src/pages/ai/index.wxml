@@ -1,0 +1,35 @@
+<view>
+  <scroll-view scroll-y style="height: calc(100vh - 220rpx);" class="thread">
+    <view wx:if="{{turns.length === 0}}" class="empty">你好呀，我是知鸭 🦆 问我：孩子适合学什么、周末去哪儿…</view>
+    <block wx:for="{{turns}}" wx:key="index" wx:for-item="turn">
+      <view class="bubble {{turn.role === 'user' ? 'bubble-user' : 'bubble-ai'}}">{{turn.text}}</view>
+      <view wx:if="{{turn.plan}}" class="panel">
+        <view class="row-title" style="padding: 20rpx 24rpx;">{{turn.plan.totalLabel}}</view>
+        <view wx:for="{{turn.plan.weeks}}" wx:key="activityId" wx:for-item="week" class="row" data-id="{{week.activityId}}" bindtap="goDetail">
+          <view class="row-title" style="flex: 1;">第{{week.weekIndex}}周 · {{week.title}}</view>
+          <view class="price">{{week.priceLabel}}</view>
+        </view>
+      </view>
+      <view wx:for="{{turn.recommendations}}" wx:key="id" wx:for-item="rec" class="panel" data-id="{{rec.id}}" bindtap="goDetail">
+        <view class="row">
+          <text class="row-glyph">{{rec.emoji}}</text>
+          <view style="flex: 1; min-width: 0;">
+            <view class="row-title">{{rec.title}}</view>
+            <view class="row-desc">{{rec.orgName}}</view>
+          </view>
+          <view class="price">{{rec.priceLabel}}</view>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{sending}}" class="empty">知鸭正在思考…</view>
+  </scroll-view>
+
+  <view wx:if="{{turns.length === 0}}" class="suggestions">
+    <view wx:for="{{suggestions}}" wx:key="*this" class="chip" data-text="{{item}}" bindtap="onSuggestion">{{item}}</view>
+  </view>
+
+  <view class="composer">
+    <input class="composer-input" value="{{input}}" bindinput="onInput" confirm-type="send" bindconfirm="onSend" placeholder="说说你的需求，比如“8岁孩子学什么”" />
+    <button class="btn-brand composer-send" size="mini" bindtap="onSend" disabled="{{sending}}">发送</button>
+  </view>
+</view>

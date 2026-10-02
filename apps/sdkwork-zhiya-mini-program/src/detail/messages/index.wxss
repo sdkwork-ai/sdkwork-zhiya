@@ -1,0 +1,3 @@
+.chips { padding: 20rpx 24rpx; white-space: nowrap; }
+.mark-all { text-align: right; padding: 24rpx 32rpx 0; color: var(--sdk-color-brand); font-size: 26rpx; }
+.dot { width: 16rpx; height: 16rpx; border-radius: 50%; background-color: var(--sdk-color-danger); }

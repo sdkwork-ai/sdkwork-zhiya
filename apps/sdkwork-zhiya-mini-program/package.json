@@ -1,0 +1,40 @@
+{
+  "name": "sdkwork-zhiya-mini-program",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm dev:standalone",
+    "dev:standalone": "node scripts/build-runtime.mjs --deployment-profile standalone --environment development --watch",
+    "dev:cloud": "node scripts/build-runtime.mjs --deployment-profile standalone --environment development --watch",
+    "build": "node scripts/build-runtime.mjs --deployment-profile standalone --environment development",
+    "build:standalone": "node scripts/build-runtime.mjs --deployment-profile standalone --environment development",
+    "build:cloud": "node scripts/build-runtime.mjs --deployment-profile standalone --environment development",
+    "build:mini-program": "node scripts/build-runtime.mjs --deployment-profile standalone --environment development",
+    "build:mini-program:staging": "node scripts/build-runtime.mjs --deployment-profile standalone --environment staging",
+    "build:mini-program:prod": "node scripts/build-runtime.mjs --deployment-profile standalone --environment production",
+    "preview:mini-program": "echo \"Open the WeChat DevTools with miniprogramRoot=src/ (see project.config.json); the runtime bundle must be built first: pnpm build\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test tests/mini-program-surface-contract.test.mjs",
+    "clean": "node -e \"import('node:fs').then(fs => { for (const p of ['src/runtime/app.js','src/runtime/runtime-env.js']) fs.rmSync(p, { force: true }); })\""
+  },
+  "dependencies": {
+    "@sdkwork/zhiya-mp-activity": "workspace:*",
+    "@sdkwork/zhiya-mp-ai": "workspace:*",
+    "@sdkwork/zhiya-mp-core": "workspace:*",
+    "@sdkwork/zhiya-mp-commons": "workspace:*",
+    "@sdkwork/zhiya-mp-mall": "workspace:*",
+    "@sdkwork/zhiya-mp-profile": "workspace:*",
+    "@sdkwork/zhiya-mp-shell": "workspace:*",
+    "@sdkwork/zhiya-mp-home": "workspace:*",
+    "@sdkwork/zhiya-mp-trade": "workspace:*",
+    "@sdkwork/zhiya-route-core": "workspace:*",
+    "@sdkwork/zhiya-service-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "esbuild": "catalog:",
+    "miniprogram-api-typings": "catalog:",
+    "typescript": "catalog:"
+  }
+}

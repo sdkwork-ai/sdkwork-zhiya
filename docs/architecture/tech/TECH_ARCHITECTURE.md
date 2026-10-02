@@ -11,16 +11,25 @@ Specs: ARCHITECTURE_DECISION_SPEC.md, DOCUMENTATION_SPEC.md, APP_H5_ARCHITECTURE
 
 ## 1. Overview
 
-Zhiya (知鸭) ships one primary client surface for the P0 milestone: a
-mobile-first H5 application (`apps/sdkwork-zhiya-h5`) with five bottom tabs —
-首页 Home ｜ 活动 Activities ｜ AI ｜ 商城 Mall ｜ 我的 Profile (PRD §5). The
-C-end loop (家庭 → 孩子 → 活动发现 → 报名 → 支付 → 签到 → 评价 → 优惠券) plus a
-lightweight embedded org (机构) workspace are implemented against mock-backed
-services; the platform admin console (平台运营后台) and cloud platform wiring
-are later milestones (PRD §44/§50).
+Zhiya (知鸭) ships **four aligned client surfaces** over one shared service
+family (APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC):
+
+| Surface | Root | Stack | Notes |
+| --- | --- | --- | --- |
+| H5 (primary) | `apps/sdkwork-zhiya-h5` | React 19 + Vite 8 + Tailwind v4, port 3300 | Mobile-first, five bottom tabs; embedded org workspace. |
+| PC | `apps/sdkwork-zhiya-pc` | React 19 + Vite 8 + Tailwind v4, port 3400 | Desktop navigation rail, fluid layouts; org workspace; desktop host reserved for the packaging milestone. |
+| WeChat mini-program | `apps/sdkwork-zhiya-mini-program` | Native WXML/WXSS + TS capability packages | Five tabBar pages + `detail` subpackage; `wx.*` only inside `src/bootstrap/runtime.ts`; esbuild-bundled committed runtime. |
+| Flutter mobile | `apps/sdkwork-zhiya-flutter-mobile` | Dart/Flutter (Material 3) | Dart mirror of the domain + mock services; route alignment pinned by tests; native hosts at the packaging milestone. |
+
+All surfaces implement the five-tab contract (首页 Home ｜ 活动 Activities ｜
+AI 问知鸭 ｜ 商城 Mall ｜ 我的 Profile, PRD §5) and the same cross-surface
+route ids (`app.zhiya.<capability>.<screen>`), i18n key prefix (`zhiya.*`),
+and the C-end loop (家庭 → 孩子 → 活动发现 → 报名 → 支付 → 签到 → 评价 →
+优惠券) against mock-backed services; the standalone platform admin console
+and cloud platform wiring are later milestones (PRD §44/§50).
 
 Data flow is strictly **UI → hook → service port → injected client**. Screens
-never construct clients or HTTP; the app root registers mock client
+never construct clients or HTTP; each app root registers mock client
 implementations once at bootstrap.
 
 ## 2. Technology Choices
@@ -45,22 +54,33 @@ apps/sdkwork-zhiya-common/packages/          (shared cross-surface family, zero 
   sdkwork-zhiya-intent-core    AI natural-language intent recognizer (zh-CN)
   sdkwork-zhiya-service-core   domain model, ports, mock service hub
 
-apps/sdkwork-zhiya-h5/packages/
+apps/sdkwork-zhiya-h5/packages/              (mirrored 1:1 by the PC surface with -pc-* names)
   sdkwork-zhiya-h5-core        composition seam: runtime env, i18n factory, theme, session, badges, shims
   sdkwork-zhiya-h5-commons     shared leaf components (ScreenState, cards, price, QR) + hooks/format
-  sdkwork-zhiya-h5-shell       MobileLayout + five-tab TabBar
+  sdkwork-zhiya-h5-shell       MobileLayout + five-tab TabBar (PC: DesktopLayout + NavRail)
   sdkwork-zhiya-h5-home        首页 (tab) + global search
-  sdkwork-zhiya-h5-activity    活动列表/详情/报名/支付/报名成功
+  sdkwork-zhiya-h5-activity    活动列表/详情/报名/支付/报名成功/体验包
   sdkwork-zhiya-h5-ai          问知鸭 chat (问答 + 活动搜索 + 推荐 + 体验计划)
   sdkwork-zhiya-h5-mall        商城 browse (goods list/detail, P1 purchase)
   sdkwork-zhiya-h5-trade       订单列表/详情/评价
   sdkwork-zhiya-h5-profile     我的 (家庭/儿童、我的活动、优惠券、收藏、消息、设置)
   sdkwork-zhiya-h5-org         机构工作台 (活动 CRUD、报名管理、核销)
+
+apps/sdkwork-zhiya-mini-program/packages/    (mp-* names; view-model wrappers + host adapter; no org workspace)
+  sdkwork-zhiya-mp-core        typed host-adapter port + runtime config + client bootstrap
+  sdkwork-zhiya-mp-shell       tab/page projection (pages/<id>/index) + zh labels
+
+apps/sdkwork-zhiya-flutter-mobile/packages/  (snake_case dart packages; Dart domain mirror + mock runtime)
+  sdkwork_zhiya_flutter_mobile_core        route table, models, intent, mock client
+  sdkwork_zhiya_flutter_mobile_shell       five-tab NavigationBar shell
 ```
 
-Dependency direction (no cycles): `common family` → `h5-core`/`h5-commons` →
-`h5-shell` → capability packages → app root `src/`. Cross-package imports go
-through package root exports only (`src/index.ts`), never deep `src/` paths.
+Dependency direction (no cycles): `common family` → surface `core`/`commons`
+→ `shell` → capability packages → app root composition. Cross-package imports
+go through package root exports only (`src/index.ts` / barrel), never deep
+`src/` paths. Cross-surface alignment seams: route ids, i18n key prefixes, tab
+vocabulary, and the domain model — each pinned by executable tests on every
+surface (route-alignment/architecture contract tests).
 
 ## 4. Directory Layout
 

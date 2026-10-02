@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 3,
+  "kind": "sdkwork.app",
+  "app": {
+    "key": "sdkwork-zhiya-flutter-mobile",
+    "name": "Zhiya Flutter Mobile",
+    "displayName": "知鸭 Zhiya",
+    "description": "Zhiya (知鸭) family-education activity platform Flutter mobile client (iOS/Android): five-tab C-end loop with discovery, registration, payment, orders, reviews, and the 问知鸭 AI assistant.",
+    "vendor": "SDKWork",
+    "appType": "APP_FLUTTER",
+    "versionSource": "pubspec.yaml",
+    "identifiers": {
+      "packageName": "com.sdkwork.zhiya",
+      "bundleId": "com.sdkwork.zhiya"
+    }
+  },
+  "backend": {
+    "profileKey": "backend-root-admin",
+    "ownerMode": "tenant",
+    "grantMode": "current",
+    "platform": "APP",
+    "appId": "sdkwork-zhiya-flutter-mobile",
+    "organizationId": "0",
+    "tenantId": "100001",
+    "accessTokenPermissionScope": ["iam:self"]
+  },
+  "runtime": {
+    "family": "mobile",
+    "framework": "flutter",
+    "runtimes": ["APP_IOS", "APP_ANDROID"],
+    "deliveryModes": ["APP_STORE", "APK"],
+    "defaultPlatform": "APP_ANDROID",
+    "defaultArchitecture": "universal",
+    "supportedDeploymentProfiles": ["standalone"],
+    "defaultDeploymentProfile": "standalone"
+  },
+  "media": {
+    "icons": {
+      "primary": {
+        "id": "sdkwork-zhiya-flutter-primary-icon",
+        "type": "ICON",
+        "purpose": "PRIMARY",
+        "platform": "APP",
+        "format": "PNG",
+        "width": 1024,
+        "height": 1024,
+        "enabled": true,
+        "url": "https://cdn.sdkwork.com/apps/sdkwork-zhiya/assets/icon-1024.png",
+        "metadata": { "generatedPlaceholder": true }
+      },
+      "platform": []
+    },
+    "screenshots": [],
+    "previews": []
+  },
+  "publish": {
+    "status": "DRAFT",
+    "platforms": ["APP_IOS", "APP_ANDROID"],
+    "installPlatforms": ["APP_IOS", "APP_ANDROID"],
+    "installSkill": false
+  },
+  "artifacts": { "installConfig": { "packages": [] } },
+  "release": {
+    "currentVersion": "0.1.0",
+    "defaultChannel": "BETA",
+    "latest": { "BETA": "0.1.0" },
+    "notes": [{ "version": "0.1.0", "channel": "BETA", "current": true, "packageIds": [] }]
+  },
+  "security": { "checksumRequired": true, "signatureRequired": true, "sbomRequired": true },
+  "devApp": {
+    "sourceRoot": "apps/sdkwork-zhiya-flutter-mobile",
+    "build": { "targets": ["flutter-android"] }
+  },
+  "metadata": {
+    "domain": "zhiya",
+    "capability": "family-education-platform",
+    "standardOwner": "sdkwork-zhiya",
+    "deploymentConfig": "etc/sdkwork.deployment.config.json"
+  }
+}

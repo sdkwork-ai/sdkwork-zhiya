@@ -1,0 +1,34 @@
+{
+  "root": {
+    "title": "首页"
+  },
+  "search": {
+    "title": "搜索",
+    "hint": "输入关键词，找课程、活动、机构和商品",
+    "activities": "活动",
+    "packages": "体验包",
+    "orgs": "机构",
+    "goods": "商品",
+    "orgRating": "{{rating}} 分",
+    "goodsSales": "已售 {{count}}"
+  },
+  "city": "北京",
+  "messages": "消息",
+  "searchPlaceholder": "搜课程、活动、机构、商品",
+  "ai": {
+    "title": "问问知鸭 🦆",
+    "subtitle": "孩子适合体验什么？让我来帮你"
+  },
+  "quick": {
+    "label": "快捷入口",
+    "trial": "体验课",
+    "packages": "体验包",
+    "parentChild": "亲子",
+    "studyTour": "研学",
+    "online": "线上课",
+    "competition": "比赛"
+  },
+  "nearbyActivities": "附近热门活动",
+  "hotPackages": "热门体验包",
+  "more": "全部"
+}

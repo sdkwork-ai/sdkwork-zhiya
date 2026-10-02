@@ -1,0 +1,20 @@
+{
+  "root": {
+    "title": "Ask Zhiya",
+    "subtitle": "Know your child, know education"
+  },
+  "greeting": "Hi, I'm Zhiya 🦆 Ask me what suits your child, weekend plans, budget plans…",
+  "inputPlaceholder": "Tell me your needs, e.g. \"what for an 8-year-old\"",
+  "send": "Send",
+  "thinking": "Thinking…",
+  "planTitle": "A {{total}} yuan experience plan for you",
+  "planWeek": "Week {{index}}",
+  "register": "Register",
+  "reply": {
+    "recommend": "Based on your needs, here are {{count}} activities:",
+    "found": "These activities match your search:",
+    "fallback": "That one is beyond my activity library — here are popular picks:",
+    "plan": "Done! A {{count}}-week plan within your budget — tap to register:"
+  },
+  "error": "Oops, something went wrong. Try again later."
+}

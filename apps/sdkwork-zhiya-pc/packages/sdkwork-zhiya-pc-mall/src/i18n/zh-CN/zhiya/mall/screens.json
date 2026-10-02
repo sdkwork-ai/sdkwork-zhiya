@@ -1,0 +1,14 @@
+{
+  "root": {
+    "title": "商城",
+    "subtitle": "课程周边好物，学习体验加成"
+  },
+  "filter": { "all": "全部" },
+  "goods": {
+    "title": "商品详情",
+    "notFound": "商品不存在或已下架",
+    "detail": "商品详情",
+    "related": "相关推荐",
+    "buySoon": "即将开售，先收藏吧"
+  }
+}

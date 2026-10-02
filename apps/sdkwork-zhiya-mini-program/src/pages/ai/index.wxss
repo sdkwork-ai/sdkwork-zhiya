@@ -1,0 +1,8 @@
+.thread { padding: 16rpx 0; }
+.bubble { max-width: 80%; margin: 12rpx 24rpx; padding: 20rpx; border-radius: 20rpx; font-size: 28rpx; line-height: 1.5; }
+.bubble-user { background-color: var(--sdk-color-brand); color: #ffffff; margin-left: 160rpx; }
+.bubble-ai { background-color: var(--sdk-color-surface-panel); border: 1rpx solid var(--sdk-color-border-subtle); margin-right: 120rpx; }
+.suggestions { padding: 12rpx 24rpx; display: flex; flex-wrap: wrap; }
+.composer { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 16rpx; align-items: center; padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)); background-color: var(--sdk-color-surface-panel); border-top: 1rpx solid var(--sdk-color-border-subtle); }
+.composer-input { flex: 1; background-color: var(--sdk-color-surface-canvas); border-radius: 999rpx; padding: 16rpx 28rpx; font-size: 26rpx; }
+.composer-send { margin: 0; padding: 10rpx 32rpx; }

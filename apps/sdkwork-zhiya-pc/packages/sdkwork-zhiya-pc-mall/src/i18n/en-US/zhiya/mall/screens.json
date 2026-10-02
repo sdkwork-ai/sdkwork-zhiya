@@ -1,0 +1,14 @@
+{
+  "root": {
+    "title": "Mall",
+    "subtitle": "Learning goods that boost the experience"
+  },
+  "filter": { "all": "All" },
+  "goods": {
+    "title": "Goods detail",
+    "notFound": "Goods not found",
+    "detail": "Details",
+    "related": "Related",
+    "buySoon": "Coming soon — save it first"
+  }
+}

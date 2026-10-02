@@ -1,0 +1,127 @@
+{
+  "action": {
+    "favorite": "收藏",
+    "unfavorite": "取消收藏",
+    "back": "返回"
+  },
+  "state": {
+    "loading": {
+      "title": "加载中…",
+      "description": "正在为你获取内容"
+    },
+    "empty": {
+      "title": "这里还空空如也",
+      "description": "换个筛选条件试试，或者去首页逛逛"
+    },
+    "error": {
+      "title": "出错了",
+      "description": "内容没有加载成功，请重试"
+    },
+    "permission-denied": {
+      "title": "没有权限",
+      "description": "当前账号无权访问该内容"
+    },
+    "retry": "重试"
+  },
+  "price": {
+    "free": "免费"
+  },
+  "mode": {
+    "online": "线上活动",
+    "offline": "线下活动"
+  },
+  "quota": {
+    "remaining": "仅剩{{count}}个名额",
+    "full": "已满员",
+    "enrolledSuffix": "人已报名"
+  },
+  "age": {
+    "unit": "岁"
+  },
+  "package": {
+    "activityCount": "含{{count}}个活动",
+    "purchasedSuffix": "人已购买"
+  },
+  "goods": {
+    "sales": "已售{{count}}"
+  },
+  "category": {
+    "trial": "体验课",
+    "online-course": "线上课程",
+    "open-course": "公开课",
+    "parent-child": "亲子活动",
+    "study-tour": "研学",
+    "summer-camp": "夏令营",
+    "winter-camp": "冬令营",
+    "competition": "比赛",
+    "exhibition": "展览",
+    "training": "训练营",
+    "other": "其他"
+  },
+  "qr": {
+    "label": "活动凭证二维码 {{code}}",
+    "hint": "到场出示此码给工作人员扫码核销"
+  },
+  "orderStatus": {
+    "pending-payment": "待支付",
+    "upcoming": "待参加",
+    "ongoing": "进行中",
+    "pending-review": "待评价",
+    "completed": "已完成",
+    "cancelled": "已取消",
+    "refunded": "已退款"
+  },
+  "checkInState": {
+    "none": "待核销",
+    "checked-in": "已签到"
+  },
+  "couponScope": {
+    "platform": "平台券",
+    "org": "商家券",
+    "activity": "活动券",
+    "package": "体验包券"
+  },
+  "couponState": {
+    "unused": "未使用",
+    "used": "已使用",
+    "expired": "已过期"
+  },
+  "messageCategory": {
+    "system": "系统通知",
+    "activity": "活动通知",
+    "registration": "报名通知",
+    "payment": "支付通知",
+    "refund": "退款通知",
+    "coupon": "优惠通知",
+    "ai": "AI通知"
+  },
+  "childStage": {
+    "kindergarten": "幼儿园",
+    "primary-low": "小学低年级",
+    "primary-high": "小学高年级",
+    "junior": "初中",
+    "senior": "高中"
+  },
+  "educationTag": {
+    "programming": "编程",
+    "robotics": "机器人",
+    "science": "科学",
+    "art": "美术",
+    "music": "音乐",
+    "english": "英语",
+    "sports": "体育",
+    "thinking": "思维",
+    "drama": "戏剧",
+    "nature": "自然"
+  },
+  "goodsCategory": {
+    "stationery": "文具",
+    "books": "图书",
+    "painting": "绘画",
+    "science": "科学实验",
+    "programming": "编程",
+    "robotics": "机器人",
+    "teaching-aids": "教具",
+    "supplies": "学习用品"
+  }
+}
