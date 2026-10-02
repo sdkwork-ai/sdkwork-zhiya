@@ -16,7 +16,13 @@
       "maxCommitSubjects": 50
     }
   },
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "sdkwork-sdk-commons",
+      "path": "../sdkwork-sdk-commons",
+      "reason": "canonical browser runtime-env resolution (@sdkwork/sdk-common)"
+    }
+  ],
   "verificationDependencies": [],
   "targets": [
     {

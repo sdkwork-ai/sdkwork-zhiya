@@ -1,4 +1,5 @@
 packages:
+  - ../sdkwork-sdk-commons/sdkwork-sdk-common-typescript
   - apps/sdkwork-zhiya-common
   - apps/sdkwork-zhiya-common/packages/*
   - apps/sdkwork-zhiya-h5

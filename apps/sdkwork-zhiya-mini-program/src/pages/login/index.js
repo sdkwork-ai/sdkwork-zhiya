@@ -2,6 +2,13 @@
 Page({
   data: { phone: '', code: '', error: '', submitting: false },
 
+  onLoad() {
+    // 返回用户：已有会话时直接进入首页，不重复登录。
+    if (wx.getStorageSync('zhiya.session')) {
+      wx.switchTab({ url: '/pages/home/index' });
+    }
+  },
+
   onPhone(event) {
     this.setData({ phone: event.detail.value });
   },

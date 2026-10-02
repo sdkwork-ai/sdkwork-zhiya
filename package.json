@@ -38,5 +38,8 @@
     "onlyBuiltDependencies": [
       "esbuild"
     ]
+  },
+  "devDependencies": {
+    "@sdkwork/sdk-common": "workspace:*"
   }
 }

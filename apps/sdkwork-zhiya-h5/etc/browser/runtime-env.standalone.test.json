@@ -5,5 +5,10 @@
   "runtimeTarget": "browser",
   "browserOriginMode": "same-origin",
   "appApiBaseUrl": "/",
+  "backendApiBaseUrl": "/",
+  "driveAppApiBaseUrl": "/",
+  "appbaseAppApiBaseUrl": "/",
+  "deployAppApiBaseUrl": "/",
+  "openApiBaseUrl": "/",
   "sdkBaseUrl": "/"
 }
