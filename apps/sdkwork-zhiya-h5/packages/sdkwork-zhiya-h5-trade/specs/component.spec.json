@@ -70,7 +70,8 @@
     "routeManifest": [
       "app.zhiya.trade.orders",
       "app.zhiya.trade.order-detail",
-      "app.zhiya.trade.review"
+      "app.zhiya.trade.review",
+      "app.zhiya.trade.benefits"
     ],
     "sdkClients": [],
     "sdkDependencies": [],

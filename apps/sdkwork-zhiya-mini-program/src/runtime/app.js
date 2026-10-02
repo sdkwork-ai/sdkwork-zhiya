@@ -838,7 +838,8 @@ var KEYS = {
   enrolled: "zhiya.enrolled-overrides",
   orgActivities: "zhiya.org-activities",
   orgStatuses: "zhiya.org-statuses",
-  activityStatuses: "zhiya.activity-status-overrides"
+  activityStatuses: "zhiya.activity-status-overrides",
+  benefitBookings: "zhiya.benefit-bookings"
 };
 function readJson(storage, key) {
   if (storage === null) {
@@ -879,6 +880,7 @@ function createZhiyaMockState(options = {}) {
   const orgActivities = readJson(storage, KEYS.orgActivities) ?? [];
   const orgStatuses = readJson(storage, KEYS.orgStatuses) ?? {};
   const activityStatuses = readJson(storage, KEYS.activityStatuses) ?? {};
+  const benefitBookings = readJson(storage, KEYS.benefitBookings) ?? [];
   const state = {
     now,
     storage,
@@ -898,6 +900,7 @@ function createZhiyaMockState(options = {}) {
     orgActivities,
     orgStatuses,
     activityStatuses,
+    benefitBookings,
     persist() {
       writeJson(storage, KEYS.family, state.family);
       writeJson(storage, KEYS.orders, state.orders);
@@ -910,6 +913,7 @@ function createZhiyaMockState(options = {}) {
       writeJson(storage, KEYS.orgActivities, state.orgActivities);
       writeJson(storage, KEYS.orgStatuses, state.orgStatuses);
       writeJson(storage, KEYS.activityStatuses, state.activityStatuses);
+      writeJson(storage, KEYS.benefitBookings, state.benefitBookings);
     },
     notify(partial) {
       const message = {
@@ -1210,6 +1214,131 @@ function createMockMallClient(state) {
   };
 }
 
+// ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/benefitsClient.ts
+function makeId2(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function makeVoucherCode() {
+  const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  let code = "ZY";
+  for (let index = 0; index < 6; index += 1) {
+    code += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return code;
+}
+function listPackageBenefits(state, orderId) {
+  const order = state.orders.find((entry) => entry.id === orderId);
+  if (order === void 0 || order.type !== "package") {
+    throw new Error(`package order not found: ${orderId}`);
+  }
+  const packageId = order.items[0]?.packageId ?? "";
+  const pkg = state.packages.find((entry) => entry.id === packageId);
+  if (pkg === void 0) {
+    throw new Error(`package not found: ${packageId}`);
+  }
+  const bookings = state.benefitBookings.filter((booking) => booking.packageOrderId === orderId);
+  return pkg.activityIds.map((activityId) => {
+    const activity = state.findActivity(activityId);
+    const booking = bookings.find((entry) => entry.activityId === activityId && entry.status !== "cancelled");
+    const view = {
+      activityId,
+      title: activity?.title ?? activityId,
+      emoji: activity?.emoji ?? "\u{1F4CC}",
+      orgName: activity?.orgName ?? "",
+      category: activity?.category ?? "other",
+      mode: activity?.mode ?? "offline",
+      ageMin: activity?.ageMin ?? 3,
+      ageMax: activity?.ageMax ?? 12,
+      price: activity?.price ?? 0,
+      booked: booking !== void 0
+    };
+    if (booking !== void 0) {
+      view.bookingId = booking.id;
+      view.voucherCode = booking.voucherCode;
+      view.checkInState = booking.status === "checked-in" ? "checked-in" : "none";
+    }
+    return view;
+  });
+}
+function bookPackageBenefit(state, input) {
+  const order = state.orders.find((entry) => entry.id === input.orderId);
+  if (order === void 0 || order.type !== "package") {
+    throw new Error(`package order not found: ${input.orderId}`);
+  }
+  if (order.status !== "paid") {
+    throw new Error(`package order not paid: ${input.orderId}`);
+  }
+  const packageId = order.items[0]?.packageId ?? "";
+  const pkg = state.packages.find((entry) => entry.id === packageId);
+  if (pkg === void 0 || !pkg.activityIds.includes(input.activityId)) {
+    throw new Error(`activity not in package: ${input.activityId}`);
+  }
+  const child = state.family?.children.find((entry) => entry.id === input.childId);
+  if (child === void 0) {
+    throw new Error(`child not found: ${input.childId}`);
+  }
+  const activity = state.findActivity(input.activityId);
+  if (activity === null) {
+    throw new Error(`activity not found: ${input.activityId}`);
+  }
+  if (activity.status !== "published") {
+    throw new Error(`activity not published: ${input.activityId}`);
+  }
+  const session = activity.sessions.find((entry) => entry.id === input.sessionId);
+  if (session === void 0) {
+    throw new Error(`session not found: ${input.sessionId}`);
+  }
+  if (session.enrolled >= session.quota) {
+    throw new Error(`session sold out: ${input.sessionId}`);
+  }
+  const age = ageOf(child, state.now());
+  if (age < activity.ageMin || age > activity.ageMax) {
+    throw new Error(`child age ${age} outside [${activity.ageMin}, ${activity.ageMax}]`);
+  }
+  const duplicate = state.benefitBookings.find(
+    (booking2) => booking2.packageOrderId === order.id && booking2.activityId === input.activityId && booking2.status !== "cancelled"
+  );
+  if (duplicate !== void 0) {
+    throw new Error(`benefit already booked: ${input.activityId}`);
+  }
+  const conflict = state.benefitBookings.find((booking2) => {
+    if (booking2.childId !== child.id || booking2.status === "cancelled") {
+      return false;
+    }
+    const other = state.findActivity(booking2.activityId);
+    const otherSession = other?.sessions.find((entry) => entry.id === booking2.sessionId);
+    if (other === void 0 || otherSession === void 0) {
+      return false;
+    }
+    return new Date(session.startTime).getTime() < new Date(otherSession.endTime).getTime() && new Date(otherSession.startTime).getTime() < new Date(session.endTime).getTime();
+  });
+  if (conflict !== void 0) {
+    throw new Error(`time conflict with booking ${conflict.id}`);
+  }
+  const booking = {
+    id: makeId2("bkg"),
+    packageOrderId: order.id,
+    packageId,
+    activityId: input.activityId,
+    sessionId: input.sessionId,
+    childId: child.id,
+    childName: child.nickname,
+    voucherCode: makeVoucherCode(),
+    status: "booked",
+    createdAt: state.now().toISOString()
+  };
+  state.benefitBookings.push(booking);
+  applyEnrollmentDelta(state, input.activityId, input.sessionId, 1);
+  state.persist();
+  state.notify({
+    category: "registration",
+    title: "\u6743\u76CA\u9884\u7EA6\u6210\u529F",
+    body: `\u300C${activity.title}\u300D\u5DF2\u9884\u7EA6\uFF0C\u51ED\u8BC1\u7801 ${booking.voucherCode}\u3002`,
+    orderId: order.id
+  });
+  return booking;
+}
+
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/orderStatus.ts
 function deriveOrderStatus(state, order) {
   if (order.status !== "paid") {
@@ -1243,10 +1372,10 @@ function withDerivedStatus(state, order) {
 }
 
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/orderClient.ts
-function makeId2(prefix) {
+function makeId3(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
-function makeVoucherCode() {
+function makeVoucherCode2() {
   const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
   let code = "ZY";
   for (let index = 0; index < 6; index += 1) {
@@ -1396,7 +1525,7 @@ function createMockOrderClient(state, deps = {}) {
         activity.orgId
       );
       const order = {
-        id: makeId2("ord"),
+        id: makeId3("ord"),
         type: "activity",
         status: "pending-payment",
         items: [item],
@@ -1426,7 +1555,7 @@ function createMockOrderClient(state, deps = {}) {
       }
       const now = state.now();
       const placeholderItem = {
-        id: makeId2("item"),
+        id: makeId3("item"),
         orderType: "package",
         packageId: pkg.id,
         title: pkg.title,
@@ -1442,7 +1571,7 @@ function createMockOrderClient(state, deps = {}) {
         "platform"
       );
       const order = {
-        id: makeId2("ord"),
+        id: makeId3("ord"),
         type: "package",
         status: "pending-payment",
         items: [placeholderItem],
@@ -1486,7 +1615,7 @@ function createMockOrderClient(state, deps = {}) {
         if (item !== void 0) {
           applyEnrollmentDelta(state, item.activityId ?? "", item.sessionId ?? "", 1);
         }
-        order.voucherCode = makeVoucherCode();
+        order.voucherCode = makeVoucherCode2();
         state.notify({
           category: "payment",
           title: "\u652F\u4ED8\u6210\u529F",
@@ -1564,6 +1693,12 @@ function createMockOrderClient(state, deps = {}) {
     },
     async listApplicableCoupons(ref, amount, options) {
       return state.coupons.filter((coupon) => couponApplies(coupon, ref, amount, options?.orgId)).sort((left, right) => right.amountOff - left.amountOff);
+    },
+    async listPackageBenefits(orderId) {
+      return listPackageBenefits(state, orderId);
+    },
+    async bookPackageBenefit(input) {
+      return bookPackageBenefit(state, input);
     }
   };
   function requireOrder(orderId) {
@@ -1576,7 +1711,7 @@ function createMockOrderClient(state, deps = {}) {
 }
 function buildItem(activity, sessionId, childId, childName) {
   const item = {
-    id: makeId2("item"),
+    id: makeId3("item"),
     orderType: "activity",
     activityId: activity.id,
     sessionId,
@@ -1592,7 +1727,7 @@ function buildItem(activity, sessionId, childId, childName) {
 }
 
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/couponClient.ts
-function makeId3(prefix) {
+function makeId4(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 function createMockCouponClient(state, deps = {}) {
@@ -1600,7 +1735,7 @@ function createMockCouponClient(state, deps = {}) {
   function toUserCoupon(template, now) {
     const expire = new Date(now.getTime() + template.validDays * 864e5);
     const coupon = {
-      id: makeId3("cpn"),
+      id: makeId4("cpn"),
       templateId: template.id,
       title: template.title,
       scope: template.scope,
@@ -1670,7 +1805,7 @@ function createMockCouponClient(state, deps = {}) {
 }
 
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/reviewClient.ts
-function makeId4(prefix) {
+function makeId5(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 function createMockReviewClient(state) {
@@ -1693,7 +1828,7 @@ function createMockReviewClient(state) {
         throw new Error(`activity not finished: ${String(item.activityId)}`);
       }
       const review = {
-        id: makeId4("rev"),
+        id: makeId5("rev"),
         orderId: order.id,
         activityId: item.activityId,
         authorName: input.authorName,
@@ -1784,6 +1919,40 @@ function createMockCheckInClient(state) {
       const order = state.orders.find(
         (entry) => entry.type === "activity" && (entry.voucherCode ?? "").toUpperCase() === normalized
       );
+      const booking = state.benefitBookings.find(
+        (entry) => (entry.voucherCode ?? "").toUpperCase() === normalized && entry.status !== "cancelled"
+      );
+      if (booking === void 0 && order === void 0) {
+        throw new VerifyVoucherError("voucher-not-found", `voucher not found: ${normalized}`);
+      }
+      if (booking !== void 0) {
+        if (booking.status === "checked-in") {
+          throw new VerifyVoucherError("voucher-already-used", `voucher already used: ${normalized}`);
+        }
+        booking.status = "checked-in";
+        state.persist();
+        const activity = state.findActivity(booking.activityId);
+        const view2 = {
+          orderId: booking.packageOrderId,
+          activityId: booking.activityId,
+          activityTitle: activity?.title ?? booking.activityId,
+          sessionId: booking.sessionId,
+          sessionLabel: "",
+          childName: booking.childName,
+          parentPhone: "",
+          voucherCode: booking.voucherCode,
+          status: "ongoing",
+          checkInState: "checked-in",
+          createdAt: booking.createdAt
+        };
+        state.notify({
+          category: "activity",
+          title: "\u7B7E\u5230\u6210\u529F",
+          body: `\u300C${view2.activityTitle}\u300D\u6743\u76CA\u6838\u9500\u6210\u529F\uFF0C\u795D\u73A9\u5F97\u5F00\u5FC3\uFF01`,
+          orderId: booking.packageOrderId
+        });
+        return view2;
+      }
       if (order === void 0) {
         throw new VerifyVoucherError("voucher-not-found", `voucher not found: ${normalized}`);
       }
@@ -1872,7 +2041,7 @@ var FOLLOW_UPS = [
   "\u60F3\u8BA9\u5B69\u5B50\u4F53\u9A8C\u7F16\u7A0B\uFF0C\u6709\u4EC0\u4E48\u8BFE\u7A0B\uFF1F",
   "\u9884\u7B97100\u5143\uFF0C\u5E2E\u6211\u5B89\u6392\u4E00\u4E2A\u5468\u672B\u4F53\u9A8C\u8BA1\u5212\u3002"
 ];
-function makeId5() {
+function makeId6() {
   return `ai-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 function matchesIntent(activity, intent, now) {
@@ -1983,7 +2152,7 @@ function createMockAiClient(state) {
         if (plan !== null) {
           const params = { count: plan.weeks.length, budget: plan.totalCost };
           return {
-            id: makeId5(),
+            id: makeId6(),
             messageKey: "zhiya.ai.reply.plan",
             params,
             activities: plan.weeks.map((week) => state.findActivity(week.activityId)).filter((activity) => activity !== null),
@@ -2002,7 +2171,7 @@ function createMockAiClient(state) {
           params.budget = intent.budgetMax;
         }
         return {
-          id: makeId5(),
+          id: makeId6(),
           messageKey: structured ? "zhiya.ai.reply.recommend" : "zhiya.ai.reply.found",
           params,
           activities: activities.slice(0, 4),
@@ -2010,7 +2179,7 @@ function createMockAiClient(state) {
         };
       }
       return {
-        id: makeId5(),
+        id: makeId6(),
         messageKey: "zhiya.ai.reply.fallback",
         params: {},
         activities: state.allActivities().filter((activity) => activity.status === "published" && new Date(activity.endTime).getTime() > now.getTime()).sort((left, right) => heatOf(right) - heatOf(left)).slice(0, 3),
@@ -2022,7 +2191,7 @@ function createMockAiClient(state) {
 
 // ../sdkwork-zhiya-common/packages/sdkwork-zhiya-service-core/src/orgClient.ts
 var MY_ORG_ID = "org-1";
-function makeId6(prefix) {
+function makeId7(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 function createMockOrgClient(state) {
@@ -2048,7 +2217,7 @@ function createMockOrgClient(state) {
     ].slice(0, end.getTime() > start.getTime() ? 1 : 1);
   }
   function toActivity(input, status, now) {
-    const id = makeId6("act");
+    const id = makeId7("act");
     return {
       id,
       orgId: MY_ORG_ID,
@@ -2323,6 +2492,7 @@ var PAGE_TITLES = {
   "detail/family/index": "\u6211\u7684\u5BB6\u5EAD",
   "detail/messages/index": "\u6D88\u606F\u4E2D\u5FC3",
   "detail/coupons/index": "\u4F18\u60E0\u5238",
+  "detail/benefits/index": "\u4F53\u9A8C\u5305\u6743\u76CA",
   "detail/package-detail/index": "\u4F53\u9A8C\u5305\u8BE6\u60C5"
 };
 var ORDER_STATUS_LABELS = {
@@ -2590,6 +2760,57 @@ async function createPackageOrder(packageId) {
       return { ok: false, error: "\u4F18\u60E0\u5238\u4E0D\u53EF\u7528" };
     }
     return { ok: false, error: "\u4E0B\u5355\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5" };
+  }
+}
+async function loadPackageBenefits(orderId, categoryLabels) {
+  const orderClient = getZhiyaClient("order");
+  const activityClient = getZhiyaClient("activity");
+  const benefits = await orderClient.listPackageBenefits(orderId);
+  return Promise.all(
+    benefits.map(async (benefit) => {
+      const activity = await activityClient.getActivity(benefit.activityId);
+      return {
+        activityId: benefit.activityId,
+        title: benefit.title,
+        emoji: benefit.emoji,
+        orgName: benefit.orgName,
+        priceLabel: formatPrice(benefit.price),
+        booked: benefit.booked,
+        voucherCode: benefit.voucherCode ?? null,
+        checkedIn: benefit.checkInState === "checked-in",
+        categoryLabel: categoryLabels[benefit.category] ?? benefit.category,
+        sessions: benefit.booked || activity === null ? [] : activity.sessions.map((session) => ({
+          id: session.id,
+          label: session.label,
+          remaining: Math.max(session.quota - session.enrolled, 0)
+        }))
+      };
+    })
+  );
+}
+async function bookBenefit(input) {
+  const orderClient = getZhiyaClient("order");
+  try {
+    await orderClient.bookPackageBenefit(input);
+    return { ok: true };
+  } catch (caught) {
+    const message = caught instanceof Error ? caught.message : String(caught);
+    if (message.includes("already booked")) {
+      return { ok: false, error: "\u8BE5\u6D3B\u52A8\u5DF2\u9884\u7EA6\u8FC7" };
+    }
+    if (message.includes("outside")) {
+      return { ok: false, error: "\u5B69\u5B50\u5E74\u9F84\u4E0D\u5728\u6D3B\u52A8\u9002\u9F84\u8303\u56F4\u5185" };
+    }
+    if (message.includes("sold out")) {
+      return { ok: false, error: "\u573A\u6B21\u540D\u989D\u5DF2\u6EE1" };
+    }
+    if (message.includes("time conflict")) {
+      return { ok: false, error: "\u4E0E\u5DF2\u9884\u7EA6\u6D3B\u52A8\u65F6\u95F4\u51B2\u7A81" };
+    }
+    if (message.includes("not in package")) {
+      return { ok: false, error: "\u6D3B\u52A8\u4E0D\u5728\u8BE5\u4F53\u9A8C\u5305\u5185" };
+    }
+    return { ok: false, error: "\u9884\u7EA6\u5931\u8D25\uFF0C\u8BF7\u7A0D\u540E\u91CD\u8BD5" };
   }
 }
 var ACTIVITY_CATEGORY_TABS = [
@@ -2904,6 +3125,8 @@ function bootstrapRuntime() {
       detail: (id) => loadActivityDetail(id, ""),
       registerPickers: (id) => loadRegisterPickers(id),
       packageDetail: (id) => loadPackageDetail(id, CATEGORY_LABELS),
+      packageBenefits: (orderId) => loadPackageBenefits(orderId, CATEGORY_LABELS),
+      bookBenefit: (input) => bookBenefit(input),
       buyPackage: (packageId) => createPackageOrder(packageId),
       createOrder: (input) => createRegistrationOrder(input),
       pay: (orderId, method) => payOrder(orderId, method)

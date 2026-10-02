@@ -2,5 +2,6 @@
 /// orders (PRD §29) and the review flow (PRD §21).
 library;
 
+export 'src/benefits_screen.dart';
 export 'src/orders_screen.dart';
 export 'src/review_screen.dart';

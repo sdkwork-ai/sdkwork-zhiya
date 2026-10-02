@@ -12,6 +12,7 @@ export type {
   AiPlan,
   AiPlanWeek,
   AiReply,
+  BenefitBooking,
   CheckInState,
   Child,
   ChildGender,
@@ -62,6 +63,7 @@ export type {
   OrderPreview,
   OrgPort,
   PackagePort,
+  PackageBenefitView,
   PayMethod,
   RegistrationDraft,
   RegistrationErrorCode,
@@ -86,6 +88,7 @@ export type { ZhiyaServiceHub } from './hub.js';
 export { createZhiyaServiceHub } from './hub.js';
 
 export { createMockAdminClient } from './adminClient.js';
+export { bookPackageBenefit, listPackageBenefits } from './benefitsClient.js';
 export { ageOf } from './familyClient.js';
 export { deriveOrderStatus, withDerivedStatus } from './orderStatus.js';
 export { VerifyVoucherError, type VerifyVoucherErrorCode } from './checkinClient.js';

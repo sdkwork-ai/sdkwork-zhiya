@@ -80,6 +80,9 @@ export const zhiyaRouteElements: Record<string, React.LazyExoticComponent<React.
   'app.zhiya.trade.review': lazy(() =>
     import('@sdkwork/zhiya-pc-trade').then((module) => ({ default: module.ReviewScreen })),
   ),
+  'app.zhiya.trade.benefits': lazy(() =>
+    import('@sdkwork/zhiya-pc-trade').then((module) => ({ default: module.BenefitsScreen })),
+  ),
   'app.zhiya.profile.root': lazy(() =>
     import('@sdkwork/zhiya-pc-profile').then((module) => ({ default: module.ProfileHomeScreen })),
   ),

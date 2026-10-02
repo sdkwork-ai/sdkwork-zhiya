@@ -8,6 +8,7 @@
 
 import type {
   Activity,
+  BenefitBooking,
   CouponTemplate,
   ExperiencePackage,
   Family,
@@ -52,6 +53,7 @@ const KEYS = {
   orgActivities: 'zhiya.org-activities',
   orgStatuses: 'zhiya.org-statuses',
   activityStatuses: 'zhiya.activity-status-overrides',
+  benefitBookings: 'zhiya.benefit-bookings',
 } as const;
 
 function readJson<T>(storage: KVStorage | null, key: string): T | null {
@@ -106,6 +108,7 @@ export interface ZhiyaMockState {
   orgActivities: Activity[];
   orgStatuses: Record<string, 'normal' | 'suspended'>;
   activityStatuses: Record<string, 'published' | 'offline'>;
+  benefitBookings: BenefitBooking[];
   /* helpers shared by clients */
   persist: () => void;
   notify: (message: Omit<Message, 'id' | 'createdAt' | 'read'>) => Message;
@@ -133,6 +136,7 @@ export function createZhiyaMockState(options: MockStateOptions = {}): ZhiyaMockS
     readJson<Record<string, 'normal' | 'suspended'>>(storage, KEYS.orgStatuses) ?? {};
   const activityStatuses =
     readJson<Record<string, 'published' | 'offline'>>(storage, KEYS.activityStatuses) ?? {};
+  const benefitBookings = readJson<BenefitBooking[]>(storage, KEYS.benefitBookings) ?? [];
 
   const state: ZhiyaMockState = {
     now,
@@ -153,6 +157,7 @@ export function createZhiyaMockState(options: MockStateOptions = {}): ZhiyaMockS
     orgActivities,
     orgStatuses,
     activityStatuses,
+    benefitBookings,
     persist() {
       writeJson(storage, KEYS.family, state.family);
       writeJson(storage, KEYS.orders, state.orders);
@@ -165,6 +170,7 @@ export function createZhiyaMockState(options: MockStateOptions = {}): ZhiyaMockS
       writeJson(storage, KEYS.orgActivities, state.orgActivities);
       writeJson(storage, KEYS.orgStatuses, state.orgStatuses);
       writeJson(storage, KEYS.activityStatuses, state.activityStatuses);
+      writeJson(storage, KEYS.benefitBookings, state.benefitBookings);
     },
     notify(partial) {
       const message: Message = {
@@ -246,5 +252,6 @@ export function clearZhiyaMockState(state: ZhiyaMockState): void {
   state.orgActivities = [];
   state.orgStatuses = {};
   state.activityStatuses = {};
+  state.benefitBookings = [];
   state.persist();
 }

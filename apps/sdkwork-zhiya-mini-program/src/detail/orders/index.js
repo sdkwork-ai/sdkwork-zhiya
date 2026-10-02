@@ -33,4 +33,8 @@ Page({
   goPay(event) {
     wx.redirectTo({ url: `/detail/pay/index?orderId=${event.currentTarget.dataset.id}` });
   },
+
+  goBenefits(event) {
+    wx.navigateTo({ url: `/detail/benefits/index?orderId=${event.currentTarget.dataset.id}` });
+  },
 });

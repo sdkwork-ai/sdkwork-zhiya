@@ -19,7 +19,8 @@
         "family/index",
         "messages/index",
         "coupons/index",
-        "package-detail/index"
+        "package-detail/index",
+        "benefits/index"
       ]
     }
   ],

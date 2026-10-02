@@ -17,6 +17,7 @@
       <view class="actions">
         <button wx:if="{{item.status === 'pending-payment'}}" class="btn-ghost action-btn" size="mini" data-id="{{item.id}}" data-action="cancel" bindtap="onAction">取消</button>
         <button wx:if="{{item.status === 'pending-payment'}}" class="btn-brand action-btn" size="mini" data-id="{{item.id}}" bindtap="goPay">去支付</button>
+        <button wx:if="{{item.status === 'upcoming' || item.status === 'ongoing'}}" class="btn-brand action-btn" size="mini" data-id="{{item.id}}" bindtap="goBenefits">查看权益</button>
         <button wx:if="{{item.status === 'upcoming' || item.status === 'ongoing'}}" class="btn-ghost action-btn" size="mini" data-id="{{item.id}}" data-action="refund" bindtap="onAction">申请退款</button>
         <button wx:if="{{item.status === 'pending-review'}}" class="btn-brand action-btn" size="mini" data-id="{{item.id}}" bindtap="goReview">去评价</button>
       </view>

@@ -4,6 +4,7 @@
     "all": "All"
   },
   "detail": {
+    "benefits": "View benefits",
     "title": "Order detail",
     "notFound": "Order not found",
     "amount": "Amount",
@@ -19,6 +20,20 @@
       "not-found": "Order not found",
       "already-checked-in": "Checked-in orders are not refundable; contact the org"
     }
+  },
+  "benefits": {
+    "title": "Package benefits",
+    "noChild": "No child profile yet",
+    "addChild": "Add a child",
+    "booked": "Booked",
+    "book": "Book",
+    "cancel": "Collapse",
+    "chooseChild": "Choose child",
+    "chooseSession": "Choose session",
+    "booking": "Booking…",
+    "confirm": "Confirm booking",
+    "bookFailed": "Booking failed: quota, age fit, or time conflict — adjust and retry",
+    "rules": "Rules: each included activity is bookable once per package; show the voucher on site; unverified benefits can be cancelled then refunded."
   },
   "review": {
     "title": "Review activity",

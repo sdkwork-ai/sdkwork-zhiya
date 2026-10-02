@@ -251,6 +251,86 @@ export async function createPackageOrder(packageId: string): Promise<PackageBuyR
   }
 }
 
+export interface BenefitView {
+  activityId: string;
+  title: string;
+  emoji: string;
+  orgName: string;
+  priceLabel: string;
+  booked: boolean;
+  voucherCode: string | null;
+  checkedIn: boolean;
+  sessions: { id: string; label: string; remaining: number }[];
+}
+
+/** 体验包权益视图 (PRD §12.4). */
+export async function loadPackageBenefits(
+  orderId: string,
+  categoryLabels: Record<string, string>,
+): Promise<BenefitView[]> {
+  const orderClient = getZhiyaClient('order');
+  const activityClient = getZhiyaClient('activity');
+  const benefits = await orderClient.listPackageBenefits(orderId);
+  return Promise.all(
+    benefits.map(async (benefit) => {
+      const activity = await activityClient.getActivity(benefit.activityId);
+      return {
+        activityId: benefit.activityId,
+        title: benefit.title,
+        emoji: benefit.emoji,
+        orgName: benefit.orgName,
+        priceLabel: formatPrice(benefit.price),
+        booked: benefit.booked,
+        voucherCode: benefit.voucherCode ?? null,
+        checkedIn: benefit.checkInState === 'checked-in',
+        categoryLabel: categoryLabels[benefit.category] ?? benefit.category,
+        sessions:
+          benefit.booked || activity === null
+            ? []
+            : activity.sessions.map((session) => ({
+                id: session.id,
+                label: session.label,
+                remaining: Math.max(session.quota - session.enrolled, 0),
+              })),
+      };
+    }),
+  );
+}
+
+export type BookResult = { ok: boolean; error?: string };
+
+/** 预约一个权益 (PRD §12.4)，校验失败返回中文原因。 */
+export async function bookBenefit(input: {
+  orderId: string;
+  activityId: string;
+  sessionId: string;
+  childId: string;
+}): Promise<BookResult> {
+  const orderClient = getZhiyaClient('order');
+  try {
+    await orderClient.bookPackageBenefit(input);
+    return { ok: true };
+  } catch (caught) {
+    const message = caught instanceof Error ? caught.message : String(caught);
+    if (message.includes('already booked')) {
+      return { ok: false, error: '该活动已预约过' };
+    }
+    if (message.includes('outside')) {
+      return { ok: false, error: '孩子年龄不在活动适龄范围内' };
+    }
+    if (message.includes('sold out')) {
+      return { ok: false, error: '场次名额已满' };
+    }
+    if (message.includes('time conflict')) {
+      return { ok: false, error: '与已预约活动时间冲突' };
+    }
+    if (message.includes('not in package')) {
+      return { ok: false, error: '活动不在该体验包内' };
+    }
+    return { ok: false, error: '预约失败，请稍后重试' };
+  }
+}
+
 /** Activity-level seed used by pages/activity (category chips + list). */
 export const ACTIVITY_CATEGORY_TABS: readonly { id: string; label: string }[] = [
   { id: 'all', label: '全部' },

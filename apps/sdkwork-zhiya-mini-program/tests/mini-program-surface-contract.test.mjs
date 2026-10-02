@@ -47,6 +47,7 @@ const DETAIL_PAGES = [
   'detail/messages/index',
   'detail/coupons/index',
   'detail/package-detail/index',
+  'detail/benefits/index',
 ];
 
 describe('zhiya mini-program surface contract', () => {

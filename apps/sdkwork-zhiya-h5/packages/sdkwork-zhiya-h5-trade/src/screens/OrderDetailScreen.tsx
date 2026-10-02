@@ -101,6 +101,18 @@ export function OrderDetailScreen() {
               </div>
             </Card>
 
+            {data.type === 'package' && (data.status === 'upcoming' || data.status === 'ongoing') ? (
+              <p className="px-4 pt-3 text-center">
+                <Link
+                  to={`/trade/orders/${data.id}/benefits`}
+                  data-testid="order-benefits"
+                  className="text-sm font-medium text-brand underline"
+                >
+                  {t('zhiya.trade.detail.benefits')}
+                </Link>
+              </p>
+            ) : null}
+
             {actionError !== null ? (
               <p className="px-4 pt-3 text-sm text-danger">{t(`zhiya.trade.detail.actionError.${actionError}`)}</p>
             ) : null}

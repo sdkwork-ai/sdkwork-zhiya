@@ -14,6 +14,7 @@ import type { Order, OrderItem, OrderView, UserCoupon } from './types.js';
 import { applyEnrollmentDelta } from './state.js';
 import type { ZhiyaMockState } from './state.js';
 import { ageOf } from './familyClient.js';
+import { listPackageBenefits as listBenefits, bookPackageBenefit as bookBenefit } from './benefitsClient.js';
 import { withDerivedStatus } from './orderStatus.js';
 
 function makeId(prefix: string): string {
@@ -374,6 +375,14 @@ export function createMockOrderClient(state: ZhiyaMockState, deps: MockOrderClie
       return state.coupons
         .filter((coupon) => couponApplies(coupon, ref, amount, options?.orgId))
         .sort((left, right) => right.amountOff - left.amountOff);
+    },
+
+    async listPackageBenefits(orderId) {
+      return listBenefits(state, orderId);
+    },
+
+    async bookPackageBenefit(input) {
+      return bookBenefit(state, input);
     },
   };
 

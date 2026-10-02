@@ -58,6 +58,8 @@ class MockZhiyaClient {
   final List<ZhiyaMessage> _messages = [];
   var _childSeq = 0;
   var _orderSeq = 0;
+  var _bookingSeq = 0;
+  final List<BenefitBookingView> _benefitBookings = [];
 
   // ── seeding ─────────────────────────────────────────────────────────────
   void _seed() {
@@ -224,6 +226,113 @@ class MockZhiyaClient {
 
   List<ZhiyaPackage> listHotPackages() => List.unmodifiable(_packages);
 
+  /// 体验包权益视图 (PRD §12.4): per-activity booked state for one package order.
+  List<PackageBenefitView> listPackageBenefits({required String orderId}) {
+    final order = _orders.where((entry) => entry.id == orderId).firstOrNull;
+    if (order == null || order.type != 'package') {
+      throw RegistrationException('not-found', 'package order not found: $orderId');
+    }
+    final packageId = order.items.first.packageId ?? '';
+    final pkg = _packages.where((entry) => entry.id == packageId).firstOrNull;
+    if (pkg == null) {
+      throw RegistrationException('not-found', 'package not found: $packageId');
+    }
+    return pkg.activityIds.map((activityId) {
+      final activity = getActivity(activityId);
+      final booking = _benefitBookings
+          .where((entry) => entry.packageOrderId == orderId && entry.activityId == activityId && entry.status != 'cancelled')
+          .firstOrNull;
+      return PackageBenefitView(
+        activityId: activityId,
+        title: activity?.title ?? activityId,
+        emoji: activity?.emoji ?? '📌',
+        orgName: activity?.orgName ?? '',
+        price: activity?.price ?? 0,
+        booked: booking != null,
+        voucherCode: booking?.voucherCode,
+        checkInState: booking?.status == 'checked-in',
+      );
+    }).toList();
+  }
+
+  /// Book one benefit visit with PRD §9.2 checks; issues a voucher.
+  BenefitBookingView bookPackageBenefit({
+    required String orderId,
+    required String activityId,
+    required String sessionId,
+    required String childId,
+  }) {
+    final order = _orders.where((entry) => entry.id == orderId).firstOrNull;
+    if (order == null || order.type != 'package') {
+      throw RegistrationException('not-found', 'package order not found: $orderId');
+    }
+    if (order.rawStatus != 'paid') {
+      throw RegistrationException('not-open', 'package order not paid: $orderId');
+    }
+    final packageId = order.items.first.packageId ?? '';
+    final pkg = _packages.where((entry) => entry.id == packageId).firstOrNull;
+    if (pkg == null || !pkg.activityIds.contains(activityId)) {
+      throw RegistrationException('not-in-package', 'activity not in package: $activityId');
+    }
+    final child = _children.where((entry) => entry.id == childId).firstOrNull;
+    if (child == null) {
+      throw RegistrationException('child-not-found', 'child not found: $childId');
+    }
+    final activity = getActivity(activityId);
+    if (activity == null || !activity.endTime.isAfter(_now())) {
+      throw RegistrationException('not-open', 'activity not available: $activityId');
+    }
+    final session = activity.sessions.where((entry) => entry.id == sessionId).firstOrNull;
+    if (session == null) {
+      throw RegistrationException('session-not-found', 'session not found: $sessionId');
+    }
+    if (session.enrolled >= session.quota) {
+      throw RegistrationException('sold-out', 'session sold out: $sessionId');
+    }
+    final age = child.ageAt(_now());
+    if (age < activity.ageMin || age > activity.ageMax) {
+      throw RegistrationException('age-not-fit', 'age $age outside [${activity.ageMin}, ${activity.ageMax}]');
+    }
+    final duplicate = _benefitBookings.any(
+      (booking) =>
+          booking.packageOrderId == orderId && booking.activityId == activityId && booking.status != 'cancelled',
+    );
+    if (duplicate) {
+      throw RegistrationException('duplicate', 'benefit already booked: $activityId');
+    }
+    final conflict = _benefitBookings.any((booking) {
+      if (booking.childId != childId || booking.status == 'cancelled') {
+        return false;
+      }
+      final other = getActivity(booking.activityId);
+      final otherSession = other?.sessions.where((entry) => entry.id == booking.sessionId).firstOrNull;
+      if (other == null || otherSession == null) {
+        return false;
+      }
+      return session.start.isBefore(otherSession.end) && otherSession.start.isBefore(session.end);
+    });
+    if (conflict) {
+      throw RegistrationException('time-conflict', 'time conflict for child $childId');
+    }
+    _bookingSeq += 1;
+    final code = 'ZY${List.generate(6, (_) => 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[_random.nextInt(31)]).join()}';
+    final booking = BenefitBookingView(
+      id: 'bkg-flutter-$_bookingSeq',
+      packageOrderId: orderId,
+      packageId: packageId,
+      activityId: activityId,
+      sessionId: sessionId,
+      childId: childId,
+      childName: child.nickname,
+      voucherCode: code,
+      status: 'booked',
+      createdAt: _now(),
+    );
+    _benefitBookings.add(booking);
+    _notify('registration', '权益预约成功', '「${activity.title}」已预约，凭证码 $code。');
+    return booking;
+  }
+
   ZhiyaPackage? getPackage(String packageId) =>
       _packages.where((entry) => entry.id == packageId).firstOrNull;
 
@@ -260,6 +369,7 @@ class MockZhiyaClient {
           sessionId: null,
           childName: null,
           price: pkg.price,
+          packageId: pkg.id,
         ),
       ],
       amount: pkg.price,

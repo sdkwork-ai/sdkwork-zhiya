@@ -25,4 +25,11 @@ export const tradeRouteContributions = defineZhiyaRoutes([
     capability: 'trade',
     tab: null,
   },
+  {
+    id: 'app.zhiya.trade.benefits',
+    path: '/trade/orders/:orderId/benefits',
+    titleKey: 'zhiya.trade.benefits.title',
+    capability: 'trade',
+    tab: null,
+  },
 ] satisfies readonly ZhiyaRouteIdentity[]);

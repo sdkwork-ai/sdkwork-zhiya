@@ -193,6 +193,7 @@ class ZhiyaOrderItem {
     required this.sessionId,
     required this.childName,
     required this.price,
+    this.packageId,
   });
 
   final String title;
@@ -201,6 +202,8 @@ class ZhiyaOrderItem {
   final String? sessionId;
   final String? childName;
   final double price;
+  /// Set for package orders (PRD §12).
+  final String? packageId;
 }
 
 /// Derived, user-visible order status (PRD §29).
@@ -287,6 +290,72 @@ class ZhiyaOrder {
       orgCompleted: orgCompleted ?? self.orgCompleted,
     );
   }
+}
+
+/// 体验包权益预约 (PRD §12.4/§38.2): one booking consumes one benefit visit.
+class BenefitBookingView {
+  const BenefitBookingView({
+    required this.id,
+    required this.packageOrderId,
+    required this.packageId,
+    required this.activityId,
+    required this.sessionId,
+    required this.childId,
+    required this.childName,
+    required this.voucherCode,
+    required this.status,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String packageOrderId;
+  final String packageId;
+  final String activityId;
+  final String sessionId;
+  final String childId;
+  final String childName;
+  final String voucherCode;
+  /// `booked | checked-in | cancelled`.
+  final String status;
+  final DateTime createdAt;
+
+  BenefitBookingView copyWith({String? status}) {
+    return BenefitBookingView(
+      id: id,
+      packageOrderId: packageOrderId,
+      packageId: packageId,
+      activityId: activityId,
+      sessionId: sessionId,
+      childId: childId,
+      childName: childName,
+      voucherCode: voucherCode,
+      status: status ?? this.status,
+      createdAt: createdAt,
+    );
+  }
+}
+
+/// Per-activity benefit state for one package order.
+class PackageBenefitView {
+  const PackageBenefitView({
+    required this.activityId,
+    required this.title,
+    required this.emoji,
+    required this.orgName,
+    required this.price,
+    required this.booked,
+    this.voucherCode,
+    this.checkInState = false,
+  });
+
+  final String activityId;
+  final String title;
+  final String emoji;
+  final String orgName;
+  final double price;
+  final bool booked;
+  final String? voucherCode;
+  final bool checkInState;
 }
 
 /// Activity review (PRD §21).

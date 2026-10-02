@@ -366,6 +366,22 @@ export interface OrgActivityInput {
   tags: EducationTag[];
 }
 
+/** 体验包权益预约 (PRD §12.4/§38.2): one booking consumes one benefit visit
+ *  of the package order for one included activity; verified by voucher. */
+export interface BenefitBooking {
+  id: string;
+  packageOrderId: string;
+  packageId: string;
+  activityId: string;
+  sessionId: string;
+  childId: string;
+  childName: string;
+  voucherCode: string;
+  /** `booked | checked-in | cancelled`. */
+  status: 'booked' | 'checked-in' | 'cancelled';
+  createdAt: string;
+}
+
 /** Org row in the platform admin console (PRD §25.3). */
 export interface OrgAdminView extends Org {
   status: OrgStatus;

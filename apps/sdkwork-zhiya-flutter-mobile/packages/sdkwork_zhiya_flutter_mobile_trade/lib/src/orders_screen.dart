@@ -121,6 +121,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     ),
                                     child: const Text('去评价'),
                                   ),
+                                if (view.order.type == 'package' &&
+                                    (view.status == OrderStatus.upcoming ||
+                                        view.status == OrderStatus.ongoing))
+                                  FilledButton.tonal(
+                                    onPressed: () => Navigator.of(context).pushNamed(
+                                      'app.zhiya.trade.benefits',
+                                      arguments: {'orderId': view.order.id},
+                                    ),
+                                    child: const Text('查看权益'),
+                                  ),
                               ],
                             ),
                           ],

@@ -69,6 +69,41 @@ export function createMockCheckInClient(state: ZhiyaMockState): CheckInPort {
       const order = state.orders.find(
         (entry) => entry.type === 'activity' && (entry.voucherCode ?? '').toUpperCase() === normalized,
       );
+      // 体验包权益凭证走同一条核销通道 (PRD §12.4 到场核销)。
+      const booking = state.benefitBookings.find(
+        (entry) => (entry.voucherCode ?? '').toUpperCase() === normalized && entry.status !== 'cancelled',
+      );
+      if (booking === undefined && order === undefined) {
+        throw new VerifyVoucherError('voucher-not-found', `voucher not found: ${normalized}`);
+      }
+      if (booking !== undefined) {
+        if (booking.status === 'checked-in') {
+          throw new VerifyVoucherError('voucher-already-used', `voucher already used: ${normalized}`);
+        }
+        booking.status = 'checked-in';
+        state.persist();
+        const activity = state.findActivity(booking.activityId);
+        const view: OrgRegistrationView = {
+          orderId: booking.packageOrderId,
+          activityId: booking.activityId,
+          activityTitle: activity?.title ?? booking.activityId,
+          sessionId: booking.sessionId,
+          sessionLabel: '',
+          childName: booking.childName,
+          parentPhone: '',
+          voucherCode: booking.voucherCode,
+          status: 'ongoing',
+          checkInState: 'checked-in',
+          createdAt: booking.createdAt,
+        };
+        state.notify({
+          category: 'activity',
+          title: '签到成功',
+          body: `「${view.activityTitle}」权益核销成功，祝玩得开心！`,
+          orderId: booking.packageOrderId,
+        });
+        return view;
+      }
       if (order === undefined) {
         throw new VerifyVoucherError('voucher-not-found', `voucher not found: ${normalized}`);
       }

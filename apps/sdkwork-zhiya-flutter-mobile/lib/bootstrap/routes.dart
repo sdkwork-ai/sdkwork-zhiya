@@ -13,6 +13,7 @@ Map<String, WidgetBuilder> zhiyaDetailRoutes() {
     'app.zhiya.activity.detail': (context) => const ActivityDetailScreen(),
     'app.zhiya.activity.register': (context) => const RegisterScreen(),
     'app.zhiya.activity.package': (context) => const PackageDetailScreen(),
+    'app.zhiya.trade.benefits': (context) => const BenefitsScreen(),
     'app.zhiya.trade.orders': (context) => const OrdersScreen(),
     'app.zhiya.trade.review': (context) => const ReviewScreen(),
   };

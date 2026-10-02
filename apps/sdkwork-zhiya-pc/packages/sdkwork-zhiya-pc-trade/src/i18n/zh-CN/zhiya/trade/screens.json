@@ -4,6 +4,7 @@
     "all": "全部"
   },
   "detail": {
+    "benefits": "查看权益",
     "title": "订单详情",
     "notFound": "订单不存在",
     "amount": "订单金额",
@@ -19,6 +20,20 @@
       "not-found": "订单不存在",
       "already-checked-in": "已核销的订单不支持退款，请联系机构"
     }
+  },
+  "benefits": {
+    "title": "体验包权益",
+    "noChild": "还没有添加孩子",
+    "addChild": "去添加孩子",
+    "booked": "已预约",
+    "book": "预约",
+    "cancel": "收起",
+    "chooseChild": "选择参加儿童",
+    "chooseSession": "选择场次",
+    "booking": "预约中…",
+    "confirm": "确认预约",
+    "bookFailed": "预约失败：名额、适龄或时间冲突，请调整后重试",
+    "rules": "权益规则：包内每个活动可预约一次，预约后到场出示凭证核销；未核销的权益可取消预约后退款。"
   },
   "review": {
     "title": "评价活动",

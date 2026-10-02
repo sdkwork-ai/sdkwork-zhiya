@@ -7,3 +7,4 @@ export { tradeI18nResources } from './i18n/index.js';
 export { OrderListScreen } from './screens/OrderListScreen.js';
 export { OrderDetailScreen } from './screens/OrderDetailScreen.js';
 export { ReviewScreen } from './screens/ReviewScreen.js';
+export { BenefitsScreen } from './screens/BenefitsScreen.js';

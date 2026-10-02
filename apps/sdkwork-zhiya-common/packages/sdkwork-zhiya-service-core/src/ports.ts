@@ -13,11 +13,13 @@ import type {
   Activity,
   ActivityStatus,
   AiReply,
+  CheckInState,
   Child,
   ChildInput,
   CouponState,
   CouponTemplate,
   ExperiencePackage,
+  BenefitBooking,
   Family,
   Goods,
   GoodsCategory,
@@ -127,6 +129,22 @@ export class RegistrationError extends Error {
   }
 }
 
+export interface PackageBenefitView {
+  activityId: string;
+  title: string;
+  emoji: string;
+  orgName: string;
+  category: ActivityCategory;
+  mode: ActivityMode;
+  ageMin: number;
+  ageMax: number;
+  price: number;
+  booked: boolean;
+  bookingId?: string | undefined;
+  voucherCode?: string | undefined;
+  checkInState?: CheckInState | undefined;
+}
+
 export interface PayMethod {
   method: 'wechat' | 'alipay';
 }
@@ -150,6 +168,15 @@ export interface OrderPort {
     amount: number,
     options?: { childAge?: number | undefined; orgId?: string | undefined },
   ): Promise<UserCoupon[]>;
+  /** 体验包权益视图：包内每个活动的已约/可约状态 (PRD §12.4). */
+  listPackageBenefits(orderId: string): Promise<PackageBenefitView[]>;
+  /** 预约一个权益：校验包归属/适龄/名额/重复/时间冲突，成功即出凭证 (PRD §12.4). */
+  bookPackageBenefit(input: {
+    orderId: string;
+    activityId: string;
+    sessionId: string;
+    childId: string;
+  }): Promise<BenefitBooking>;
 }
 
 export interface CouponPort {

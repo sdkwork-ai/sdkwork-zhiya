@@ -10,6 +10,7 @@ describe('zhiya trade route contributions', () => {
       'app.zhiya.trade.orders',
       'app.zhiya.trade.order-detail',
       'app.zhiya.trade.review',
+      'app.zhiya.trade.benefits',
     ]);
     expect(tradeRouteContributions.every((route) => route.tab === null)).toBe(true);
     expect(

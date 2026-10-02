@@ -49,6 +49,7 @@ const List<ZhiyaRouteIdentity> kTradeRoutes = [
   ZhiyaRouteIdentity(id: 'app.zhiya.trade.orders', path: '/trade/orders', titleKey: 'zhiya.trade.orders.title', capability: 'trade', tab: null),
   ZhiyaRouteIdentity(id: 'app.zhiya.trade.order-detail', path: '/trade/orders/:orderId', titleKey: 'zhiya.trade.detail.title', capability: 'trade', tab: null),
   ZhiyaRouteIdentity(id: 'app.zhiya.trade.review', path: '/trade/orders/:orderId/review', titleKey: 'zhiya.trade.review.title', capability: 'trade', tab: null),
+  ZhiyaRouteIdentity(id: 'app.zhiya.trade.benefits', path: '/trade/orders/:orderId/benefits', titleKey: 'zhiya.trade.benefits.title', capability: 'trade', tab: null),
 ];
 
 const List<ZhiyaRouteIdentity> kProfileRoutes = [
@@ -108,6 +109,7 @@ const List<String> kCrossSurfaceRouteIds = [
   'app.zhiya.trade.orders',
   'app.zhiya.trade.order-detail',
   'app.zhiya.trade.review',
+  'app.zhiya.trade.benefits',
   'app.zhiya.profile.root',
   'app.zhiya.profile.login',
   'app.zhiya.profile.family',

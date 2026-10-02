@@ -21,6 +21,8 @@ import {
 
 import {
   ACTIVITY_CATEGORY_TABS,
+  bookBenefit,
+  loadPackageBenefits,
   createPackageOrder,
   createRegistrationOrder,
   listActivities,
@@ -81,6 +83,8 @@ export interface PageApi {
     detail(id: string): ReturnType<typeof loadActivityDetail>;
     registerPickers(id: string): Promise<RegisterPickers | null>;
     packageDetail(id: string): Promise<PackageDetailView | null>;
+    packageBenefits(orderId: string): ReturnType<typeof loadPackageBenefits>;
+    bookBenefit(input: { orderId: string; activityId: string; sessionId: string; childId: string }): ReturnType<typeof bookBenefit>;
     buyPackage(packageId: string): ReturnType<typeof createPackageOrder>;
     createOrder(input: { activityId: string; sessionId: string; childId: string; couponId?: string }): ReturnType<
       typeof createRegistrationOrder
@@ -145,6 +149,8 @@ export function bootstrapRuntime(): PageApi {
       detail: (id) => loadActivityDetail(id, ''),
       registerPickers: (id) => loadRegisterPickers(id),
       packageDetail: (id) => loadPackageDetail(id, CATEGORY_LABELS),
+      packageBenefits: (orderId) => loadPackageBenefits(orderId, CATEGORY_LABELS),
+      bookBenefit: (input) => bookBenefit(input),
       buyPackage: (packageId) => createPackageOrder(packageId),
       createOrder: (input) => createRegistrationOrder(input),
       pay: (orderId, method) => payOrder(orderId, method),

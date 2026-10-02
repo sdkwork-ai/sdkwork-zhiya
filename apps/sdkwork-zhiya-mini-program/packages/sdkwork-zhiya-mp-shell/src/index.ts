@@ -35,6 +35,7 @@ export const PAGE_TITLES: Record<string, string> = {
   'detail/family/index': '我的家庭',
   'detail/messages/index': '消息中心',
   'detail/coupons/index': '优惠券',
+  'detail/benefits/index': '体验包权益',
   'detail/package-detail/index': '体验包详情',
 };
 
