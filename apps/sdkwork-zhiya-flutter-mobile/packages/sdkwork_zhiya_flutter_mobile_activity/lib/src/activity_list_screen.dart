@@ -3,9 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:sdkwork_zhiya_flutter_mobile_commons/sdkwork_zhiya_flutter_mobile_commons.dart';
 import 'package:sdkwork_zhiya_flutter_mobile_core/sdkwork_zhiya_flutter_mobile_core.dart';
 
-/// 活动 tab (PRD §7): category chips + filtered activity list.
-class ActivityListScreen extends StatelessWidget {
+/// 活动 tab (PRD §7/§32): keyword search + category tabs + filtered list.
+class ActivityListScreen extends StatefulWidget {
   const ActivityListScreen({super.key});
+
+  @override
+  State<ActivityListScreen> createState() => _ActivityListScreenState();
+}
+
+class _ActivityListScreenState extends State<ActivityListScreen> {
+  String _keyword = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return _ActivityListView(
+      keyword: _keyword,
+      onKeywordChanged: (value) => setState(() => _keyword = value),
+    );
+  }
+}
+
+class _ActivityListView extends StatelessWidget {
+  const _ActivityListView({required this.keyword, required this.onKeywordChanged});
+
+  final String keyword;
+  final ValueChanged<String> onKeywordChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +48,31 @@ class ActivityListScreen extends StatelessWidget {
             onTap: (_) {},
           ),
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            _ActivityGrid(client: client, category: null, freeOnly: false),
-            _ActivityGrid(client: client, category: 'trial', freeOnly: false),
-            _ActivityGrid(client: client, category: 'parent-child', freeOnly: false),
-            _ActivityGrid(client: client, category: null, freeOnly: true),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+              child: TextField(
+                onChanged: onKeywordChanged,
+                onSubmitted: onKeywordChanged,
+                decoration: const InputDecoration(
+                  hintText: '搜活动、机构',
+                  isDense: true,
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _ActivityGrid(client: client, category: null, freeOnly: false, keyword: keyword),
+                  _ActivityGrid(client: client, category: 'trial', freeOnly: false, keyword: keyword),
+                  _ActivityGrid(client: client, category: 'parent-child', freeOnly: false, keyword: keyword),
+                  _ActivityGrid(client: client, category: null, freeOnly: true, keyword: keyword),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -40,15 +81,22 @@ class ActivityListScreen extends StatelessWidget {
 }
 
 class _ActivityGrid extends StatelessWidget {
-  const _ActivityGrid({required this.client, required this.category, required this.freeOnly});
+  const _ActivityGrid({
+    required this.client,
+    required this.category,
+    required this.freeOnly,
+    this.keyword,
+  });
 
   final MockZhiyaClient client;
   final String? category;
   final bool freeOnly;
+  final String? keyword;
 
   @override
   Widget build(BuildContext context) {
-    final activities = client.listActivities(category: category, freeOnly: freeOnly);
+    final activities =
+        client.listActivities(category: category, freeOnly: freeOnly, keyword: keyword);
     if (activities.isEmpty) {
       return const ScreenStateView(state: 'empty', child: SizedBox());
     }

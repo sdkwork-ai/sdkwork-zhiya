@@ -2227,6 +2227,7 @@ var TAB_LABELS = {
 };
 var TAB_PAGE_PATHS = ZHIYA_TABS.map((tab) => `pages/${tab.id}/index`);
 var PAGE_TITLES = {
+  "pages/login/index": "\u767B\u5F55\u77E5\u9E2D",
   "pages/home/index": "\u77E5\u9E2D",
   "pages/activity/index": "\u6D3B\u52A8",
   "pages/ai/index": "\u95EE\u77E5\u9E2D",
@@ -2364,10 +2365,11 @@ async function loadHomeOverview(categoryLabels) {
 }
 
 // packages/sdkwork-zhiya-mp-activity/src/index.ts
-async function listActivities(categoryLabels, category) {
+async function listActivities(categoryLabels, category, keyword) {
   const activity = getZhiyaClient("activity");
   const list = await activity.listActivities({
-    category: category === void 0 || category === "all" ? void 0 : category
+    category: category === void 0 || category === "all" ? void 0 : category,
+    keyword
   });
   return list.map((entry) => toActivityCardView(entry, categoryLabels[entry.category] ?? entry.category));
 }
@@ -2816,7 +2818,7 @@ function bootstrapRuntime() {
       overview: () => loadHomeOverview(CATEGORY_LABELS)
     },
     activity: {
-      list: (category) => listActivities(CATEGORY_LABELS, category),
+      list: (category, keyword) => listActivities(CATEGORY_LABELS, category, keyword),
       detail: (id) => loadActivityDetail(id, ""),
       registerPickers: (id) => loadRegisterPickers(id),
       packageDetail: (id) => loadPackageDetail(id, CATEGORY_LABELS),

@@ -1,4 +1,8 @@
 <view>
+  <view class="search-row">
+    <input class="search-input" value="{{keyword}}" bindinput="onKeyword" confirm-type="search" bindconfirm="onSearch" placeholder="搜活动、机构" />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
   <scroll-view scroll-x class="chips">
     <view
       wx:for="{{tabs}}"

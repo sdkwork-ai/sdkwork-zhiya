@@ -7,4 +7,5 @@ export 'src/intent.dart';
 export 'src/mock_client.dart';
 export 'src/models.dart';
 export 'src/route_table.dart';
+export 'src/session.dart';
 export 'src/runtime.dart';

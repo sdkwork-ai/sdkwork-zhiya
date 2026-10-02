@@ -1,0 +1,11 @@
+.login { display: flex; flex-direction: column; align-items: center; padding: 120rpx 48rpx 0; }
+.logo { font-size: 96rpx; }
+.slogan { margin-top: 12rpx; color: var(--sdk-color-text-muted); font-size: 28rpx; }
+.form { width: 100%; margin-top: 72rpx; display: flex; flex-direction: column; gap: 24rpx; }
+.input { background-color: var(--sdk-color-surface-panel); border-radius: 24rpx; padding: 26rpx 32rpx; font-size: 28rpx; }
+.code-row { display: flex; gap: 16rpx; align-items: center; }
+.code { flex: 1; }
+.send { white-space: nowrap; background-color: var(--sdk-color-brand-soft); color: var(--sdk-color-brand); font-size: 24rpx; padding: 18rpx 24rpx; border-radius: 24rpx; }
+.error { color: var(--sdk-color-danger); font-size: 24rpx; }
+.submit { margin-top: 8rpx; }
+.hint { text-align: center; color: var(--sdk-color-text-muted); font-size: 22rpx; }

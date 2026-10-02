@@ -77,7 +77,7 @@ export interface PageApi {
   };
   home: { overview(): ReturnType<typeof loadHomeOverview> };
   activity: {
-    list(category?: string): ReturnType<typeof listActivities>;
+    list(category?: string, keyword?: string): ReturnType<typeof listActivities>;
     detail(id: string): ReturnType<typeof loadActivityDetail>;
     registerPickers(id: string): Promise<RegisterPickers | null>;
     packageDetail(id: string): Promise<PackageDetailView | null>;
@@ -141,7 +141,7 @@ export function bootstrapRuntime(): PageApi {
       overview: () => loadHomeOverview(CATEGORY_LABELS),
     },
     activity: {
-      list: (category) => listActivities(CATEGORY_LABELS, category),
+      list: (category, keyword) => listActivities(CATEGORY_LABELS, category, keyword),
       detail: (id) => loadActivityDetail(id, ''),
       registerPickers: (id) => loadRegisterPickers(id),
       packageDetail: (id) => loadPackageDetail(id, CATEGORY_LABELS),

@@ -181,7 +181,13 @@ class MockZhiyaClient {
   }
 
   // ── activities (PRD §6–§8) ──────────────────────────────────────────────
-  List<ZhiyaActivity> listActivities({String? category, String? mode, bool freeOnly = false, int? childAge}) {
+  List<ZhiyaActivity> listActivities({
+    String? category,
+    String? mode,
+    bool freeOnly = false,
+    int? childAge,
+    String? keyword,
+  }) {
     final now = _now();
     return _activities
         .where((activity) => activity.endTime.isAfter(now))
@@ -189,6 +195,16 @@ class MockZhiyaClient {
         .where((activity) => mode == null || activity.mode == mode)
         .where((activity) => !freeOnly || activity.price == 0)
         .where((activity) => childAge == null || (activity.ageMin <= childAge && childAge <= activity.ageMax))
+        .where((activity) {
+      if (keyword == null || keyword.trim().isEmpty) {
+        return true;
+      }
+      final needle = keyword.trim().toLowerCase();
+      final haystack =
+          '${activity.title} ${activity.subtitle} ${activity.orgName} ${activity.introduction} ${activity.tags.join(' ')}'
+              .toLowerCase();
+      return haystack.contains(needle);
+    })
         .toList();
   }
 

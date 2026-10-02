@@ -1,1 +1,4 @@
+.search-row { display: flex; gap: 16rpx; align-items: center; padding: 20rpx 24rpx 0; }
+.search-input { flex: 1; background-color: var(--sdk-color-surface-panel); border: 1rpx solid var(--sdk-color-border-subtle); border-radius: 999rpx; padding: 14rpx 28rpx; font-size: 26rpx; }
+.search-btn { white-space: nowrap; color: var(--sdk-color-brand); font-size: 26rpx; font-weight: 600; }
 .chips { padding: 20rpx 24rpx; white-space: nowrap; }

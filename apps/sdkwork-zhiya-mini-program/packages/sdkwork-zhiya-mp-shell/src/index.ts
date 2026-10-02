@@ -21,6 +21,7 @@ export const TAB_PAGE_PATHS: readonly string[] = ZHIYA_TABS.map((tab) => `pages/
 
 /** Navigation bar titles for every declared page (tabs + detail subpackage). */
 export const PAGE_TITLES: Record<string, string> = {
+  'pages/login/index': '登录知鸭',
   'pages/home/index': '知鸭',
   'pages/activity/index': '活动',
   'pages/ai/index': '问知鸭',

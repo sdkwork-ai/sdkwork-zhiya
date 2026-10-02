@@ -17,10 +17,12 @@ export type { ActivityCardView } from '@sdkwork/zhiya-mp-home';
 export async function listActivities(
   categoryLabels: Record<string, string>,
   category?: string,
+  keyword?: string,
 ): Promise<ReturnType<typeof toActivityCardView>[]> {
   const activity = getZhiyaClient('activity');
   const list = await activity.listActivities({
     category: category === undefined || category === 'all' ? undefined : (category as never),
+    keyword,
   });
   return list.map((entry) => toActivityCardView(entry, categoryLabels[entry.category] ?? entry.category));
 }

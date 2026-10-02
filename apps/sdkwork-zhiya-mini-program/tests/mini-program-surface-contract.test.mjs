@@ -52,7 +52,7 @@ const DETAIL_PAGES = [
 describe('zhiya mini-program surface contract', () => {
   it('app_json_projects_exactly_the_five_tab_pages_and_the_detail_subpackage', () => {
     const appJson = readJson('src/app.json');
-    const expectedPages = TAB_IDS.map((id) => `pages/${id}/index`);
+    const expectedPages = ['pages/login/index', ...TAB_IDS.map((id) => `pages/${id}/index`)];
     assert.deepEqual(appJson.pages, expectedPages);
     assert.equal(appJson.subPackages.length, 1);
     assert.equal(appJson.subPackages[0].root, 'detail');
@@ -63,6 +63,10 @@ describe('zhiya mini-program surface contract', () => {
       TAB_LABELS,
     );
     for (const page of expectedPages) {
+      if (page === 'pages/login/index') {
+        // 登录是非 tabBar 入口页（冷启动门禁）。
+        continue;
+      }
       assert.ok(
         appJson.tabBar.list.some((entry) => entry.pagePath === page),
         `tab page ${page} missing from tabBar`,
