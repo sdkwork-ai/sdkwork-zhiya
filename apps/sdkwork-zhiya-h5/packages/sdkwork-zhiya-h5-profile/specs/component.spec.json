@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/zhiya-h5-profile",
+    "displayName": "Zhiya H5 Profile",
+    "version": "0.1.0",
+    "type": "react-package",
+    "root": "apps/sdkwork-zhiya-h5/packages/sdkwork-zhiya-h5-profile",
+    "domain": "zhiya",
+    "capability": "profile",
+    "surface": "app",
+    "languages": [
+      "typescript"
+    ],
+    "generated": false,
+    "manifests": [
+      "package.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/CODE_STYLE_SPEC.md",
+      "purpose": "Cross-language code style authority."
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../../../../sdkwork-specs/NAMING_SPEC.md",
+      "purpose": "H5 package naming lattice."
+    },
+    {
+      "file": "TYPESCRIPT_CODE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md",
+      "purpose": "TypeScript strictness and testing baseline."
+    },
+    {
+      "file": "APP_H5_ARCHITECTURE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/APP_H5_ARCHITECTURE_SPEC.md",
+      "purpose": "H5 application architecture and reserved package roles."
+    },
+    {
+      "file": "APP_MOBILE_REACT_UI_SPEC.md",
+      "path": "../../../../../sdkwork-specs/APP_MOBILE_REACT_UI_SPEC.md",
+      "purpose": "Mobile React UI package organization."
+    }
+  ],
+  "contracts": {
+    "layerRole": "frontend-feature",
+    "publicExports": [
+      "."
+    ],
+    "providedPorts": [
+      {
+        "name": "profileRouteContributions",
+        "export": "."
+      }
+    ],
+    "requiredPorts": [
+      {
+        "name": "zhiyaSdkInventory",
+        "provider": "@sdkwork/zhiya-h5-core",
+        "export": "."
+      }
+    ],
+    "runtimeEntrypoints": [
+      "package.json#scripts.typecheck",
+      "package.json#scripts.test"
+    ],
+    "routeManifest": [
+      "app.zhiya.profile.root",
+      "app.zhiya.profile.family",
+      "app.zhiya.profile.child-new",
+      "app.zhiya.profile.child-edit",
+      "app.zhiya.profile.activities",
+      "app.zhiya.profile.coupons",
+      "app.zhiya.profile.favorites",
+      "app.zhiya.profile.messages",
+      "app.zhiya.profile.settings",
+      "app.zhiya.profile.login"
+    ],
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": []
+  },
+  "verification": {
+    "commands": [
+      "pnpm --filter @sdkwork/zhiya-h5-profile typecheck",
+      "pnpm --filter @sdkwork/zhiya-h5-profile test"
+    ]
+  }
+}

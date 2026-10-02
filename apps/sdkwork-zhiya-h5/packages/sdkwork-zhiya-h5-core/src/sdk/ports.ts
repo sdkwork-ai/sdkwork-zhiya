@@ -1,0 +1,22 @@
+export type {
+  ActivityPort,
+  ActivityQuery,
+  AiPort,
+  CheckInPort,
+  CouponPort,
+  FamilyPort,
+  MallPort,
+  MessagePort,
+  OrderDraftRef,
+  OrderPort,
+  OrderPreview,
+  OrgPort,
+  PackagePort,
+  PayMethod,
+  RegistrationDraft,
+  ReviewInput,
+  ReviewPort,
+  ZhiyaPortMap,
+  ZhiyaPortName,
+} from '@sdkwork/zhiya-service-core';
+export { RegistrationError } from '@sdkwork/zhiya-service-core';

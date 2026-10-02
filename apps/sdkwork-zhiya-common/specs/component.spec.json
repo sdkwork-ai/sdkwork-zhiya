@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-zhiya-common",
+    "displayName": "Zhiya Common Family",
+    "version": "0.1.0",
+    "type": "shared-package-family",
+    "root": "apps/sdkwork-zhiya-common",
+    "domain": "zhiya",
+    "capability": "shared-contracts",
+    "languages": ["typescript"],
+    "generated": false,
+    "manifests": ["packages/tsconfig.base.json"]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "SDKWORK_WORKSPACE_SPEC.md",
+      "path": "../../../sdkwork-specs/SDKWORK_WORKSPACE_SPEC.md",
+      "purpose": "Shared package family layout rules."
+    },
+    {
+      "file": "COMPONENT_SPEC.md",
+      "path": "../../../sdkwork-specs/COMPONENT_SPEC.md",
+      "purpose": "Component manifest contract."
+    },
+    {
+      "file": "TYPESCRIPT_CODE_SPEC.md",
+      "path": "../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md",
+      "purpose": "TypeScript strictness baseline."
+    }
+  ],
+  "contracts": {
+    "layerRole": "frontend-core",
+    "publicExports": ["packages/sdkwork-zhiya-route-core", "packages/sdkwork-zhiya-intent-core", "packages/sdkwork-zhiya-service-core"],
+    "providedPorts": [],
+    "requiredPorts": [],
+    "runtimeEntrypoints": [],
+    "routeManifest": null,
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": []
+  },
+  "verification": {
+    "commands": [
+      "pnpm --filter '@sdkwork/zhiya-route-core' typecheck",
+      "pnpm --filter '@sdkwork/zhiya-service-core' test"
+    ]
+  }
+}

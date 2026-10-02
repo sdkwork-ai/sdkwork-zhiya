@@ -1,0 +1,12 @@
+{
+  "tabbar": {
+    "label": "Main navigation"
+  },
+  "tab": {
+    "home": "Home",
+    "activity": "Activities",
+    "ai": "AI",
+    "mall": "Mall",
+    "profile": "Profile"
+  }
+}

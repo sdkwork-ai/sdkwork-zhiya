@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/zhiya-route-core",
+    "displayName": "Zhiya Route Core",
+    "version": "0.1.0",
+    "type": "react-package",
+    "root": "apps/sdkwork-zhiya-common/packages/sdkwork-zhiya-route-core",
+    "domain": "zhiya",
+    "capability": "route-contracts",
+    "languages": [
+      "typescript"
+    ],
+    "generated": false,
+    "manifests": [
+      "package.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/CODE_STYLE_SPEC.md",
+      "purpose": "Cross-language code style authority."
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../../../../sdkwork-specs/NAMING_SPEC.md",
+      "purpose": "Naming lattice."
+    },
+    {
+      "file": "TYPESCRIPT_CODE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md",
+      "purpose": "TypeScript strictness and testing baseline."
+    },
+    {
+      "file": "COMPONENT_SPEC.md",
+      "path": "../../../../../sdkwork-specs/COMPONENT_SPEC.md",
+      "purpose": "Component manifest contract."
+    }
+  ],
+  "contracts": {
+    "layerRole": "frontend-core",
+    "publicExports": [
+      "."
+    ],
+    "providedPorts": [
+      {
+        "name": "zhiyaRouteContract",
+        "export": "."
+      }
+    ],
+    "requiredPorts": [],
+    "runtimeEntrypoints": [
+      "package.json#scripts.typecheck",
+      "package.json#scripts.test"
+    ],
+    "routeManifest": null,
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": []
+  },
+  "verification": {
+    "commands": [
+      "pnpm --filter @sdkwork/zhiya-route-core typecheck",
+      "pnpm --filter @sdkwork/zhiya-route-core test"
+    ]
+  }
+}

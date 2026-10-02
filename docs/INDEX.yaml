@@ -1,0 +1,14 @@
+schemaVersion: 1
+kind: sdkwork.docs.index
+repository: zhiya
+canon:
+  prd: docs/product/prd/PRD.md
+  techArchitecture: docs/architecture/tech/TECH_ARCHITECTURE.md
+entries:
+  - path: docs/product/requirements/
+    kind: requirements
+    title: REQ-2026-0001..0005 (P0 milestone)
+  - path: docs/product/roadmap/README.md
+    kind: roadmap
+    title: Phase plan (P0 → P1 → P2)
+domains: []

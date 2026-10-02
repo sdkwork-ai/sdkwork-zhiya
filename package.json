@@ -1,0 +1,38 @@
+{
+  "name": "sdkwork-zhiya",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Zhiya (知鸭) — AI 时代的家庭教育与活动平台 repository (family/child, activities, registration, check-in, reviews, coupons, messages, org workspace, AI assistant).",
+  "packageManager": "pnpm@12.4.1",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "api:assembly:materialize": "node ../sdkwork-specs/tools/materialize-api-assembly.mjs --root .",
+    "api:assembly:validate": "node ../sdkwork-specs/tools/validate-api-assembly.mjs --root .",
+    "build": "node scripts/sdkwork-command.mjs build",
+    "build:h5:dev": "node ../sdkwork-specs/tools/build-browser-client.mjs --root . --architecture h5 --environment dev",
+    "build:h5:prod": "node ../sdkwork-specs/tools/build-browser-client.mjs --root . --architecture h5 --environment prod",
+    "build:h5:staging": "node ../sdkwork-specs/tools/build-browser-client.mjs --root . --architecture h5 --environment staging",
+    "build:h5:test": "node ../sdkwork-specs/tools/build-browser-client.mjs --root . --architecture h5 --environment test",
+    "check": "node scripts/sdkwork-command.mjs check",
+    "clean": "node scripts/sdkwork-command.mjs clean",
+    "dev": "pnpm dev:standalone",
+    "dev:browser": "node scripts/sdkwork-command.mjs dev --runtime-target browser --database postgres --deployment-profile standalone --environment development",
+    "dev:cloud": "node scripts/sdkwork-command.mjs dev --deployment-profile cloud --environment development",
+    "dev:standalone": "node scripts/sdkwork-command.mjs dev --deployment-profile standalone --environment development",
+    "format": "pnpm -r --if-present format",
+    "format:check": "pnpm -r --if-present format:check",
+    "lint": "pnpm -r --if-present lint",
+    "stop": "node scripts/sdkwork-command.mjs stop",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "verify": "node scripts/sdkwork-command.mjs verify"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+domain: zhiya
+status: active
+owner: sdkwork-zhiya
+summary: >-
+  Zhiya (知鸭) is an AI-native family education and activity platform. Families
+  discover education activities for their children, register and pay, check in
+  on site, and review; education organizations publish and operate activities;
+  the built-in AI assistant (问知鸭) answers questions, searches activities in
+  natural language, and recommends weekend experience plans. Bottom navigation:
+  首页 (Home) / 活动 (Activities) / AI / 商城 (Mall) / 我的 (Profile).
+database_prefix: zhiya_
+api_tags:
+  - zhiya
+sdk_namespaces:
+  - zhiya
+capabilities:
+  - family-child
+  - activity-discovery
+  - activity-registration
+  - payment
+  - check-in
+  - review
+  - coupon
+  - message
+  - mall
+  - ai-assistant
+  - org-workspace
+depends_on: []
+extends: []
+integration: {}

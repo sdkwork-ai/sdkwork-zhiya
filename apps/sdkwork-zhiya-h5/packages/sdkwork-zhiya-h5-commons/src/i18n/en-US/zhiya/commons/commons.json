@@ -1,0 +1,127 @@
+{
+  "action": {
+    "favorite": "Favorite",
+    "unfavorite": "Unfavorite",
+    "back": "Back"
+  },
+  "state": {
+    "loading": {
+      "title": "Loading…",
+      "description": "Fetching content for you"
+    },
+    "empty": {
+      "title": "Nothing here yet",
+      "description": "Try different filters or explore the home feed"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "The content failed to load, please retry"
+    },
+    "permission-denied": {
+      "title": "No permission",
+      "description": "This account cannot access the content"
+    },
+    "retry": "Retry"
+  },
+  "price": {
+    "free": "Free"
+  },
+  "mode": {
+    "online": "Online",
+    "offline": "On-site"
+  },
+  "quota": {
+    "remaining": "{{count}} spots left",
+    "full": "Full",
+    "enrolledSuffix": " enrolled"
+  },
+  "age": {
+    "unit": "yr"
+  },
+  "package": {
+    "activityCount": "{{count}} activities",
+    "purchasedSuffix": " families bought"
+  },
+  "goods": {
+    "sales": "{{count}} sold"
+  },
+  "category": {
+    "trial": "Trial class",
+    "online-course": "Online course",
+    "open-course": "Open class",
+    "parent-child": "Parent-child",
+    "study-tour": "Study tour",
+    "summer-camp": "Summer camp",
+    "winter-camp": "Winter camp",
+    "competition": "Competition",
+    "exhibition": "Exhibition",
+    "training": "Training camp",
+    "other": "Other"
+  },
+  "qr": {
+    "label": "Activity voucher QR {{code}}",
+    "hint": "Show this code to staff for check-in"
+  },
+  "orderStatus": {
+    "pending-payment": "To pay",
+    "upcoming": "Upcoming",
+    "ongoing": "Ongoing",
+    "pending-review": "To review",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "refunded": "Refunded"
+  },
+  "checkInState": {
+    "none": "Awaiting check-in",
+    "checked-in": "Checked in"
+  },
+  "couponScope": {
+    "platform": "Platform",
+    "org": "Merchant",
+    "activity": "Activity",
+    "package": "Package"
+  },
+  "couponState": {
+    "unused": "Unused",
+    "used": "Used",
+    "expired": "Expired"
+  },
+  "messageCategory": {
+    "system": "System",
+    "activity": "Activity",
+    "registration": "Registration",
+    "payment": "Payment",
+    "refund": "Refund",
+    "coupon": "Coupon",
+    "ai": "AI"
+  },
+  "childStage": {
+    "kindergarten": "Kindergarten",
+    "primary-low": "Primary (low)",
+    "primary-high": "Primary (high)",
+    "junior": "Junior high",
+    "senior": "Senior high"
+  },
+  "educationTag": {
+    "programming": "Coding",
+    "robotics": "Robotics",
+    "science": "Science",
+    "art": "Art",
+    "music": "Music",
+    "english": "English",
+    "sports": "Sports",
+    "thinking": "Thinking",
+    "drama": "Drama",
+    "nature": "Nature"
+  },
+  "goodsCategory": {
+    "stationery": "Stationery",
+    "books": "Books",
+    "painting": "Painting",
+    "science": "Science",
+    "programming": "Coding",
+    "robotics": "Robotics",
+    "teaching-aids": "Teaching aids",
+    "supplies": "Supplies"
+  }
+}

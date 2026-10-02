@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-zhiya-h5",
+    "displayName": "Zhiya H5",
+    "version": "0.1.0",
+    "type": "h5-app-root",
+    "root": "apps/sdkwork-zhiya-h5",
+    "domain": "zhiya",
+    "capability": "family-education-platform",
+    "surface": "app",
+    "languages": ["typescript"],
+    "status": "DRAFT",
+    "manifests": ["package.json", "sdkwork.app.config.json", "specs/component.spec.json"]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "APPLICATION_SPEC.md",
+      "path": "../../../sdkwork-specs/APPLICATION_SPEC.md",
+      "purpose": "Application-wide contract for owned application roots."
+    },
+    {
+      "file": "APP_MANIFEST_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_MANIFEST_SPEC.md",
+      "purpose": "App manifest (sdkwork.app.config.json) authority."
+    },
+    {
+      "file": "UI_ARCHITECTURE_SPEC.md",
+      "path": "../../../sdkwork-specs/UI_ARCHITECTURE_SPEC.md",
+      "purpose": "UI architecture manifest requirements."
+    },
+    {
+      "file": "APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md",
+      "purpose": "Cross-client architecture alignment."
+    },
+    {
+      "file": "APP_H5_ARCHITECTURE_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_H5_ARCHITECTURE_SPEC.md",
+      "purpose": "H5 application architecture authority for this root."
+    },
+    {
+      "file": "APP_MOBILE_REACT_UI_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_MOBILE_REACT_UI_SPEC.md",
+      "purpose": "Mobile React UI conventions."
+    },
+    {
+      "file": "CONFIG_SPEC.md",
+      "path": "../../../sdkwork-specs/CONFIG_SPEC.md",
+      "purpose": "Typed runtime config contract."
+    },
+    {
+      "file": "SOURCE_CONFIG_SPEC.md",
+      "path": "../../../sdkwork-specs/SOURCE_CONFIG_SPEC.md",
+      "purpose": "etc/ source configuration index."
+    },
+    {
+      "file": "TEST_SPEC.md",
+      "path": "../../../sdkwork-specs/TEST_SPEC.md",
+      "purpose": "Test baseline and architecture contract tests."
+    },
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../../sdkwork-specs/CODE_STYLE_SPEC.md",
+      "purpose": "Cross-language code style authority."
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../../sdkwork-specs/NAMING_SPEC.md",
+      "purpose": "Canonical naming lattice."
+    }
+  ],
+  "contracts": {
+    "layerRole": "runtime-composition",
+    "publicExports": ["."],
+    "providedPorts": [],
+    "requiredPorts": [],
+    "runtimeEntrypoints": [
+      "package.json#scripts.dev",
+      "package.json#scripts.test",
+      "package.json#scripts.typecheck",
+      "package.json#scripts.build:dev",
+      "package.json#scripts.build:prod"
+    ],
+    "routeManifest": [
+      "app.zhiya.home.root",
+      "app.zhiya.home.search",
+      "app.zhiya.activity.root",
+      "app.zhiya.activity.detail",
+      "app.zhiya.activity.register",
+      "app.zhiya.activity.pay",
+      "app.zhiya.activity.success",
+      "app.zhiya.activity.packages",
+      "app.zhiya.activity.package",
+      "app.zhiya.ai.root",
+      "app.zhiya.mall.root",
+      "app.zhiya.mall.goods",
+      "app.zhiya.trade.orders",
+      "app.zhiya.trade.order-detail",
+      "app.zhiya.trade.review",
+      "app.zhiya.profile.root",
+      "app.zhiya.profile.login",
+      "app.zhiya.profile.family",
+      "app.zhiya.profile.child-new",
+      "app.zhiya.profile.child-edit",
+      "app.zhiya.profile.activities",
+      "app.zhiya.profile.coupons",
+      "app.zhiya.profile.favorites",
+      "app.zhiya.profile.messages",
+      "app.zhiya.profile.settings",
+      "app.zhiya.org.workspace",
+      "app.zhiya.org.activities",
+      "app.zhiya.org.activity-edit",
+      "app.zhiya.org.registrations"
+    ],
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": [
+      "sdkwork.app.config.json#app",
+      "etc/sdkwork.deployment.config.json#profiles"
+    ]
+  },
+  "verification": {
+    "commands": [
+      "pnpm --filter sdkwork-zhiya-h5 typecheck",
+      "pnpm --filter sdkwork-zhiya-h5 test",
+      "pnpm build:h5:dev"
+    ]
+  }
+}

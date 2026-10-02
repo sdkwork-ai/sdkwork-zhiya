@@ -1,0 +1,88 @@
+{
+  "root": { "title": "Activities" },
+  "filter": {
+    "all": "All",
+    "allModes": "All formats",
+    "free": "Free"
+  },
+  "detail": {
+    "title": "Activity detail",
+    "notFound": "Activity not found or offline",
+    "timeLabel": "Time",
+    "onlineLink": "Enter online classroom",
+    "ageLabel": "For ages {{min}}-{{max}}",
+    "introduction": "Introduction",
+    "notice": "Notice",
+    "org": "Organizer",
+    "orgContactHint": "Chat with the org after registering",
+    "contactOrg": "Chat",
+    "reviews": "Reviews",
+    "reviewsWithRating": "Reviews {{rating}} · {{count}}",
+    "noReviews": "No reviews yet",
+    "favorite": "Save",
+    "share": "Share",
+    "registerNow": "Register",
+    "soldOut": "Sold out"
+  },
+  "register": {
+    "title": "Confirm registration",
+    "noChild": "No child profile yet",
+    "noChildHint": "Add your child first; we check age fit automatically",
+    "addChild": "Add a child",
+    "chooseChild": "Choose child",
+    "chooseSession": "Choose session",
+    "coupons": "Coupons",
+    "couponMinSpend": "Over {{amount}}",
+    "agreement": "By registering you agree to the Zhiya registration & refund rules",
+    "submit": "Submit order",
+    "error": {
+      "activity-not-found": "Activity not found",
+      "session-not-found": "Session not found, pick again",
+      "child-not-found": "Pick a child first",
+      "not-open": "Registration is closed",
+      "age-not-fit": "Child age is outside the activity range",
+      "sold-out": "Sold out",
+      "duplicate": "This child is already registered",
+      "time-conflict": "Time conflict with an existing booking",
+      "coupon-invalid": "Coupon not applicable"
+    }
+  },
+  "pay": {
+    "title": "Checkout",
+    "orderMissing": "Order not found",
+    "payableLabel": "Amount due",
+    "amountLabel": "Order amount",
+    "discountLabel": "Coupon discount",
+    "wechat": "WeChat Pay",
+    "alipay": "Alipay",
+    "payNow": "Pay now",
+    "paying": "Paying…",
+    "mockHint": "Mock payment in the demo environment — no real charge"
+  },
+  "success": {
+    "title": "Registered!",
+    "packageTitle": "Purchased!",
+    "orderNo": "Order {{orderId}}",
+    "packageHint": "The package is in your orders; benefit booking is coming soon",
+    "backHome": "Home",
+    "viewOrders": "View orders"
+  },
+  "packages": {
+    "title": "Experience packages",
+    "subtitle": "Try multiple organizations with one low-cost package",
+    "notFound": "Package not found"
+  },
+  "package": {
+    "title": "Package detail",
+    "notFound": "Package not found",
+    "validDays": "Valid {{days}} days",
+    "includes": "Includes {{count}} activities",
+    "rulesTitle": "Purchase rules",
+    "rule1": "· Valid within the validity period; unused benefits expire afterwards",
+    "rule2": "· Book each activity separately; show the voucher on site",
+    "rule3": "· Unverified benefits are refundable per rules",
+    "buy": "¥{{price}} · Buy now",
+    "buyFailed": "Purchase failed, try again later",
+    "morePackages": "All packages"
+  }
+}

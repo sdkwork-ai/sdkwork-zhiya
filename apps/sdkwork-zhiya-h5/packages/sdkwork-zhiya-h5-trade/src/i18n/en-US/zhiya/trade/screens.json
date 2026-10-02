@@ -1,0 +1,38 @@
+{
+  "orders": {
+    "title": "My orders",
+    "all": "All"
+  },
+  "detail": {
+    "title": "Order detail",
+    "notFound": "Order not found",
+    "amount": "Amount",
+    "discount": "Coupon",
+    "payable": "Paid",
+    "createdAt": "Created",
+    "cancel": "Cancel order",
+    "pay": "Pay",
+    "refund": "Request refund",
+    "review": "Review",
+    "actionError": {
+      "not-open": "Action not allowed in the current status",
+      "not-found": "Order not found",
+      "already-checked-in": "Checked-in orders are not refundable; contact the org"
+    }
+  },
+  "review": {
+    "title": "Review activity",
+    "notReviewable": "This order cannot be reviewed yet",
+    "finishedHint": "The activity ended — share your real experience",
+    "overall": "Overall",
+    "experience": "Experience",
+    "teacher": "Teachers",
+    "environment": "Environment",
+    "service": "Service",
+    "star": "{{value}} stars",
+    "recommend": "Would recommend to other parents",
+    "placeholder": "How did it go? Highlights or suggestions are welcome",
+    "submit": "Publish review",
+    "failed": "Publish failed, try again later"
+  }
+}

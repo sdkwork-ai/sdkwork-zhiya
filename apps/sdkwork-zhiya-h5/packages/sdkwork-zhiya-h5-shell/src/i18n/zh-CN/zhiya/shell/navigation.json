@@ -1,0 +1,12 @@
+{
+  "tabbar": {
+    "label": "主导航"
+  },
+  "tab": {
+    "home": "首页",
+    "activity": "活动",
+    "ai": "AI",
+    "mall": "商城",
+    "profile": "我的"
+  }
+}

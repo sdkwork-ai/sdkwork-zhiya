@@ -1,0 +1,96 @@
+{
+  "root": {
+    "title": "我的",
+    "guest": "未登录",
+    "myActivities": "我的活动",
+    "myOrders": "我的订单",
+    "coupons": "优惠券",
+    "favorites": "收藏",
+    "family": "我的家庭",
+    "messages": "消息中心",
+    "orgWorkspace": "机构工作台",
+    "settings": "设置"
+  },
+  "login": {
+    "title": "登录知鸭",
+    "slogan": "知孩子，也知教育",
+    "phonePlaceholder": "手机号",
+    "codePlaceholder": "验证码",
+    "sendCode": "获取验证码",
+    "submit": "登录 / 注册",
+    "mockHint": "演示环境：输入任意手机号 + 任意 6 位验证码即可登录",
+    "agreement": "登录即同意《用户协议》与《隐私政策》",
+    "error": {
+      "phone": "请输入正确的 11 位手机号",
+      "code": "请输入 6 位验证码"
+    }
+  },
+  "family": {
+    "title": "我的家庭",
+    "addChild": "添加孩子",
+    "edit": "编辑",
+    "remove": "删除"
+  },
+  "childEdit": {
+    "newTitle": "添加孩子",
+    "editTitle": "编辑孩子资料",
+    "nickname": "昵称",
+    "nicknamePlaceholder": "孩子的昵称或小名",
+    "gender": "性别",
+    "boy": "男孩",
+    "girl": "女孩",
+    "secret": "保密",
+    "birthDate": "出生日期",
+    "stage": "教育阶段",
+    "interests": "兴趣方向（可多选）",
+    "notes": "家长备注",
+    "notesPlaceholder": "过敏史、性格特点等，机构会保密",
+    "save": "保存",
+    "error": {
+      "nickname": "请填写孩子昵称"
+    }
+  },
+  "activities": {
+    "title": "我的活动",
+    "all": "全部",
+    "review": "去评价"
+  },
+  "coupons": {
+    "title": "优惠券",
+    "claimable": "可领取",
+    "claim": "领取",
+    "noThreshold": "无门槛",
+    "overSpend": "满{{amount}}可用",
+    "validDays": "领取后{{days}}天内有效",
+    "expireAt": "{{date}} 前有效"
+  },
+  "favorites": {
+    "title": "我的收藏",
+    "activities": "收藏的活动",
+    "goods": "收藏的商品"
+  },
+  "messages": {
+    "title": "消息中心",
+    "all": "全部",
+    "markAll": "全部已读"
+  },
+  "settings": {
+    "title": "设置",
+    "colorMode": "深色模式",
+    "dark": "深色",
+    "light": "浅色",
+    "locale": "语言 Language",
+    "clearData": "清除本地数据",
+    "clearDataHint": "清除演示产生的家庭、订单、优惠券等本地数据",
+    "cleared": "已清除，重新进入应用后生效",
+    "about": "关于知鸭",
+    "version": "知鸭 v0.1.0 · 知孩子，也知教育",
+    "signOut": "退出登录"
+  },
+  "child-new": {
+    "title": "添加孩子"
+  },
+  "child-edit": {
+    "title": "编辑孩子资料"
+  }
+}
