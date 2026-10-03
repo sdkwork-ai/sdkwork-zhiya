@@ -50,3 +50,5 @@ Thumbs.db
 # Dart/Flutter build output
 .dart_tool/
 **/.dart_tool/
+build/
+**/build/
