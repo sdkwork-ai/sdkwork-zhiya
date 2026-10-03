@@ -10,11 +10,19 @@
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "noEmit": true
   },
-  "include": ["src/bootstrap/**/*.ts", "packages/*/src/**/*.ts"]
+  "include": [
+    "src/app.ts",
+    "src/bootstrap/**/*.ts",
+    "src/pages/**/*.ts",
+    "src/detail/**/*.ts",
+    "packages/*/src/**/*.ts"
+  ]
 }
