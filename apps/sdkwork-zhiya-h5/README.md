@@ -27,7 +27,7 @@ runs fully on-device. Platform SDK wiring lands with the `cloud` profile.
 Standard H5 root (`APP_H5_ARCHITECTURE_SPEC.md` §2): thin `src/` (bootstrap +
 AuthGate + shell shim), `packages/`, `etc/browser/` runtime sources,
 `config/`, `specs/`, `tests/` (executable architecture contracts), root
-manifests (`sdkwork.app.config.json`, `vite.config.ts`).
+manifests (`agent.app.config.json`, `vite.config.ts`).
 
 ## Local development
 

@@ -5,7 +5,7 @@
     "name": "Zhiya",
     "repository": "sdkwork-ai/sdkwork-zhiya",
     "sourcePath": ".",
-    "configPath": "sdkwork.app.config.json",
+    "configPath": "agent.app.config.json",
     "description": "Zhiya (知鸭) — AI 时代的家庭教育与活动平台: H5 + PC + WeChat mini-program + Flutter mobile surfaces over one shared service family."
   },
   "release": {

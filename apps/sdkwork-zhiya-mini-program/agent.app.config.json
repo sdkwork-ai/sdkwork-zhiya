@@ -1,28 +1,24 @@
 {
   "schemaVersion": 3,
-  "kind": "sdkwork.app",
+  "kind": "agent.app",
   "app": {
-    "key": "sdkwork-zhiya-pc",
-    "name": "Zhiya PC",
-    "displayName": "知鸭 Zhiya — PC",
-    "description": "Zhiya (知鸭) family-education activity platform desktop-class PC client: five navigation-rail destinations covering the family loop, AI assistant, mall, and the org workspace.",
+    "key": "sdkwork-zhiya-mini-program",
+    "name": "Zhiya Mini Program",
+    "displayName": "知鸭 Zhiya 小程序",
+    "description": "Zhiya (知鸭) family-education activity platform WeChat mini-program client: five tabBar pages + detail subpackage covering discovery, registration, payment, orders, and reviews.",
     "vendor": "SDKWork",
-    "officialWebsiteUrl": "https://sdkwork.com/apps/sdkwork-zhiya-pc",
-    "supportUrl": "https://sdkwork.com/support",
-    "privacyPolicyUrl": "https://sdkwork.com/privacy",
-    "termsOfServiceUrl": "https://sdkwork.com/terms",
     "appType": "APP_REACT",
     "versionSource": "package.json",
     "identifiers": {
-      "containerImage": "registry.sdkwork.com/apps/sdkwork-zhiya-pc"
+      "weixinAppId": "touristappid"
     }
   },
   "backend": {
     "profileKey": "backend-root-admin",
     "ownerMode": "tenant",
     "grantMode": "current",
-    "platform": "WEB",
-    "appId": "sdkwork-zhiya-pc",
+    "platform": "MP_WEIXIN",
+    "appId": "sdkwork-zhiya-mini-program",
     "organizationId": "0",
     "tenantId": "100001",
     "accessTokenPermissionScope": [
@@ -30,15 +26,15 @@
     ]
   },
   "runtime": {
-    "family": "desktop",
-    "framework": "react-pc",
+    "family": "mini-program",
+    "framework": "weixin-mini-program",
     "runtimes": [
-      "WEB"
+      "MP_WEIXIN"
     ],
     "deliveryModes": [
-      "WEB_URL"
+      "MP_WEIXIN"
     ],
-    "defaultPlatform": "WEB",
+    "defaultPlatform": "MP_WEIXIN",
     "defaultArchitecture": "universal",
     "supportedDeploymentProfiles": [
       "standalone"
@@ -48,10 +44,10 @@
   "media": {
     "icons": {
       "primary": {
-        "id": "sdkwork-zhiya-pc-primary-icon",
+        "id": "sdkwork-zhiya-mp-primary-icon",
         "type": "ICON",
         "purpose": "PRIMARY",
-        "platform": "WEB",
+        "platform": "MP_WEIXIN",
         "format": "PNG",
         "width": 1024,
         "height": 1024,
@@ -69,10 +65,10 @@
   "publish": {
     "status": "DRAFT",
     "platforms": [
-      "WEB"
+      "MP_WEIXIN"
     ],
     "installPlatforms": [
-      "WEB"
+      "MP_WEIXIN"
     ],
     "installSkill": false
   },
@@ -102,11 +98,10 @@
     "sbomRequired": true
   },
   "devApp": {
-    "sourceRoot": "apps/sdkwork-zhiya-pc",
+    "sourceRoot": "apps/sdkwork-zhiya-mini-program",
     "build": {
       "targets": [
-        "browser",
-        "desktop"
+        "mini-program"
       ]
     }
   },
