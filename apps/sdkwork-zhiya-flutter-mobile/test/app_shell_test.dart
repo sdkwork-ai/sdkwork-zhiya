@@ -10,11 +10,11 @@ void main() {
       MaterialApp(
         home: ZhiyaShell(
           destinations: const [
-            ('首页', Icons.home),
-            ('活动', Icons.event),
-            ('AI', Icons.emoji_nature),
-            ('商城', Icons.shopping_bag),
-            ('我的', Icons.person),
+            ('首页', Icons.home_outlined, Icons.home),
+            ('活动', Icons.event_outlined, Icons.event),
+            ('AI', Icons.emoji_nature_outlined, Icons.emoji_nature),
+            ('商城', Icons.shopping_bag_outlined, Icons.shopping_bag),
+            ('我的', Icons.person_outline, Icons.person),
           ],
           currentIndex: 0,
           onDestinationSelected: (_) {},
