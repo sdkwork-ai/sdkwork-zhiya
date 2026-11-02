@@ -5,8 +5,7 @@
     "name": "Zhiya",
     "repository": "sdkwork-ai/sdkwork-zhiya",
     "sourcePath": ".",
-    "configPath": "agent.app.config.json",
-    "description": "Zhiya (知鸭) — AI 时代的家庭教育与活动平台: H5 + PC + WeChat mini-program + Flutter mobile surfaces over one shared service family."
+    "configPath": "agent.app.config.json"
   },
   "release": {
     "artifactPrefix": "sdkwork-zhiya",
@@ -19,19 +18,18 @@
   "dependencies": [
     {
       "id": "sdkwork-sdk-commons",
-      "path": "../sdkwork-sdk-commons",
-      "reason": "canonical browser runtime-env resolution (@sdkwork/sdk-common)"
+      "repository": "sdkwork-ai/sdkwork-sdk-commons"
     }
   ],
   "verificationDependencies": [],
   "targets": [
     {
-      "id": "browser-universal-standalone-h5-tar-gz",
+      "id": "web-universal-standalone-browser-h5-tar-gz",
       "profileBinding": "fixed",
       "deploymentProfile": "standalone",
       "runtimeTarget": "browser",
       "profile": "browser",
-      "platform": "browser",
+      "platform": "web",
       "architecture": "universal",
       "variant": "h5",
       "formats": [
@@ -45,12 +43,12 @@
       "artifactPath": "dist/release-packages/sdkwork-zhiya-browser-universal-standalone-h5-tar-gz-0.1.0.tar.gz"
     },
     {
-      "id": "browser-universal-standalone-pc-tar-gz",
+      "id": "web-universal-standalone-browser-pc-tar-gz",
       "profileBinding": "fixed",
       "deploymentProfile": "standalone",
       "runtimeTarget": "browser",
       "profile": "browser",
-      "platform": "browser",
+      "platform": "web",
       "architecture": "universal",
       "variant": "pc",
       "formats": [
@@ -74,5 +72,21 @@
     "githubRelease": false,
     "retentionDays": 30
   },
-  "deployments": []
+  "deployments": [],
+  "ci": {
+    "setup": [
+      {
+        "name": "Install SBOM generator (syft)",
+        "run": "curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin"
+      }
+    ]
+  },
+  "lifecycle": {
+    "sbom": [
+      {
+        "name": "Generate SPDX SBOM",
+        "run": "syft dir:. -o spdx-json=dist/sbom.spdx.json"
+      }
+    ]
+  }
 }
