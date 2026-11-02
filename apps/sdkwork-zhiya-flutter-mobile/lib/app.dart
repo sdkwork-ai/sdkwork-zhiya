@@ -40,7 +40,8 @@ class _ZhiyaAppState extends State<ZhiyaApp> {
   };
 
   static Widget _buildHome(BuildContext context) => const HomeScreen();
-  static Widget _buildActivity(BuildContext context) => const ActivityListScreen();
+  static Widget _buildActivity(BuildContext context) =>
+      const ActivityListScreen();
   static Widget _buildAi(BuildContext context) => const AiScreen();
   static Widget _buildMall(BuildContext context) => const MallScreen();
   static Widget _buildProfile(BuildContext context) => const ProfileScreen();
@@ -58,16 +59,19 @@ class _ZhiyaAppState extends State<ZhiyaApp> {
     return AuthGate(
       child: MaterialApp(
         title: '知鸭 Zhiya',
-        theme: ThemeData(colorSchemeSeed: const Color(0xFFD97706), useMaterial3: true),
+        theme: ThemeData(
+            colorSchemeSeed: const Color(0xFFD97706), useMaterial3: true),
         onGenerateRoute: _onGenerateRoute,
         home: ZhiyaShell(
           destinations: _destinations,
           currentIndex: _currentIndex,
-          onDestinationSelected: (index) => setState(() => _currentIndex = index),
+          onDestinationSelected: (index) =>
+              setState(() => _currentIndex = index),
           child: IndexedStack(
             index: _currentIndex,
             children: [
-              for (final route in kTabRootRoutes) _tabBuilders[route.id]!(context),
+              for (final route in kTabRootRoutes)
+                _tabBuilders[route.id]!(context),
             ],
           ),
         ),

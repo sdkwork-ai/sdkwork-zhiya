@@ -26,5 +26,20 @@ void main() {
     for (final label in ['首页', '活动', 'AI', '商城', '我的']) {
       expect(find.text(label), findsWidgets);
     }
+
+    final destinations = tester
+        .widgetList<NavigationDestination>(find.byType(NavigationDestination))
+        .toList();
+    expect(destinations, hasLength(5));
+    expect((destinations[0].icon as Icon).icon, Icons.home_outlined);
+    expect((destinations[0].selectedIcon as Icon).icon, Icons.home);
+    expect((destinations[1].icon as Icon).icon, Icons.event_outlined);
+    expect((destinations[1].selectedIcon as Icon).icon, Icons.event);
+    expect((destinations[2].icon as Icon).icon, Icons.emoji_nature_outlined);
+    expect((destinations[2].selectedIcon as Icon).icon, Icons.emoji_nature);
+    expect((destinations[3].icon as Icon).icon, Icons.shopping_bag_outlined);
+    expect((destinations[3].selectedIcon as Icon).icon, Icons.shopping_bag);
+    expect((destinations[4].icon as Icon).icon, Icons.person_outline);
+    expect((destinations[4].selectedIcon as Icon).icon, Icons.person);
   });
 }
