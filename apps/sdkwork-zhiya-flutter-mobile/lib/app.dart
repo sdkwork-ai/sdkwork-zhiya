@@ -26,7 +26,7 @@ class _ZhiyaAppState extends State<ZhiyaApp> {
   static const List<(String, IconData, IconData)> _destinations = [
     ('首页', Icons.home_outlined, Icons.home),
     ('活动', Icons.event_outlined, Icons.event),
-    ('AI', Icons.emoji_nature_outlined, Icons.emoji_nature),
+    ('AI', Icons.psychology_outlined, Icons.psychology),
     ('商城', Icons.shopping_bag_outlined, Icons.shopping_bag),
     ('我的', Icons.person_outline, Icons.person),
   ];

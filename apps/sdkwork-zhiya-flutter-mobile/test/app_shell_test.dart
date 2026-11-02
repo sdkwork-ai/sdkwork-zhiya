@@ -12,7 +12,7 @@ void main() {
           destinations: const [
             ('首页', Icons.home_outlined, Icons.home),
             ('活动', Icons.event_outlined, Icons.event),
-            ('AI', Icons.emoji_nature_outlined, Icons.emoji_nature),
+            ('AI', Icons.psychology_outlined, Icons.psychology),
             ('商城', Icons.shopping_bag_outlined, Icons.shopping_bag),
             ('我的', Icons.person_outline, Icons.person),
           ],
@@ -35,8 +35,8 @@ void main() {
     expect((destinations[0].selectedIcon as Icon).icon, Icons.home);
     expect((destinations[1].icon as Icon).icon, Icons.event_outlined);
     expect((destinations[1].selectedIcon as Icon).icon, Icons.event);
-    expect((destinations[2].icon as Icon).icon, Icons.emoji_nature_outlined);
-    expect((destinations[2].selectedIcon as Icon).icon, Icons.emoji_nature);
+    expect((destinations[2].icon as Icon).icon, Icons.psychology_outlined);
+    expect((destinations[2].selectedIcon as Icon).icon, Icons.psychology);
     expect((destinations[3].icon as Icon).icon, Icons.shopping_bag_outlined);
     expect((destinations[3].selectedIcon as Icon).icon, Icons.shopping_bag);
     expect((destinations[4].icon as Icon).icon, Icons.person_outline);
