@@ -44,18 +44,27 @@ export function TabBar() {
                   )
                 }
               >
-                <span className="relative">
-                  <Icon aria-hidden="true" strokeWidth={1.75} className="h-6 w-6" />
-                  {badge !== null ? (
-                    <span
-                      data-testid="tab-badge-profile"
-                      className="absolute -top-1 -right-2 min-w-4 rounded-full bg-danger px-1 text-center text-[0.625rem] leading-4 font-semibold text-white"
-                    >
-                      {badge > 99 ? '99+' : badge}
+                {({ isActive }) => (
+                  <>
+                    <span className="relative">
+                      <Icon
+                        aria-hidden="true"
+                        strokeWidth={1.75}
+                        fill={isActive ? 'currentColor' : 'none'}
+                        className="h-6 w-6"
+                      />
+                      {badge !== null ? (
+                        <span
+                          data-testid="tab-badge-profile"
+                          className="absolute -top-1 -right-2 min-w-4 rounded-full bg-danger px-1 text-center text-[0.625rem] leading-4 font-semibold text-white"
+                        >
+                          {badge > 99 ? '99+' : badge}
+                        </span>
+                      ) : null}
                     </span>
-                  ) : null}
-                </span>
-                <span>{t(tab.titleKey)}</span>
+                    <span>{t(tab.titleKey)}</span>
+                  </>
+                )}
               </NavLink>
             </li>
           );

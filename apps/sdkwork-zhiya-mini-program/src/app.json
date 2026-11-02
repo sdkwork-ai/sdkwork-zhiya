@@ -38,23 +38,33 @@
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "assets/tabbar/home-outline.png",
+        "selectedIconPath": "assets/tabbar/home-filled.png"
       },
       {
         "pagePath": "pages/activity/index",
-        "text": "活动"
+        "text": "活动",
+        "iconPath": "assets/tabbar/activity-outline.png",
+        "selectedIconPath": "assets/tabbar/activity-filled.png"
       },
       {
         "pagePath": "pages/ai/index",
-        "text": "AI"
+        "text": "AI",
+        "iconPath": "assets/tabbar/ai-outline.png",
+        "selectedIconPath": "assets/tabbar/ai-filled.png"
       },
       {
         "pagePath": "pages/mall/index",
-        "text": "商城"
+        "text": "商城",
+        "iconPath": "assets/tabbar/mall-outline.png",
+        "selectedIconPath": "assets/tabbar/mall-filled.png"
       },
       {
         "pagePath": "pages/profile/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "assets/tabbar/profile-outline.png",
+        "selectedIconPath": "assets/tabbar/profile-filled.png"
       }
     ]
   },
