@@ -32,7 +32,8 @@
     "stop": "node scripts/sdkwork-command.mjs stop",
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck",
-    "verify": "node scripts/sdkwork-command.mjs verify"
+    "verify": "node scripts/sdkwork-command.mjs verify",
+    "check:release-access-token:require-anchor": "node ../sdkwork-specs/tools/check-release-access-token-env.mjs --root . --require-anchor"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
